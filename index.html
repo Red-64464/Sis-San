@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
@@ -274,6 +274,90 @@
         transform: none;
       }
 
+      /* ─── YEAR TABS ──────────────────────────────── */
+      .year-tabs {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 36px;
+        flex-wrap: wrap;
+      }
+
+      .year-tab {
+        background: var(--card-bg);
+        border: 1.5px solid var(--border);
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        padding: 10px 28px;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        letter-spacing: 0.5px;
+      }
+
+      .year-tab:hover {
+        border-color: var(--purple);
+        color: var(--purple);
+      }
+
+      .year-tab.active {
+        background: linear-gradient(135deg, var(--purple), var(--green));
+        border-color: transparent;
+        color: #fff;
+        box-shadow: 0 4px 20px rgba(167, 139, 250, 0.35);
+      }
+
+      /* ─── YEAR PANELS ───────────────────────────── */
+      .year-panel {
+        display: none;
+      }
+      .year-panel.active {
+        display: block;
+      }
+
+      /* ─── SUBJECT HEADING ───────────────────────── */
+      .subject-heading {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 16px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .subject-heading::before,
+      .subject-heading::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+
+      /* ─── EMPTY STATE ─────────────────────────────── */
+      .empty-state {
+        text-align: center;
+        padding: 64px 24px;
+        border: 1.5px dashed var(--border);
+        border-radius: 20px;
+        color: var(--muted);
+      }
+      .empty-state .empty-dots {
+        font-size: 2.4rem;
+        letter-spacing: 6px;
+        display: block;
+        margin-bottom: 16px;
+        opacity: 0.4;
+      }
+      .empty-state p {
+        font-size: 0.92rem;
+        font-weight: 500;
+        opacity: 0.5;
+      }
+
       /* ─── FOOTER ────────────────────────────────── */
       footer {
         margin-top: auto;
@@ -293,90 +377,133 @@
     </div>
 
     <div class="wrap">
-      <p class="section-label">Chapitres disponibles</p>
+      <!-- ── YEAR SELECTOR ── -->
+      <div class="year-tabs">
+        <button class="year-tab active" onclick="switchYear('4eme', this)">
+          4 &egrave;me
+        </button>
+        <button class="year-tab" onclick="switchYear('5eme', this)">
+          5 &egrave;me
+        </button>
+        <button class="year-tab" onclick="switchYear('6eme', this)">
+          6 &egrave;me
+        </button>
+      </div>
 
-      <div class="modules">
-        <!-- VECTEURS -->
-        <div class="module m-vecteurs">
-          <span class="module-icon">📐</span>
-          <h2>Vecteurs</h2>
-          <p>
-            Visualise les flèches sur un repère, additionne des vecteurs,
-            explore la norme et la colinéarité en glissant les points.
-          </p>
-          <div class="tag-row">
-            <span class="tag">Addition</span>
-            <span class="tag">Norme</span>
-            <span class="tag">Colinéarité</span>
-            <span class="tag">Repère</span>
+      <!-- 4EME PANEL -->
+      <div class="year-panel active" id="panel-4eme">
+        <p class="subject-heading">Math&eacute;matiques</p>
+        <div class="modules">
+          <div class="module m-vecteurs">
+            <span class="module-icon">&#128208;</span>
+            <h2>Vecteurs</h2>
+            <p>
+              Visualise les fl&egrave;ches sur un rep&egrave;re, additionne des
+              vecteurs, explore la norme et la colin&eacute;arit&eacute; en
+              glissant les points.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Addition</span>
+              <span class="tag">Norme</span>
+              <span class="tag">Colin&eacute;arit&eacute;</span>
+              <span class="tag">Rep&egrave;re</span>
+            </div>
+            <button
+              class="btn-open"
+              onclick="location.href = 'vecteurs/vecteurs_interactifs.html'"
+            >
+              Ouvrir le chapitre <span class="arrow">&rarr;</span>
+            </button>
           </div>
-          <button
-            class="btn-open"
-            onclick="location.href = 'vecteurs/vecteurs_interactifs.html'"
-          >
-            Ouvrir le chapitre <span class="arrow">→</span>
-          </button>
+          <div class="module m-facto">
+            <span class="module-icon">&#128290;</span>
+            <h2>Factorisation</h2>
+            <p>
+              D&eacute;compose des expressions, utilise les identit&eacute;s
+              remarquables et entra&icirc;ne-toi avec des exercices
+              guid&eacute;s pas &agrave; pas.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Facteur commun</span>
+              <span class="tag">Identit&eacute;s</span>
+              <span class="tag">Exercices</span>
+            </div>
+            <button
+              class="btn-open"
+              onclick="location.href = 'factorisation/factorisation.html'"
+            >
+              Ouvrir le chapitre <span class="arrow">&rarr;</span>
+            </button>
+          </div>
+          <div class="module m-matrices">
+            <span class="module-icon">&#128208;</span>
+            <h2>Trigonom&eacute;trie</h2>
+            <p>
+              Explore le cercle trigonom&eacute;trique, les identit&eacute;s, la
+              loi des sinus et cosinus, et calcule des aires de triangles.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Cercle trigo</span>
+              <span class="tag">Loi des sinus</span>
+              <span class="tag">Loi des cosinus</span>
+              <span class="tag">Identit&eacute;s</span>
+            </div>
+            <button
+              class="btn-open"
+              onclick="location.href = 'trigonometrie/trigonometrie.html'"
+            >
+              Ouvrir le chapitre <span class="arrow">&rarr;</span>
+            </button>
+          </div>
         </div>
-
-        <!-- FACTORISATION -->
-        <div class="module m-facto">
-          <span class="module-icon">🔢</span>
-          <h2>Factorisation</h2>
+        <p class="subject-heading" style="margin-top: 32px">Autres cours</p>
+        <div class="empty-state">
+          <span class="empty-dots">. . .</span>
           <p>
-            Décompose des expressions, utilise les identités remarquables et
-            entraîne-toi avec des exercices guidés pas à pas.
+            Aucun contenu pour l&apos;instant &mdash; &ccedil;a arrive
+            bient&ocirc;t !
           </p>
-          <div class="tag-row">
-            <span class="tag">Facteur commun</span>
-            <span class="tag">Identités</span>
-            <span class="tag">Exercices</span>
-          </div>
-          <button
-            class="btn-open"
-            onclick="location.href = 'factorisation/factorisation.html'"
-          >
-            Ouvrir le chapitre <span class="arrow">→</span>
-          </button>
         </div>
+      </div>
 
-        <!-- TRIGONOMÉTRIE -->
-        <div class="module m-matrices">
-          <span class="module-icon">📐</span>
-          <h2>Trigonométrie</h2>
+      <!-- 5EME PANEL -->
+      <div class="year-panel" id="panel-5eme">
+        <div class="empty-state">
+          <span class="empty-dots">. . .</span>
           <p>
-            Explore le cercle trigonométrique, les identités, la loi des sinus
-            et cosinus, et calcule des aires de triangles.
+            Aucun contenu pour l&apos;instant &mdash; &ccedil;a arrive
+            bient&ocirc;t !
           </p>
-          <div class="tag-row">
-            <span class="tag">Cercle trigo</span>
-            <span class="tag">Loi des sinus</span>
-            <span class="tag">Loi des cosinus</span>
-            <span class="tag">Identités</span>
-          </div>
-          <button
-            class="btn-open"
-            onclick="location.href = 'trigonometrie/trigonometrie.html'"
-          >
-            Ouvrir le chapitre <span class="arrow">→</span>
-          </button>
         </div>
+      </div>
 
-        <!-- COMING SOON -->
-        <div class="module m-coming">
-          <span class="module-icon">�</span>
-          <h2>Géométrie plane</h2>
+      <!-- 6EME PANEL -->
+      <div class="year-panel" id="panel-6eme">
+        <div class="empty-state">
+          <span class="empty-dots">. . .</span>
           <p>
-            Les lieux géométriques — médiatrice, bissectrice, cercles et
-            constructions pas à pas.
+            Aucun contenu pour l&apos;instant &mdash; &ccedil;a arrive
+            bient&ocirc;t !
           </p>
-          <div class="tag-row">
-            <span class="tag">Bientôt</span>
-          </div>
-          <button class="btn-open" disabled>En cours de création…</button>
         </div>
       </div>
     </div>
+    <footer>Fait avec 💛​ pour apprendre plus facilement</footer>
 
-    <footer>Fait avec ❤️ pour apprendre plus facilement</footer>
+    <script>
+      function switchYear(year, btn) {
+        // Hide all panels
+        document
+          .querySelectorAll(".year-panel")
+          .forEach((p) => p.classList.remove("active"));
+        // Deactivate all tabs
+        document
+          .querySelectorAll(".year-tab")
+          .forEach((t) => t.classList.remove("active"));
+        // Show selected panel & activate tab
+        document.getElementById("panel-" + year).classList.add("active");
+        btn.classList.add("active");
+      }
+    </script>
   </body>
 </html>
