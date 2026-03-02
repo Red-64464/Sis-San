@@ -1,0 +1,2953 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Factorisation — Espace Interactif</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;700;900&family=Space+Mono:wght@400;700&display=swap");
+
+      :root {
+        --bg: #0a0a14;
+        --panel: #12121f;
+        --card: #161628;
+        --border: #1e1e3a;
+        --accent: #ff6b6b;
+        --green: #00f5c3;
+        --red: #ff6b6b;
+        --yellow: #ffd93d;
+        --purple: #a78bfa;
+        --orange: #ff9f43;
+        --blue: #54a0ff;
+        --text: #eeeeff;
+        --muted: #6b6b9a;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Lexend", sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* === HEADER === */
+      header {
+        text-align: center;
+        padding: 24px 16px 10px;
+        position: relative;
+      }
+      header::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse 80% 60% at 50% 0%,
+          rgba(255, 107, 107, 0.1) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+      .back-btn {
+        position: absolute;
+        left: 16px;
+        top: 24px;
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: color 0.2s;
+        z-index: 2;
+      }
+      .back-btn:hover {
+        color: var(--text);
+      }
+      header h1 {
+        font-size: clamp(1.4rem, 3.5vw, 2rem);
+        font-weight: 900;
+        letter-spacing: -1px;
+        background: linear-gradient(
+          135deg,
+          var(--red),
+          var(--orange),
+          var(--yellow)
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      header p {
+        color: var(--muted);
+        font-size: 0.82rem;
+        margin-top: 4px;
+      }
+
+      /* === TABS === */
+      .tabs-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 14px 20px;
+        justify-content: center;
+        align-items: center;
+      }
+      .tab {
+        flex-shrink: 0;
+        padding: 9px 18px;
+        border-radius: 30px;
+        border: 1.5px solid transparent;
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s;
+        white-space: nowrap;
+        letter-spacing: 0.01em;
+      }
+      .tab:hover {
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.12);
+      }
+      .tab.active {
+        background: rgba(255, 107, 107, 0.15);
+        border-color: rgba(255, 107, 107, 0.5);
+        box-shadow: 0 0 12px rgba(255, 107, 107, 0.18);
+        color: var(--red);
+      }
+
+      /* === PANEL === */
+      .panel-wrap {
+        max-width: 860px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0 14px 20px;
+      }
+      #panel {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      /* === PDF SECTION === */
+      #pdf-section {
+        max-width: 860px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0 14px 48px;
+      }
+      .pdf-outer-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 18px 20px;
+      }
+      .pdf-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .pdf-header-title {
+        font-family: "Lexend", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .pdf-header-line {
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+      .pdf-toggle-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+      .pdf-toggle-btn {
+        padding: 7px 20px;
+        border-radius: 30px;
+        border: 1.5px solid var(--border);
+        background: transparent;
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .pdf-toggle-btn:hover {
+        border-color: rgba(255, 107, 107, 0.4);
+        color: var(--text);
+      }
+      .pdf-toggle-btn.active {
+        background: rgba(255, 107, 107, 0.15);
+        border-color: rgba(255, 107, 107, 0.5);
+        color: var(--text);
+      }
+      .pdf-pane {
+        display: none;
+      }
+      .pdf-pane.active {
+        display: block;
+      }
+      .pdf-embed {
+        width: 100%;
+        height: 540px;
+        border: none;
+        border-radius: 10px;
+        display: block;
+      }
+      .pdf-fallback {
+        display: block;
+        margin-top: 10px;
+        text-align: center;
+        font-size: 0.78rem;
+        color: var(--muted);
+        text-decoration: none;
+      }
+      .pdf-fallback:hover {
+        color: var(--text);
+      }
+
+      /* === CARDS === */
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px 18px;
+      }
+      .card-title {
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+
+      /* === SLIDERS === */
+      .slider-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+      .slider-label {
+        font-family: "Space Mono", monospace;
+        font-size: 0.75rem;
+        width: 28px;
+        color: var(--muted);
+      }
+      input[type="range"] {
+        flex: 1;
+        -webkit-appearance: none;
+        appearance: none;
+        height: 6px;
+        border-radius: 3px;
+        background: var(--border);
+        outline: none;
+        cursor: pointer;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 3px solid var(--accent);
+        box-shadow: 0 0 8px rgba(255, 107, 107, 0.4);
+        cursor: grab;
+        transition:
+          transform 0.15s,
+          box-shadow 0.15s;
+      }
+      input[type="range"]::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+        box-shadow: 0 0 14px rgba(255, 107, 107, 0.6);
+      }
+      input[type="range"]::-webkit-slider-thumb:active {
+        cursor: grabbing;
+        transform: scale(1.1);
+        background: #ffe0e0;
+      }
+      input[type="range"]::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #fff;
+        border: 3px solid var(--accent);
+        box-shadow: 0 0 8px rgba(255, 107, 107, 0.4);
+        cursor: grab;
+      }
+      input[type="range"]::-moz-range-track {
+        height: 6px;
+        border-radius: 3px;
+        background: var(--border);
+      }
+      .slider-val {
+        font-family: "Space Mono", monospace;
+        font-size: 0.75rem;
+        width: 30px;
+        text-align: right;
+        color: var(--text);
+      }
+
+      /* === EXPRESSION DISPLAY === */
+      .expr-box {
+        text-align: center;
+        padding: 20px 16px;
+        font-family: "Space Mono", monospace;
+        font-size: 1.5rem;
+        font-weight: 700;
+        background: rgba(255, 107, 107, 0.04);
+        border: 1px solid rgba(255, 107, 107, 0.12);
+        border-radius: 14px;
+        letter-spacing: 1px;
+        line-height: 1.8;
+      }
+      .expr-box .c-r {
+        color: var(--red);
+      }
+      .expr-box .c-g {
+        color: var(--green);
+      }
+      .expr-box .c-y {
+        color: var(--yellow);
+      }
+      .expr-box .c-p {
+        color: var(--purple);
+      }
+      .expr-box .c-o {
+        color: var(--orange);
+      }
+      .expr-box .c-b {
+        color: var(--blue);
+      }
+      .expr-box .c-m {
+        color: var(--muted);
+      }
+      .expr-box .op {
+        color: var(--muted);
+        margin: 0 3px;
+      }
+      .expr-box sup {
+        font-size: 0.7em;
+      }
+
+      .arrow-down {
+        text-align: center;
+        color: var(--accent);
+        font-size: 1.3rem;
+        padding: 2px 0;
+        opacity: 0.6;
+      }
+
+      /* === STEPS === */
+      .steps-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .step {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 16px;
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        margin-bottom: 0;
+        transition:
+          max-height 0.45s ease,
+          opacity 0.4s ease,
+          margin 0.3s ease,
+          padding 0.3s ease;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+      .step.visible {
+        max-height: 250px;
+        opacity: 1;
+        margin-bottom: 10px;
+        padding: 12px 16px;
+      }
+      .step-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 6px;
+      }
+      .step-num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: #fff;
+        font-size: 0.72rem;
+        font-weight: 900;
+        flex-shrink: 0;
+      }
+      .step-title {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .step-body {
+        font-family: "Space Mono", monospace;
+        font-size: 0.92rem;
+        line-height: 1.6;
+        color: rgba(220, 220, 255, 0.9);
+      }
+      .step-body .c-r {
+        color: var(--red);
+      }
+      .step-body .c-g {
+        color: var(--green);
+      }
+      .step-body .c-y {
+        color: var(--yellow);
+      }
+      .step-body .c-p {
+        color: var(--purple);
+      }
+      .step-body .c-o {
+        color: var(--orange);
+      }
+      .step-body .c-b {
+        color: var(--blue);
+      }
+      .step-body sup {
+        font-size: 0.7em;
+      }
+
+      /* === BUTTONS === */
+      .btn-step {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        border-radius: 11px;
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        background: rgba(255, 107, 107, 0.08);
+        color: var(--red);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.88rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: 6px;
+      }
+      .btn-step:hover {
+        background: rgba(255, 107, 107, 0.16);
+        transform: translateY(-1px);
+      }
+      .btn-reset {
+        border-color: rgba(167, 139, 250, 0.3);
+        background: rgba(167, 139, 250, 0.08);
+        color: var(--purple);
+      }
+      .btn-reset:hover {
+        background: rgba(167, 139, 250, 0.16);
+      }
+
+      /* === MODE TOGGLE === */
+      .mode-row {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 14px;
+      }
+      .mode-btn {
+        flex: 1;
+        padding: 10px 8px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .mode-btn.active {
+        background: rgba(255, 107, 107, 0.12);
+        border-color: rgba(255, 107, 107, 0.35);
+        color: var(--accent);
+      }
+      .mode-btn:hover:not(.active) {
+        border-color: rgba(255, 255, 255, 0.1);
+        color: var(--text);
+      }
+
+      /* === TYPE BUTTONS (sub-tabs) === */
+      .type-row {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 14px;
+      }
+      .type-btn {
+        flex: 1;
+        padding: 10px 6px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--muted);
+        font-family: "Space Mono", monospace;
+        font-size: 0.78rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+      }
+      .type-btn.active {
+        background: rgba(255, 107, 107, 0.12);
+        border-color: rgba(255, 107, 107, 0.35);
+        color: var(--accent);
+      }
+      .type-btn:hover:not(.active) {
+        color: var(--text);
+      }
+
+      /* === EXERCISE === */
+      .ex-input-row {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .ex-input {
+        flex: 1;
+        background: var(--card);
+        border: 2px solid var(--border);
+        border-radius: 10px;
+        color: var(--text);
+        font-family: "Space Mono", monospace;
+        font-size: 1rem;
+        padding: 12px 14px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .ex-input:focus {
+        border-color: var(--accent);
+      }
+      .ex-check {
+        padding: 12px 20px;
+        border-radius: 10px;
+        border: none;
+        background: var(--accent);
+        color: #fff;
+        font-family: "Lexend", sans-serif;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: filter 0.2s;
+      }
+      .ex-check:hover {
+        filter: brightness(1.15);
+      }
+
+      .ex-choices {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .ex-choice {
+        padding: 14px 10px;
+        border-radius: 11px;
+        border: 2px solid var(--border);
+        background: var(--card);
+        color: var(--text);
+        font-family: "Space Mono", monospace;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+      }
+      .ex-choice:hover {
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+      }
+      .ex-choice.correct {
+        border-color: var(--green);
+        background: rgba(0, 245, 195, 0.1);
+        color: var(--green);
+      }
+      .ex-choice.wrong {
+        border-color: var(--red);
+        background: rgba(255, 107, 107, 0.1);
+        color: var(--red);
+        opacity: 0.6;
+      }
+
+      .ex-feedback {
+        margin-top: 10px;
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        text-align: center;
+        transition: all 0.3s;
+      }
+      .ex-feedback.ok {
+        background: rgba(0, 245, 195, 0.08);
+        border: 1px solid rgba(0, 245, 195, 0.3);
+        color: var(--green);
+      }
+      .ex-feedback.ko {
+        background: rgba(255, 107, 107, 0.08);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        color: var(--red);
+      }
+
+      .score-bar {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-bottom: 12px;
+      }
+      .score-bar .streak {
+        color: var(--orange);
+      }
+      .score-bar .total {
+        color: var(--green);
+      }
+
+      /* === NAV ARROWS === */
+      .nav-row {
+        display: flex;
+        gap: 8px;
+      }
+      .nav-btn {
+        flex: 1;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .nav-btn:hover {
+        color: var(--text);
+        border-color: rgba(255, 255, 255, 0.15);
+      }
+      .nav-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+
+      /* === RULE CARD === */
+      .rule-card {
+        background: rgba(167, 139, 250, 0.06);
+        border: 1px solid rgba(167, 139, 250, 0.18);
+        border-radius: 12px;
+        padding: 14px 18px;
+      }
+      .rule-card .card-title {
+        color: var(--purple);
+      }
+      .rule-card .formula {
+        font-family: "Space Mono", monospace;
+        font-size: 1rem;
+        text-align: center;
+        color: var(--purple);
+        font-weight: 700;
+        padding: 6px 0;
+      }
+      .rule-card .hint {
+        font-size: 0.82rem;
+        color: rgba(200, 200, 240, 0.7);
+        line-height: 1.6;
+      }
+      .rule-card .hint span {
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      /* === GRID === */
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+      }
+
+      /* === HIGHLIGHT/TAG === */
+      .hl-r {
+        color: var(--red);
+        font-weight: 700;
+      }
+      .hl-g {
+        color: var(--green);
+        font-weight: 700;
+      }
+      .hl-y {
+        color: var(--yellow);
+        font-weight: 700;
+      }
+      .hl-p {
+        color: var(--purple);
+        font-weight: 700;
+      }
+      .hl-o {
+        color: var(--orange);
+        font-weight: 700;
+      }
+
+      /* === DELTA BADGE === */
+      .delta-badge {
+        text-align: center;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-top: 8px;
+      }
+      .delta-pos {
+        background: rgba(0, 245, 195, 0.08);
+        border: 1px solid rgba(0, 245, 195, 0.25);
+        color: var(--green);
+      }
+      .delta-zero {
+        background: rgba(255, 217, 61, 0.08);
+        border: 1px solid rgba(255, 217, 61, 0.25);
+        color: var(--yellow);
+      }
+      .delta-neg {
+        background: rgba(255, 107, 107, 0.08);
+        border: 1px solid rgba(255, 107, 107, 0.25);
+        color: var(--red);
+      }
+
+      /* === TERM BLOCKS (quadrinomes) === */
+      .term-blocks {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin: 12px 0;
+      }
+      .term-block {
+        padding: 10px 16px;
+        border-radius: 10px;
+        border: 2px solid var(--border);
+        background: var(--card);
+        font-family: "Space Mono", monospace;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        user-select: none;
+      }
+      .term-block:hover {
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+      .term-block.sel-a {
+        border-color: var(--green);
+        background: rgba(0, 245, 195, 0.1);
+        color: var(--green);
+      }
+      .term-block.sel-b {
+        border-color: var(--yellow);
+        background: rgba(255, 217, 61, 0.1);
+        color: var(--yellow);
+      }
+
+      @media (max-width: 600px) {
+        .expr-box {
+          font-size: 1.15rem;
+          padding: 14px 10px;
+        }
+        .grid-2,
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+        .ex-choices {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <a href="../index.html" class="back-btn">← Retour</a>
+      <h1>🔢 Factorisation</h1>
+      <p>Développe, factorise, simplifie — pas à pas</p>
+    </header>
+
+    <nav class="tabs-bar">
+      <button class="tab active" data-tab="distributivite">
+        ✖️ Distributivité
+      </button>
+      <button class="tab" data-tab="puissances">⚡ Puissances</button>
+      <button class="tab" data-tab="facteur">🔢 Facteur commun</button>
+      <button class="tab" data-tab="identites">⭐ Identités</button>
+      <button class="tab" data-tab="binomes">🔗 Binômes</button>
+      <button class="tab" data-tab="trinomes">📐 Trinômes</button>
+      <button class="tab" data-tab="quadrinomes">🧩 Quadrinômes</button>
+    </nav>
+
+    <div class="panel-wrap">
+      <div id="panel"></div>
+    </div>
+
+    <div id="pdf-section"></div>
+
+    <script>
+      // ===================== STATE =====================
+      const state = {
+        tab: "distributivite",
+        distributivite: {
+          a: 2,
+          b: 3,
+          c: 4,
+          dir: "dev",
+          step: 0,
+          mode: "demo",
+          ex: null,
+          answered: false,
+          score: { ok: 0, total: 0, streak: 0 },
+        },
+        puissances: { x: 2, n: 3, m: 2 },
+        facteur: {
+          level: 0,
+          step: 0,
+          mode: "demo",
+          ex: null,
+          answered: false,
+          score: { ok: 0, total: 0, streak: 0 },
+        },
+        identites: {
+          a: 3,
+          b: 2,
+          type: "carre_plus",
+          step: 0,
+          mode: "demo",
+          ex: null,
+          answered: false,
+          score: { ok: 0, total: 0, streak: 0 },
+        },
+        binomes: {
+          a: 3,
+          b: 2,
+          k: 2,
+          n: 4,
+          step: 0,
+          tech: "diff_carres",
+          signType: "minus",
+        },
+        trinomes: {
+          a: 1,
+          b: -5,
+          c: 6,
+          step: 0,
+          mode: "demo",
+          ex: null,
+          answered: false,
+          score: { ok: 0, total: 0, streak: 0 },
+        },
+        quadrinomes: { level: 0, step: 0 },
+      };
+
+      // ===================== HELPERS =====================
+      function slider(id, label, val, min, max, step, color, onChange) {
+        const row = document.createElement("div");
+        row.className = "slider-row";
+        const dec = step < 1 ? 1 : 0;
+        row.innerHTML = `
+    <span class="slider-label">${label}</span>
+    <input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}" style="accent-color:${color}">
+    <span class="slider-val" id="${id}_val">${parseFloat(val).toFixed(dec)}</span>`;
+        const input = row.querySelector("input");
+        const valEl = row.querySelector(".slider-val");
+        input.addEventListener("input", () => {
+          valEl.textContent = parseFloat(input.value).toFixed(dec);
+          onChange(parseFloat(input.value));
+        });
+        input.addEventListener("change", () => renderPanel());
+        return row;
+      }
+
+      function card(title, html) {
+        const c = document.createElement("div");
+        c.className = "card";
+        c.innerHTML = `<div class="card-title">${title}</div>${html}`;
+        return c;
+      }
+
+      function ruleCard(title, html) {
+        const c = document.createElement("div");
+        c.className = "rule-card";
+        c.innerHTML = `<div class="card-title">${title}</div>${html}`;
+        return c;
+      }
+
+      function buildSteps(steps, current, onNext, onReset) {
+        const w = document.createElement("div");
+        w.className = "steps-wrap";
+        steps.forEach((s, i) => {
+          const el = document.createElement("div");
+          el.className = "step" + (i <= current ? " visible" : "");
+          el.innerHTML = `
+      <div class="step-header">
+        <div class="step-num">${i + 1}</div>
+        <div class="step-title">${s.title}</div>
+      </div>
+      <div class="step-body">${s.body}</div>`;
+          w.appendChild(el);
+        });
+        if (current < steps.length - 1) {
+          const b = document.createElement("button");
+          b.className = "btn-step";
+          b.textContent = "Étape suivante →";
+          b.onclick = onNext;
+          w.appendChild(b);
+        } else {
+          const b = document.createElement("button");
+          b.className = "btn-step btn-reset";
+          b.textContent = "↺ Recommencer les étapes";
+          b.onclick = onReset;
+          w.appendChild(b);
+        }
+        return w;
+      }
+
+      const S = (n) => (n >= 0 ? "+" : "−");
+      const A = (n) => Math.abs(n);
+      const F = (n) => parseFloat(n.toFixed(2));
+      const signed = (n) => (n >= 0 ? `+${n}` : `−${A(n)}`);
+      const signedSp = (n) => (n >= 0 ? `+ ${n}` : `− ${A(n)}`);
+
+      function fmtCoef(n, v) {
+        if (n === 0) return "0";
+        if (!v) return n.toString();
+        if (n === 1) return v;
+        if (n === -1) return `−${v}`;
+        return `${n}${v}`;
+      }
+
+      function randInt(a, b) {
+        return a + Math.floor(Math.random() * (b - a + 1));
+      }
+      function randChoice(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+      }
+
+      // ===================== RENDER PANEL =====================
+      function renderPanel() {
+        const panel = document.getElementById("panel");
+        panel.innerHTML = "";
+        const t = state.tab;
+        if (t === "distributivite") renderDistributivite(panel);
+        else if (t === "puissances") renderPuissances(panel);
+        else if (t === "facteur") renderFacteur(panel);
+        else if (t === "identites") renderIdentites(panel);
+        else if (t === "binomes") renderBinomes(panel);
+        else if (t === "trinomes") renderTrinomes(panel);
+        else if (t === "quadrinomes") renderQuadrinomes(panel);
+      }
+
+      // ===================== TAB 1: DISTRIBUTIVITÉ =====================
+      function renderDistributivite(panel) {
+        const st = state.distributivite;
+        const { a, b, c, dir, step, mode } = st;
+
+        // Mode toggle
+        const modeEl = document.createElement("div");
+        modeEl.className = "mode-row";
+        modeEl.innerHTML = `<button class="mode-btn ${mode === "demo" ? "active" : ""}" data-m="demo">📖 Démonstration</button>
+    <button class="mode-btn ${mode === "exercice" ? "active" : ""}" data-m="exercice">✏️ À toi !</button>`;
+        modeEl.querySelectorAll(".mode-btn").forEach(
+          (b) =>
+            (b.onclick = () => {
+              st.mode = b.dataset.m;
+              if (b.dataset.m === "exercice") genDistEx();
+              st.step = 0;
+              renderPanel();
+            }),
+        );
+        panel.appendChild(modeEl);
+
+        if (mode === "demo") {
+          // Direction toggle
+          const dirEl = document.createElement("div");
+          dirEl.className = "type-row";
+          dirEl.innerHTML = `<button class="type-btn ${dir === "dev" ? "active" : ""}" data-d="dev">→ Développer</button>
+      <button class="type-btn ${dir === "fact" ? "active" : ""}" data-d="fact">← Factoriser</button>`;
+          dirEl.querySelectorAll(".type-btn").forEach(
+            (b) =>
+              (b.onclick = () => {
+                st.dir = b.dataset.d;
+                st.step = 0;
+                renderPanel();
+              }),
+          );
+          panel.appendChild(dirEl);
+
+          // Sliders
+          const ctrl = document.createElement("div");
+          ctrl.className = "card";
+          ctrl.innerHTML = `<div class="card-title">🎮 RÉGLAGES</div>`;
+          ctrl.appendChild(
+            slider("d_a", "a", a, -6, 6, 1, "#ff6b6b", (v) => {
+              st.a = v;
+              st.step = 0;
+            }),
+          );
+          ctrl.appendChild(
+            slider("d_b", "b", b, -8, 8, 1, "#00f5c3", (v) => {
+              st.b = v;
+              st.step = 0;
+            }),
+          );
+          ctrl.appendChild(
+            slider("d_c", "c", c, -8, 8, 1, "#ffd93d", (v) => {
+              st.c = v;
+              st.step = 0;
+            }),
+          );
+          panel.appendChild(ctrl);
+
+          const ab = a * b,
+            ac = a * c,
+            total = ab + ac;
+
+          if (dir === "dev") {
+            // Expression
+            const exEl = document.createElement("div");
+            exEl.className = "expr-box";
+            exEl.innerHTML = `<span class="c-r">${a}</span> × ( <span class="c-g">${b}</span> <span class="op">${S(c)}</span> <span class="c-y">${A(c)}</span> )`;
+            panel.appendChild(exEl);
+
+            // Steps
+            const steps = [
+              {
+                title: "On distribue le facteur",
+                body: `On multiplie <span class="c-r">${a}</span> par chaque terme dans la parenthèse.`,
+              },
+              {
+                title: "On effectue les multiplications",
+                body: `<span class="c-r">${a}</span> × <span class="c-g">${b}</span> <span class="op">=</span> <span class="c-g">${ab}</span> &nbsp;&nbsp;et&nbsp;&nbsp; <span class="c-r">${a}</span> × <span class="c-y">${c < 0 ? "(" + c + ")" : c}</span> <span class="op">=</span> <span class="c-y">${ac}</span>`,
+              },
+              {
+                title: "Résultat développé",
+                body: `<span style="font-size:1.15rem;">${fmtCoef(a, "")}<span class="c-r"></span> × (<span class="c-g">${b}</span> ${signedSp(c)}) = <span class="c-g">${ab}</span> ${signedSp(ac)} = <span class="c-p" style="font-size:1.3rem;">${total}</span></span>`,
+              },
+            ];
+            panel.appendChild(
+              buildSteps(
+                steps,
+                step,
+                () => {
+                  st.step++;
+                  renderPanel();
+                },
+                () => {
+                  st.step = 0;
+                  renderPanel();
+                },
+              ),
+            );
+          } else {
+            // Factorise: show ab + ac → a(b + c)
+            const exEl = document.createElement("div");
+            exEl.className = "expr-box";
+            exEl.innerHTML = `<span class="c-g">${ab}</span> <span class="op">${S(ac)}</span> <span class="c-y">${A(ac)}</span>`;
+            panel.appendChild(exEl);
+
+            const steps = [
+              {
+                title: "Identifier le facteur commun",
+                body: `Les deux termes <span class="c-g">${ab}</span> et <span class="c-y">${ac}</span> sont divisibles par <span class="c-r">${a}</span>.`,
+              },
+              {
+                title: "Diviser chaque terme",
+                body: `<span class="c-g">${ab}</span> ÷ <span class="c-r">${a}</span> = <span class="c-g">${b}</span> &nbsp;&nbsp;et&nbsp;&nbsp; <span class="c-y">${ac}</span> ÷ <span class="c-r">${a}</span> = <span class="c-y">${c}</span>`,
+              },
+              {
+                title: "Forme factorisée",
+                body: `<span style="font-size:1.15rem;"><span class="c-r">${a}</span> × ( <span class="c-g">${b}</span> ${signedSp(c)} ) = <span class="c-p" style="font-size:1.3rem;">${total}</span></span>`,
+              },
+            ];
+            panel.appendChild(
+              buildSteps(
+                steps,
+                step,
+                () => {
+                  st.step++;
+                  renderPanel();
+                },
+                () => {
+                  st.step = 0;
+                  renderPanel();
+                },
+              ),
+            );
+          }
+
+          // Rule
+          panel.appendChild(
+            ruleCard(
+              "💡 RÈGLE",
+              `<div class="formula">a × (b + c) = a×b + a×c</div>
+      <p class="hint">On <span>distribue</span> (multiplie) le facteur devant la parenthèse par <span>chaque terme</span> à l'intérieur.<br><br>↔ Inversement, si deux termes ont un <span>facteur commun</span>, on peut le "<span>sortir</span>" devant une parenthèse.</p>`,
+            ),
+          );
+        } else {
+          // EXERCICE MODE
+          const sc = st.score;
+          const ex = st.ex;
+          if (!ex) {
+            genDistEx();
+            renderPanel();
+            return;
+          }
+
+          panel.appendChild(scoreBar(sc));
+
+          const q = document.createElement("div");
+          q.className = "card";
+          q.innerHTML = `<div class="card-title">✏️ EXERCICE</div>
+      <p style="font-size:0.9rem;color:var(--text);margin-bottom:8px;">${ex.question}</p>
+      <div class="expr-box" style="font-size:1.3rem;">${ex.display}</div>`;
+          panel.appendChild(q);
+
+          if (!st.answered) {
+            const row = document.createElement("div");
+            row.className = "ex-input-row";
+            row.innerHTML = `<input class="ex-input" id="ex_ans" type="number" placeholder="Ta réponse…" autofocus>
+        <button class="ex-check" id="ex_btn">Vérifier ✓</button>`;
+            panel.appendChild(row);
+            setTimeout(() => {
+              const inp = document.getElementById("ex_ans");
+              const btn = document.getElementById("ex_btn");
+              if (!inp || !btn) return;
+              const check = () => {
+                const v = parseFloat(inp.value);
+                if (isNaN(v)) return;
+                st.answered = true;
+                sc.total++;
+                if (v === ex.answer) {
+                  sc.ok++;
+                  sc.streak++;
+                } else {
+                  sc.streak = 0;
+                }
+                renderPanel();
+              };
+              btn.onclick = check;
+              inp.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") check();
+              });
+            }, 50);
+          } else {
+            const ok =
+              st.ex.answer ===
+                parseFloat(document.getElementById("ex_ans")?.value) ||
+              sc.streak > 0 ||
+              sc.ok === sc.total;
+            // Re-derive correctness
+            const fb = document.createElement("div");
+            // Check if last answer was correct based on streak change
+            const wasCorrect =
+              sc.streak > 0 || (sc.ok === sc.total && sc.total > 0);
+            fb.className = "ex-feedback " + (wasCorrect ? "ok" : "ko");
+            fb.innerHTML = wasCorrect
+              ? `✅ Bravo ! La réponse est bien <strong>${ex.answer}</strong>`
+              : `❌ La bonne réponse était <strong>${ex.answer}</strong>. ${ex.hint || ""}`;
+            panel.appendChild(fb);
+
+            const nb = document.createElement("button");
+            nb.className = "btn-step";
+            nb.textContent = "Exercice suivant →";
+            nb.onclick = () => {
+              genDistEx();
+              st.answered = false;
+              renderPanel();
+            };
+            panel.appendChild(nb);
+          }
+        }
+      }
+
+      function genDistEx() {
+        const st = state.distributivite;
+        let a = randInt(2, 7) * (Math.random() > 0.3 ? 1 : -1);
+        let b = randInt(1, 9) * (Math.random() > 0.4 ? 1 : -1);
+        let c = randInt(1, 9) * (Math.random() > 0.4 ? 1 : -1);
+        if (a === 0) a = 2;
+        const dev = Math.random() > 0.5;
+        if (dev) {
+          st.ex = {
+            question: "Développe et calcule :",
+            display: `<span class="c-r">${a}</span> × ( <span class="c-g">${b}</span> <span class="op">${S(c)}</span> <span class="c-y">${A(c)}</span> )`,
+            answer: a * (b + c),
+            hint: `${a} × (${b} + ${c}) = ${a}×${b} + ${a}×${c} = ${a * b} + ${a * c} = ${a * (b + c)}`,
+          };
+        } else {
+          const ab = a * b,
+            ac = a * c;
+          st.ex = {
+            question: `Calcule : ${ab} ${signedSp(ac)} = ?`,
+            display: `<span class="c-g">${ab}</span> <span class="op">${S(ac)}</span> <span class="c-y">${A(ac)}</span>`,
+            answer: ab + ac,
+            hint: `${ab} ${signedSp(ac)} = ${ab + ac}`,
+          };
+        }
+        st.answered = false;
+      }
+
+      function scoreBar(sc) {
+        const el = document.createElement("div");
+        el.className = "score-bar";
+        el.innerHTML = `<span class="streak">🔥 Série : ${sc.streak}</span>
+    <span class="total">✅ ${sc.ok} / ${sc.total}</span>`;
+        return el;
+      }
+
+      // ===================== TAB 2: PUISSANCES =====================
+      function renderPuissances(panel) {
+        const { x, n, m } = state.puissances;
+        const st = state.puissances;
+
+        const ctrl = document.createElement("div");
+        ctrl.className = "card";
+        ctrl.innerHTML = `<div class="card-title">🎮 RÉGLAGES</div>`;
+        ctrl.appendChild(
+          slider("p_x", "x", x, 2, 10, 1, "#ff6b6b", (v) => {
+            st.x = v;
+          }),
+        );
+        ctrl.appendChild(
+          slider("p_n", "n", n, 0, 6, 1, "#00f5c3", (v) => {
+            st.n = v;
+          }),
+        );
+        ctrl.appendChild(
+          slider("p_m", "m", m, 0, 6, 1, "#ffd93d", (v) => {
+            st.m = v;
+          }),
+        );
+        panel.appendChild(ctrl);
+
+        const pow = (base, exp) => Math.pow(base, exp);
+        const sup = (e) => `<sup>${e}</sup>`;
+
+        const rules = [
+          {
+            name: "Produit de puissances",
+            formula: `x${sup("n")} × x${sup("m")} = x${sup("n+m")}`,
+            example: `${x}${sup(n)} × ${x}${sup(m)} = ${x}${sup(n + m)} = <span class="c-p">${pow(x, n + m)}</span>`,
+            detail: `${pow(x, n)} × ${pow(x, m)} = ${pow(x, n + m)}`,
+            color: "var(--red)",
+          },
+          {
+            name: "Quotient de puissances",
+            formula: `x${sup("n")} ÷ x${sup("m")} = x${sup("n−m")}`,
+            example:
+              n >= m
+                ? `${x}${sup(n)} ÷ ${x}${sup(m)} = ${x}${sup(n - m)} = <span class="c-p">${pow(x, n - m)}</span>`
+                : `${x}${sup(n)} ÷ ${x}${sup(m)} = ${x}${sup(n - m)} = <span class="c-p">1/${pow(x, m - n)}</span>`,
+            detail:
+              n >= m
+                ? `${pow(x, n)} ÷ ${pow(x, m)} = ${pow(x, n - m)}`
+                : `${pow(x, n)} ÷ ${pow(x, m)} = ${F(pow(x, n - m))}`,
+            color: "var(--green)",
+          },
+          {
+            name: "Puissance de puissance",
+            formula: `(x${sup("n")})${sup("m")} = x${sup("n×m")}`,
+            example: `(${x}${sup(n)})${sup(m)} = ${x}${sup(n * m)} = <span class="c-p">${pow(x, n * m)}</span>`,
+            detail: `(${pow(x, n)})${sup(m)} = ${pow(x, n * m)}`,
+            color: "var(--yellow)",
+          },
+          {
+            name: "Exposant 0",
+            formula: `x${sup("0")} = 1`,
+            example: `${x}${sup(0)} = <span class="c-p">1</span>`,
+            detail: `N'importe quel nombre (≠0) à la puissance 0 vaut 1`,
+            color: "var(--purple)",
+          },
+          {
+            name: "Exposant 1",
+            formula: `x${sup("1")} = x`,
+            example: `${x}${sup(1)} = <span class="c-p">${x}</span>`,
+            detail: `Un nombre à la puissance 1 reste lui-même`,
+            color: "var(--orange)",
+          },
+          {
+            name: "Exposant négatif",
+            formula: `x${sup("−n")} = 1 / x${sup("n")}`,
+            example: `${x}${sup("−" + n)} = 1 / ${x}${sup(n)} = <span class="c-p">${n === 0 ? 1 : F(1 / pow(x, n))}</span>`,
+            detail: `1 / ${pow(x, n)} = ${n === 0 ? 1 : F(1 / pow(x, n))}`,
+            color: "var(--blue)",
+          },
+        ];
+
+        const grid = document.createElement("div");
+        grid.className = "grid-2";
+        rules.forEach((r) => {
+          const c = document.createElement("div");
+          c.className = "card";
+          c.innerHTML = `
+      <div class="card-title" style="color:${r.color}">${r.name}</div>
+      <div style="font-family:Space Mono;font-size:0.85rem;text-align:center;color:var(--muted);margin-bottom:8px;">${r.formula}</div>
+      <div style="font-family:Space Mono;font-size:0.92rem;text-align:center;margin-bottom:6px;">${r.example}</div>
+      <div style="font-size:0.72rem;color:var(--muted);text-align:center;">${r.detail}</div>`;
+          grid.appendChild(c);
+        });
+        panel.appendChild(grid);
+
+        panel.appendChild(
+          ruleCard(
+            "💡 RÉSUMÉ",
+            `<p class="hint">
+    • x${sup("n")} signifie « x multiplié par lui-même n fois »<br><br>
+    • Quand on <span>multiplie</span> des puissances de même base → on <span>additionne</span> les exposants<br>
+    • Quand on <span>divise</span> → on <span>soustrait</span> les exposants<br>
+    • Puissance de puissance → on <span>multiplie</span> les exposants<br><br>
+    • x${sup("0")} = 1 &nbsp;|&nbsp; x${sup("1")} = x &nbsp;|&nbsp; x${sup("−n")} = 1/x${sup("n")}</p>`,
+          ),
+        );
+      }
+
+      // ===================== TAB 3: FACTEUR COMMUN =====================
+      const FC_BANK = [
+        {
+          raw: [6, "x", 9, ""],
+          fc: "3",
+          parts: ["2x", "3"],
+          expr: "6x + 9",
+          result: "3(2x + 3)",
+          steps: [
+            {
+              title: "Expression de départ",
+              body: `<span class="c-r">6</span>x + <span class="c-r">9</span>`,
+            },
+            {
+              title: "Trouver le facteur commun",
+              body: `6 = <span class="c-g">3</span> × 2 &nbsp;et&nbsp; 9 = <span class="c-g">3</span> × 3<br>Le facteur commun est <span class="c-g" style="font-size:1.1rem;font-weight:900;">3</span>`,
+            },
+            {
+              title: "Diviser chaque terme",
+              body: `6x ÷ 3 = <span class="c-y">2x</span> &nbsp;&nbsp;et&nbsp;&nbsp; 9 ÷ 3 = <span class="c-y">3</span>`,
+            },
+            {
+              title: "Forme factorisée !",
+              body: `<span style="font-size:1.2rem;"><span class="c-g">3</span>(<span class="c-y">2x</span> + <span class="c-y">3</span>)</span>`,
+            },
+          ],
+        },
+        {
+          expr: "4x² + 8x",
+          fc: "4x",
+          result: "4x(x + 2)",
+          steps: [
+            {
+              title: "Expression de départ",
+              body: `<span class="c-r">4x²</span> + <span class="c-r">8x</span>`,
+            },
+            {
+              title: "Trouver le facteur commun",
+              body: `4x² = <span class="c-g">4x</span> × x &nbsp;et&nbsp; 8x = <span class="c-g">4x</span> × 2<br>FC = <span class="c-g" style="font-size:1.1rem;font-weight:900;">4x</span>`,
+            },
+            {
+              title: "Diviser chaque terme",
+              body: `4x² ÷ 4x = <span class="c-y">x</span> &nbsp;&nbsp;et&nbsp;&nbsp; 8x ÷ 4x = <span class="c-y">2</span>`,
+            },
+            {
+              title: "Forme factorisée !",
+              body: `<span style="font-size:1.2rem;"><span class="c-g">4x</span>(<span class="c-y">x</span> + <span class="c-y">2</span>)</span>`,
+            },
+          ],
+        },
+        {
+          expr: "15x² − 10x",
+          fc: "5x",
+          result: "5x(3x − 2)",
+          steps: [
+            {
+              title: "Expression de départ",
+              body: `<span class="c-r">15x²</span> − <span class="c-r">10x</span>`,
+            },
+            {
+              title: "Trouver le facteur commun",
+              body: `15x² = <span class="c-g">5x</span> × 3x &nbsp;et&nbsp; 10x = <span class="c-g">5x</span> × 2<br>FC = <span class="c-g" style="font-size:1.1rem;font-weight:900;">5x</span>`,
+            },
+            {
+              title: "Diviser chaque terme",
+              body: `15x² ÷ 5x = <span class="c-y">3x</span> &nbsp;&nbsp;et&nbsp;&nbsp; 10x ÷ 5x = <span class="c-y">2</span>`,
+            },
+            {
+              title: "Forme factorisée !",
+              body: `<span style="font-size:1.2rem;"><span class="c-g">5x</span>(<span class="c-y">3x</span> − <span class="c-y">2</span>)</span>`,
+            },
+          ],
+        },
+        {
+          expr: "12x³ + 18x²",
+          fc: "6x²",
+          result: "6x²(2x + 3)",
+          steps: [
+            {
+              title: "Expression de départ",
+              body: `<span class="c-r">12x³</span> + <span class="c-r">18x²</span>`,
+            },
+            {
+              title: "Trouver le facteur commun",
+              body: `12x³ = <span class="c-g">6x²</span> × 2x &nbsp;et&nbsp; 18x² = <span class="c-g">6x²</span> × 3<br>FC = <span class="c-g" style="font-size:1.1rem;font-weight:900;">6x²</span>`,
+            },
+            {
+              title: "Diviser chaque terme",
+              body: `12x³ ÷ 6x² = <span class="c-y">2x</span> &nbsp;&nbsp;et&nbsp;&nbsp; 18x² ÷ 6x² = <span class="c-y">3</span>`,
+            },
+            {
+              title: "Forme factorisée !",
+              body: `<span style="font-size:1.2rem;"><span class="c-g">6x²</span>(<span class="c-y">2x</span> + <span class="c-y">3</span>)</span>`,
+            },
+          ],
+        },
+        {
+          expr: "2x³ − 4x² + 6x",
+          fc: "2x",
+          result: "2x(x² − 2x + 3)",
+          steps: [
+            {
+              title: "Expression de départ",
+              body: `<span class="c-r">2x³</span> − <span class="c-r">4x²</span> + <span class="c-r">6x</span>`,
+            },
+            {
+              title: "Trouver le facteur commun",
+              body: `2x³ = <span class="c-g">2x</span>·x²,&nbsp; 4x² = <span class="c-g">2x</span>·2x,&nbsp; 6x = <span class="c-g">2x</span>·3<br>FC = <span class="c-g" style="font-size:1.1rem;font-weight:900;">2x</span>`,
+            },
+            {
+              title: "Diviser chaque terme",
+              body: `2x³÷2x = <span class="c-y">x²</span>,&nbsp; 4x²÷2x = <span class="c-y">2x</span>,&nbsp; 6x÷2x = <span class="c-y">3</span>`,
+            },
+            {
+              title: "Forme factorisée !",
+              body: `<span style="font-size:1.2rem;"><span class="c-g">2x</span>(<span class="c-y">x²</span> − <span class="c-y">2x</span> + <span class="c-y">3</span>)</span>`,
+            },
+          ],
+        },
+      ];
+
+      const FC_EX_BANK = [
+        { expr: "6x + 9", choices: ["2", "3", "6", "9"], answer: 1 },
+        { expr: "4x² + 8x", choices: ["2", "4", "4x", "8x"], answer: 2 },
+        { expr: "15x² − 10x", choices: ["5", "5x", "10x", "x²"], answer: 1 },
+        {
+          expr: "12x³ + 18x²",
+          choices: ["3x", "6x", "6x²", "12x²"],
+          answer: 2,
+        },
+        { expr: "10x + 25", choices: ["2", "5", "10", "25"], answer: 1 },
+        { expr: "9x² + 3x", choices: ["3", "3x", "9x", "x"], answer: 1 },
+        { expr: "8x³ − 12x²", choices: ["2x", "4x", "4x²", "8x"], answer: 2 },
+      ];
+
+      function renderFacteur(panel) {
+        const st = state.facteur;
+        const { level, step, mode } = st;
+
+        const modeEl = document.createElement("div");
+        modeEl.className = "mode-row";
+        modeEl.innerHTML = `<button class="mode-btn ${mode === "demo" ? "active" : ""}" data-m="demo">📖 Démonstration</button>
+    <button class="mode-btn ${mode === "exercice" ? "active" : ""}" data-m="exercice">✏️ À toi !</button>`;
+        modeEl.querySelectorAll(".mode-btn").forEach(
+          (b) =>
+            (b.onclick = () => {
+              st.mode = b.dataset.m;
+              if (b.dataset.m === "exercice") genFCEx();
+              st.step = 0;
+              renderPanel();
+            }),
+        );
+        panel.appendChild(modeEl);
+
+        if (mode === "demo") {
+          const item = FC_BANK[level];
+          // Nav
+          const nav = document.createElement("div");
+          nav.className = "nav-row";
+          nav.innerHTML = `<button class="nav-btn" ${level === 0 ? "disabled" : ""}>← Précédent</button>
+      <button class="nav-btn" style="text-align:center;color:var(--accent);">Niveau ${level + 1} / ${FC_BANK.length}</button>
+      <button class="nav-btn" ${level >= FC_BANK.length - 1 ? "disabled" : ""}>Suivant →</button>`;
+          const btns = nav.querySelectorAll(".nav-btn");
+          btns[0].onclick = () => {
+            st.level = Math.max(0, level - 1);
+            st.step = 0;
+            renderPanel();
+          };
+          btns[2].onclick = () => {
+            st.level = Math.min(FC_BANK.length - 1, level + 1);
+            st.step = 0;
+            renderPanel();
+          };
+          panel.appendChild(nav);
+
+          // Expression
+          const exEl = document.createElement("div");
+          exEl.className = "expr-box";
+          exEl.innerHTML = item.expr;
+          panel.appendChild(exEl);
+
+          // Steps
+          panel.appendChild(
+            buildSteps(
+              item.steps,
+              step,
+              () => {
+                st.step++;
+                renderPanel();
+              },
+              () => {
+                st.step = 0;
+                renderPanel();
+              },
+            ),
+          );
+
+          panel.appendChild(
+            ruleCard(
+              "💡 MÉTHODE",
+              `<p class="hint">
+      <span>1.</span> Chercher le plus grand nombre qui divise tous les coefficients.<br>
+      <span>2.</span> Chercher la plus grande puissance de x commune à tous les termes.<br>
+      <span>3.</span> Le FC = nombre × x<sup>plus petite puissance</sup><br>
+      <span>4.</span> Diviser chaque terme par le FC → on obtient la parenthèse.</p>`,
+            ),
+          );
+        } else {
+          // Exercise
+          const sc = st.score;
+          const ex = st.ex;
+          if (!ex) {
+            genFCEx();
+            renderPanel();
+            return;
+          }
+
+          panel.appendChild(scoreBar(sc));
+
+          panel.appendChild(
+            card(
+              "✏️ QUEL EST LE FACTEUR COMMUN ?",
+              `<div class="expr-box" style="font-size:1.2rem;margin-bottom:4px;">${ex.expr}</div>`,
+            ),
+          );
+
+          if (!st.answered) {
+            const ch = document.createElement("div");
+            ch.className = "ex-choices";
+            ex.choices.forEach((c, i) => {
+              const b = document.createElement("button");
+              b.className = "ex-choice";
+              b.textContent = c;
+              b.onclick = () => {
+                st.answered = true;
+                sc.total++;
+                if (i === ex.answer) {
+                  sc.ok++;
+                  sc.streak++;
+                } else {
+                  sc.streak = 0;
+                }
+                ex.picked = i;
+                renderPanel();
+              };
+              ch.appendChild(b);
+            });
+            panel.appendChild(ch);
+          } else {
+            const ch = document.createElement("div");
+            ch.className = "ex-choices";
+            ex.choices.forEach((c, i) => {
+              const b = document.createElement("button");
+              b.className =
+                "ex-choice" +
+                (i === ex.answer
+                  ? " correct"
+                  : i === ex.picked
+                    ? " wrong"
+                    : "");
+              b.textContent = c;
+              b.style.cursor = "default";
+              ch.appendChild(b);
+            });
+            panel.appendChild(ch);
+
+            const ok = ex.picked === ex.answer;
+            const fb = document.createElement("div");
+            fb.className = "ex-feedback " + (ok ? "ok" : "ko");
+            fb.textContent = ok
+              ? "✅ Bravo !"
+              : `❌ C'était ${ex.choices[ex.answer]}`;
+            panel.appendChild(fb);
+
+            const nb = document.createElement("button");
+            nb.className = "btn-step";
+            nb.textContent = "Exercice suivant →";
+            nb.onclick = () => {
+              genFCEx();
+              st.answered = false;
+              renderPanel();
+            };
+            panel.appendChild(nb);
+          }
+        }
+      }
+
+      function genFCEx() {
+        const idx = randInt(0, FC_EX_BANK.length - 1);
+        state.facteur.ex = { ...FC_EX_BANK[idx] };
+        state.facteur.answered = false;
+      }
+
+      // ===================== TAB 4: IDENTITÉS REMARQUABLES =====================
+      function renderIdentites(panel) {
+        const st = state.identites;
+        const { a, b, type, step, mode } = st;
+
+        const modeEl = document.createElement("div");
+        modeEl.className = "mode-row";
+        modeEl.innerHTML = `<button class="mode-btn ${mode === "demo" ? "active" : ""}" data-m="demo">📖 Démonstration</button>
+    <button class="mode-btn ${mode === "exercice" ? "active" : ""}" data-m="exercice">✏️ À toi !</button>`;
+        modeEl.querySelectorAll(".mode-btn").forEach(
+          (btn) =>
+            (btn.onclick = () => {
+              st.mode = btn.dataset.m;
+              if (btn.dataset.m === "exercice") genIDEx();
+              st.step = 0;
+              renderPanel();
+            }),
+        );
+        panel.appendChild(modeEl);
+
+        if (mode === "demo") {
+          // Type toggle
+          const tRow = document.createElement("div");
+          tRow.className = "type-row";
+          [
+            ["carre_plus", "(a+b)²"],
+            ["carre_moins", "(a−b)²"],
+            ["diff_carres", "(a+b)(a−b)"],
+          ].forEach(([k, l]) => {
+            const btn = document.createElement("button");
+            btn.className = "type-btn" + (type === k ? " active" : "");
+            btn.textContent = l;
+            btn.onclick = () => {
+              st.type = k;
+              st.step = 0;
+              renderPanel();
+            };
+            tRow.appendChild(btn);
+          });
+          panel.appendChild(tRow);
+
+          // Sliders
+          const ctrl = document.createElement("div");
+          ctrl.className = "card";
+          ctrl.innerHTML = `<div class="card-title">🎮 RÉGLAGES</div>`;
+          ctrl.appendChild(
+            slider("id_a", "a", a, 1, 10, 1, "#ff6b6b", (v) => {
+              st.a = v;
+              st.step = 0;
+            }),
+          );
+          ctrl.appendChild(
+            slider("id_b", "b", b, 1, 10, 1, "#00f5c3", (v) => {
+              st.b = v;
+              st.step = 0;
+            }),
+          );
+          panel.appendChild(ctrl);
+
+          const a2 = a * a,
+            b2 = b * b,
+            ab = a * b,
+            ab2 = 2 * a * b;
+
+          if (type === "carre_plus") {
+            panel.appendChild(
+              exprBox(
+                `(<span class="c-r">${a}</span> + <span class="c-g">${b}</span>)<sup>2</sup>`,
+              ),
+            );
+            const steps = [
+              {
+                title: "On écrit le carré comme un produit",
+                body: `(<span class="c-r">${a}</span> + <span class="c-g">${b}</span>)² = (<span class="c-r">${a}</span> + <span class="c-g">${b}</span>)(<span class="c-r">${a}</span> + <span class="c-g">${b}</span>)`,
+              },
+              {
+                title: "On distribue (double distribution)",
+                body: `= <span class="c-r">${a}</span>×<span class="c-r">${a}</span> + <span class="c-r">${a}</span>×<span class="c-g">${b}</span> + <span class="c-g">${b}</span>×<span class="c-r">${a}</span> + <span class="c-g">${b}</span>×<span class="c-g">${b}</span><br>= <span class="c-r">${a2}</span> + <span class="c-y">${ab}</span> + <span class="c-y">${ab}</span> + <span class="c-g">${b2}</span>`,
+              },
+              {
+                title: "On regroupe les termes",
+                body: `= <span class="c-r">${a2}</span> + <span class="c-y">${ab2}</span> + <span class="c-g">${b2}</span>`,
+              },
+              {
+                title: "Vérification numérique",
+                body: `(<span class="c-r">${a}</span> + <span class="c-g">${b}</span>)² = ${a + b}² = <span class="c-p" style="font-size:1.2rem;">${(a + b) * (a + b)}</span><br><span class="c-r">${a2}</span> + <span class="c-y">${ab2}</span> + <span class="c-g">${b2}</span> = <span class="c-p" style="font-size:1.2rem;">${a2 + ab2 + b2}</span> ✓`,
+              },
+            ];
+            panel.appendChild(
+              buildSteps(
+                steps,
+                step,
+                () => {
+                  st.step++;
+                  renderPanel();
+                },
+                () => {
+                  st.step = 0;
+                  renderPanel();
+                },
+              ),
+            );
+            panel.appendChild(
+              ruleCard(
+                "💡 IDENTITÉ",
+                `<div class="formula">(a + b)² = a² + 2ab + b²</div>
+        <p class="hint">Le carré d'une somme = <span>premier²</span> + <span>2 × premier × deuxième</span> + <span>deuxième²</span></p>`,
+              ),
+            );
+          } else if (type === "carre_moins") {
+            panel.appendChild(
+              exprBox(
+                `(<span class="c-r">${a}</span> − <span class="c-g">${b}</span>)<sup>2</sup>`,
+              ),
+            );
+            const steps = [
+              {
+                title: "On écrit le carré comme un produit",
+                body: `(<span class="c-r">${a}</span> − <span class="c-g">${b}</span>)² = (<span class="c-r">${a}</span> − <span class="c-g">${b}</span>)(<span class="c-r">${a}</span> − <span class="c-g">${b}</span>)`,
+              },
+              {
+                title: "On distribue",
+                body: `= <span class="c-r">${a}</span>×<span class="c-r">${a}</span> − <span class="c-r">${a}</span>×<span class="c-g">${b}</span> − <span class="c-g">${b}</span>×<span class="c-r">${a}</span> + <span class="c-g">${b}</span>×<span class="c-g">${b}</span><br>= <span class="c-r">${a2}</span> − <span class="c-y">${ab}</span> − <span class="c-y">${ab}</span> + <span class="c-g">${b2}</span>`,
+              },
+              {
+                title: "On regroupe",
+                body: `= <span class="c-r">${a2}</span> − <span class="c-y">${ab2}</span> + <span class="c-g">${b2}</span>`,
+              },
+              {
+                title: "Vérification numérique",
+                body: `(<span class="c-r">${a}</span> − <span class="c-g">${b}</span>)² = ${a - b}² = <span class="c-p" style="font-size:1.2rem;">${(a - b) * (a - b)}</span><br><span class="c-r">${a2}</span> − <span class="c-y">${ab2}</span> + <span class="c-g">${b2}</span> = <span class="c-p" style="font-size:1.2rem;">${a2 - ab2 + b2}</span> ✓`,
+              },
+            ];
+            panel.appendChild(
+              buildSteps(
+                steps,
+                step,
+                () => {
+                  st.step++;
+                  renderPanel();
+                },
+                () => {
+                  st.step = 0;
+                  renderPanel();
+                },
+              ),
+            );
+            panel.appendChild(
+              ruleCard(
+                "💡 IDENTITÉ",
+                `<div class="formula">(a − b)² = a² − 2ab + b²</div>
+        <p class="hint">Le carré d'une différence = <span>premier²</span> − <span>2 × premier × deuxième</span> + <span>deuxième²</span></p>`,
+              ),
+            );
+          } else {
+            panel.appendChild(
+              exprBox(
+                `(<span class="c-r">${a}</span> + <span class="c-g">${b}</span>)(<span class="c-r">${a}</span> − <span class="c-g">${b}</span>)`,
+              ),
+            );
+            const steps = [
+              {
+                title: "On distribue",
+                body: `= <span class="c-r">${a}</span>×<span class="c-r">${a}</span> − <span class="c-r">${a}</span>×<span class="c-g">${b}</span> + <span class="c-g">${b}</span>×<span class="c-r">${a}</span> − <span class="c-g">${b}</span>×<span class="c-g">${b}</span><br>= <span class="c-r">${a2}</span> − <span class="c-y">${ab}</span> + <span class="c-y">${ab}</span> − <span class="c-g">${b2}</span>`,
+              },
+              {
+                title: "Les termes en ab s'annulent !",
+                body: `−<span class="c-y">${ab}</span> + <span class="c-y">${ab}</span> = 0 → il reste <span class="c-r">${a2}</span> − <span class="c-g">${b2}</span>`,
+              },
+              {
+                title: "Résultat",
+                body: `= <span class="c-r">${a2}</span> − <span class="c-g">${b2}</span> = <span class="c-p" style="font-size:1.2rem;">${a2 - b2}</span>`,
+              },
+              {
+                title: "Vérification numérique",
+                body: `(<span class="c-r">${a}</span>+<span class="c-g">${b}</span>)(<span class="c-r">${a}</span>−<span class="c-g">${b}</span>) = ${a + b} × ${a - b} = <span class="c-p" style="font-size:1.2rem;">${(a + b) * (a - b)}</span> ✓`,
+              },
+            ];
+            panel.appendChild(
+              buildSteps(
+                steps,
+                step,
+                () => {
+                  st.step++;
+                  renderPanel();
+                },
+                () => {
+                  st.step = 0;
+                  renderPanel();
+                },
+              ),
+            );
+            panel.appendChild(
+              ruleCard(
+                "💡 IDENTITÉ",
+                `<div class="formula">(a + b)(a − b) = a² − b²</div>
+        <p class="hint">Somme × Différence = <span>Différence des carrés</span>.<br>Très utile pour factoriser une expression du type <span>A² − B²</span> !</p>`,
+              ),
+            );
+          }
+        } else {
+          // Exercise: recognize the identity
+          const sc = st.score;
+          const ex = st.ex;
+          if (!ex) {
+            genIDEx();
+            renderPanel();
+            return;
+          }
+
+          panel.appendChild(scoreBar(sc));
+          panel.appendChild(
+            card(
+              "✏️ QUELLE IDENTITÉ ?",
+              `<div class="expr-box" style="font-size:1.15rem;margin-bottom:4px;">${ex.expr}</div>
+       <p style="font-size:0.85rem;color:var(--muted);margin-top:8px;">Quelle identité remarquable reconnaissez-vous ?</p>`,
+            ),
+          );
+
+          const labels = {
+            carre_plus: "(a + b)²",
+            carre_moins: "(a − b)²",
+            diff_carres: "(a+b)(a−b) = a²−b²",
+          };
+          if (!st.answered) {
+            const ch = document.createElement("div");
+            ch.className = "ex-choices";
+            ["carre_plus", "carre_moins", "diff_carres"].forEach((k) => {
+              const b = document.createElement("button");
+              b.className = "ex-choice";
+              b.textContent = labels[k];
+              b.onclick = () => {
+                st.answered = true;
+                sc.total++;
+                if (k === ex.answer) {
+                  sc.ok++;
+                  sc.streak++;
+                } else {
+                  sc.streak = 0;
+                }
+                ex.picked = k;
+                renderPanel();
+              };
+              ch.appendChild(b);
+            });
+            panel.appendChild(ch);
+          } else {
+            const ch = document.createElement("div");
+            ch.className = "ex-choices";
+            ["carre_plus", "carre_moins", "diff_carres"].forEach((k) => {
+              const b = document.createElement("button");
+              b.className =
+                "ex-choice" +
+                (k === ex.answer
+                  ? " correct"
+                  : k === ex.picked && k !== ex.answer
+                    ? " wrong"
+                    : "");
+              b.textContent = labels[k];
+              b.style.cursor = "default";
+              ch.appendChild(b);
+            });
+            panel.appendChild(ch);
+
+            const ok = ex.picked === ex.answer;
+            const fb = document.createElement("div");
+            fb.className = "ex-feedback " + (ok ? "ok" : "ko");
+            fb.innerHTML = ok
+              ? `✅ Bravo ! C'est bien <strong>${labels[ex.answer]}</strong> → ${ex.factored}`
+              : `❌ C'était <strong>${labels[ex.answer]}</strong> → ${ex.factored}`;
+            panel.appendChild(fb);
+
+            const nb = document.createElement("button");
+            nb.className = "btn-step";
+            nb.textContent = "Exercice suivant →";
+            nb.onclick = () => {
+              genIDEx();
+              st.answered = false;
+              renderPanel();
+            };
+            panel.appendChild(nb);
+          }
+        }
+      }
+
+      const ID_EX_BANK = [
+        { expr: "x² + 6x + 9", answer: "carre_plus", factored: "(x + 3)²" },
+        { expr: "x² + 10x + 25", answer: "carre_plus", factored: "(x + 5)²" },
+        { expr: "x² + 2x + 1", answer: "carre_plus", factored: "(x + 1)²" },
+        { expr: "4x² + 12x + 9", answer: "carre_plus", factored: "(2x + 3)²" },
+        { expr: "x² − 8x + 16", answer: "carre_moins", factored: "(x − 4)²" },
+        { expr: "x² − 14x + 49", answer: "carre_moins", factored: "(x − 7)²" },
+        { expr: "9x² − 6x + 1", answer: "carre_moins", factored: "(3x − 1)²" },
+        { expr: "x² − 4x + 4", answer: "carre_moins", factored: "(x − 2)²" },
+        { expr: "x² − 9", answer: "diff_carres", factored: "(x+3)(x−3)" },
+        { expr: "x² − 25", answer: "diff_carres", factored: "(x+5)(x−5)" },
+        { expr: "4x² − 1", answer: "diff_carres", factored: "(2x+1)(2x−1)" },
+        { expr: "x² − 49", answer: "diff_carres", factored: "(x+7)(x−7)" },
+        { expr: "16x² − 9", answer: "diff_carres", factored: "(4x+3)(4x−3)" },
+      ];
+
+      function genIDEx() {
+        const idx = randInt(0, ID_EX_BANK.length - 1);
+        state.identites.ex = { ...ID_EX_BANK[idx] };
+        state.identites.answered = false;
+      }
+
+      function exprBox(html) {
+        const d = document.createElement("div");
+        d.className = "expr-box";
+        d.innerHTML = html;
+        return d;
+      }
+
+      // ===================== TAB 5: BINÔMES =====================
+      function renderBinomes(panel) {
+        const st = state.binomes;
+        const { tech, step } = st;
+
+        // ─── Helper: polynomial string for xⁿ±1 factorisation ───
+        function buildPoly(deg, altSigns) {
+          let parts = [];
+          for (let i = deg; i >= 0; i--) {
+            const isFirst = i === deg;
+            const sign = altSigns ? ((deg - i) % 2 === 0 ? "+" : "−") : "+";
+            const term = i === 0 ? "1" : i === 1 ? "x" : `x<sup>${i}</sup>`;
+            parts.push({ sign, term, isFirst });
+          }
+          let str = parts[0].term;
+          for (let i = 1; i < parts.length; i++)
+            str += ` ${parts[i].sign} ${parts[i].term}`;
+          return str;
+        }
+
+        // ─── Helper: numeric verification (x=2) ───
+        function generateVerif(n, type) {
+          const x = 2;
+          if (type === "minus") {
+            const val = Math.pow(x, n) - 1;
+            let sum = 0;
+            for (let i = n - 1; i >= 0; i--) sum += Math.pow(x, i);
+            return `Pour x = 2 :<br>x<sup>${n}</sup> − 1 = ${Math.pow(x, n)} − 1 = <span class="c-p">${val}</span><br>(x−1)(x<sup>${n - 1}</sup>+…+1) = ${x - 1} × ${sum} = <span class="c-p">${(x - 1) * sum}</span> ✓`;
+          } else {
+            const val = Math.pow(x, n) + 1;
+            let sum = 0;
+            for (let i = n - 1; i >= 0; i--) {
+              const sign = (n - 1 - i) % 2 === 0 ? 1 : -1;
+              sum += sign * Math.pow(x, i);
+            }
+            return `Pour x = 2 :<br>x<sup>${n}</sup> + 1 = ${Math.pow(x, n)} + 1 = <span class="c-p">${val}</span><br>(x+1)(x<sup>${n - 1}</sup>−…+1) = ${x + 1} × ${sum} = <span class="c-p">${(x + 1) * sum}</span> ✓`;
+          }
+        }
+
+        // ─── Sub-tabs ───
+        const techRow = document.createElement("div");
+        techRow.className = "mode-row";
+        techRow.style.flexWrap = "wrap";
+        techRow.style.gap = "6px";
+        techRow.innerHTML = `
+          <button class="type-btn ${tech === "fc" ? "active" : ""}" data-t="fc">🔢 Facteur commun</button>
+          <button class="type-btn ${tech === "diff_carres" ? "active" : ""}" data-t="diff_carres">➖ Différence de carrés</button>
+          <button class="type-btn ${tech === "puissances" ? "active" : ""}" data-t="puissances">⚡ Puissances xⁿ±1</button>
+        `;
+        techRow.querySelectorAll(".type-btn").forEach(
+          (btn) =>
+            (btn.onclick = () => {
+              st.tech = btn.dataset.t;
+              st.step = 0;
+              renderPanel();
+            }),
+        );
+        panel.appendChild(techRow);
+
+        // ═══════════════════════════════════════════
+        // TECHNIQUE 1 — FACTEUR COMMUN
+        // ═══════════════════════════════════════════
+        if (tech === "fc") {
+          const { k, a, b } = st;
+          const ctrl = document.createElement("div");
+          ctrl.className = "card";
+          ctrl.innerHTML = `<div class="card-title">🎮 RÉGLAGES</div>
+            <p style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;">On factorise : (k·a)x + (k·b)</p>`;
+          ctrl.appendChild(
+            slider(
+              "bi_k",
+              "k (facteur commun)",
+              k,
+              1,
+              12,
+              1,
+              "#a78bfa",
+              (v) => {
+                st.k = v;
+                st.step = 0;
+              },
+            ),
+          );
+          ctrl.appendChild(
+            slider("bi_a", "a", a, 1, 10, 1, "#ff6b6b", (v) => {
+              st.a = v;
+              st.step = 0;
+            }),
+          );
+          ctrl.appendChild(
+            slider("bi_b", "b", b, 1, 10, 1, "#00f5c3", (v) => {
+              st.b = v;
+              st.step = 0;
+            }),
+          );
+          panel.appendChild(ctrl);
+
+          const Ka = k * a,
+            Kb = k * b;
+          panel.appendChild(
+            exprBox(
+              `<span class="c-p">${Ka}</span>x + <span class="c-g">${Kb}</span>`,
+            ),
+          );
+
+          const fcSteps = [
+            {
+              title: "Identifier le facteur commun",
+              body: `On cherche ce qui divise à la fois <span class="c-p">${Ka}</span> et <span class="c-g">${Kb}</span><br>
+                     pgcd(${Ka}, ${Kb}) = <span class="c-r">${k}</span><br>
+                     ✅ Le facteur commun est <span class="c-r">${k}</span>`,
+            },
+            {
+              title: "Décomposer chaque terme",
+              body: `<span class="c-p">${Ka}</span>x = <span class="c-r">${k}</span> × <span class="c-p">${a}</span>x<br>
+                     <span class="c-g">${Kb}</span>&nbsp;&nbsp; = <span class="c-r">${k}</span> × <span class="c-g">${b}</span>`,
+            },
+            {
+              title: "Mettre le facteur commun devant",
+              body: `<span class="c-p">${Ka}</span>x + <span class="c-g">${Kb}</span> = <span class="c-r">${k}</span>(<span class="c-p">${a}</span>x + <span class="c-g">${b}</span>)`,
+            },
+            {
+              title: "Résultat final",
+              body: `<div class="formula"><span class="c-r">${k}</span>(<span class="c-p">${a}</span>x + <span class="c-g">${b}</span>)</div>
+                     ✅ Vérif : ${k}×${a}x + ${k}×${b} = ${Ka}x + ${Kb} ✓`,
+            },
+          ];
+          panel.appendChild(
+            buildSteps(
+              fcSteps,
+              step,
+              () => {
+                st.step++;
+                renderPanel();
+              },
+              () => {
+                st.step = 0;
+                renderPanel();
+              },
+            ),
+          );
+          panel.appendChild(
+            ruleCard(
+              "💡 RÈGLE — Facteur commun",
+              `<p>Pour <span>Ax + B</span> :</p>
+             <ol style="margin:8px 0 0 18px;line-height:1.8">
+               <li>Trouve le pgcd de A et B → c'est <span>k</span></li>
+               <li>Écris A = k·a et B = k·b</li>
+               <li>Mets k devant : <span>k(ax + b)</span></li>
+             </ol>`,
+            ),
+          );
+        }
+
+        // ═══════════════════════════════════════════
+        // TECHNIQUE 2 — DIFFÉRENCE DE CARRÉS
+        // ═══════════════════════════════════════════
+        else if (tech === "diff_carres") {
+          const { a, b } = st;
+          const ctrl = document.createElement("div");
+          ctrl.className = "card";
+          ctrl.innerHTML = `<div class="card-title">🎮 RÉGLAGES</div>
+            <p style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;">On factorise : a² − b²</p>`;
+          ctrl.appendChild(
+            slider("bi_a", "a", a, 1, 12, 1, "#ff6b6b", (v) => {
+              st.a = v;
+              st.step = 0;
+            }),
+          );
+          ctrl.appendChild(
+            slider("bi_b", "b", b, 1, 12, 1, "#00f5c3", (v) => {
+              st.b = v;
+              st.step = 0;
+            }),
+          );
+          panel.appendChild(ctrl);
+
+          const a2 = a * a,
+            b2 = b * b;
+          panel.appendChild(
+            exprBox(
+              `<span class="c-r">${a2}</span> − <span class="c-g">${b2}</span>`,
+            ),
+          );
+
+          const dcSteps = [
+            {
+              title: "Reconnaître la différence de carrés",
+              body: `<span class="c-r">${a2}</span> = <span class="c-r">${a}</span>² &nbsp;&nbsp;et&nbsp;&nbsp; <span class="c-g">${b2}</span> = <span class="c-g">${b}</span>²<br>
+                     C'est de la forme <span class="c-p">A² − B²</span> ✅`,
+            },
+            {
+              title: "Appliquer la formule",
+              body: `A² − B² = (A + B)(A − B)<br><br>
+                     <span class="c-r">${a}</span>² − <span class="c-g">${b}</span>² = (<span class="c-r">${a}</span> + <span class="c-g">${b}</span>)(<span class="c-r">${a}</span> − <span class="c-g">${b}</span>)`,
+            },
+            {
+              title: "Calculer les facteurs",
+              body: `(<span class="c-r">${a}</span> + <span class="c-g">${b}</span>) = <span class="c-p">${a + b}</span><br>
+                     (<span class="c-r">${a}</span> − <span class="c-g">${b}</span>) = <span class="c-p">${a - b}</span>`,
+            },
+            {
+              title: "Résultat + vérification",
+              body: `<div class="formula">(<span class="c-p">${a + b}</span>)(<span class="c-p">${a - b}</span>) = <span class="c-r">${(a + b) * (a - b)}</span></div>
+                     Vérif : <span class="c-r">${a2}</span> − <span class="c-g">${b2}</span> = <span class="c-r">${a2 - b2}</span> ✓`,
+            },
+          ];
+          panel.appendChild(
+            buildSteps(
+              dcSteps,
+              step,
+              () => {
+                st.step++;
+                renderPanel();
+              },
+              () => {
+                st.step = 0;
+                renderPanel();
+              },
+            ),
+          );
+          panel.appendChild(
+            ruleCard(
+              "💡 RÈGLE — Différence de carrés",
+              `<div class="formula">A² − B² = (A + B)(A − B)</div>
+             <p class="hint">
+               ✅ Marche pour TOUTE soustraction de deux carrés<br>
+               ⚠️ A² <span>+</span> B² ne se factorise <span>PAS</span> dans ℝ !<br><br>
+               <b>Exemples :</b><br>
+               x² − 9 → ✅ &nbsp;|&nbsp; 4x² − 25 → ✅<br>
+               x² + 9 → ❌ &nbsp;|&nbsp; 9x² + 4 → ❌
+             </p>`,
+            ),
+          );
+        }
+
+        // ═══════════════════════════════════════════
+        // TECHNIQUE 3 — PUISSANCES xⁿ±1
+        // ═══════════════════════════════════════════
+        else if (tech === "puissances") {
+          const { n, signType } = st;
+          const ctrl = document.createElement("div");
+          ctrl.className = "card";
+          ctrl.innerHTML = `<div class="card-title">🎮 RÉGLAGES</div>`;
+          ctrl.appendChild(
+            slider("bi_n", "n (l'exposant)", n, 2, 8, 1, "#ffd93d", (v) => {
+              st.n = v;
+              st.step = 0;
+            }),
+          );
+          panel.appendChild(ctrl);
+
+          // Toggle xⁿ−1 / xⁿ+1
+          const togRow = document.createElement("div");
+          togRow.className = "mode-row";
+          togRow.innerHTML = `
+            <button class="mode-btn ${signType === "minus" ? "active" : ""}" data-s="minus">x<sup>${n}</sup> − 1</button>
+            <button class="mode-btn ${signType === "plus" ? "active" : ""}" data-s="plus">x<sup>${n}</sup> + 1</button>
+          `;
+          togRow.querySelectorAll(".mode-btn").forEach(
+            (btn) =>
+              (btn.onclick = () => {
+                st.signType = btn.dataset.s;
+                st.step = 0;
+                renderPanel();
+              }),
+          );
+          panel.appendChild(togRow);
+
+          if (signType === "minus") {
+            // xⁿ − 1 = (x − 1)(xⁿ⁻¹ + xⁿ⁻² + … + x + 1)  — ALWAYS works
+            const poly = buildPoly(n - 1, false);
+            panel.appendChild(exprBox(`x<sup>${n}</sup> − 1`));
+
+            const steps = [
+              {
+                title: "Identifier la forme",
+                body: `On voit <span class="c-r">x<sup>${n}</sup> − 1</span>, c'est la forme <span class="c-p">xⁿ − 1</span><br>
+                       ✅ Cette forme se factorise TOUJOURS (n pair ou impair, peu importe !)`,
+              },
+              {
+                title: "Écrire le 1er facteur : (x − 1)",
+                body: `La règle dit que <span class="c-r">(x − 1)</span> est TOUJOURS un facteur de xⁿ − 1<br>
+                       On écrit : <span class="c-r">(x − 1)</span> × (quelque chose)`,
+              },
+              {
+                title: "Descendre les puissances (de n−1 jusqu'à 0)",
+                body: `On part de x<sup>${n - 1}</sup> et on descend jusqu'à 1 (= x⁰) :<br><br>
+                       <span class="c-g">${buildPoly(n - 1, false)}</span><br><br>
+                       🔑 Les signes sont <b>TOUS +</b>`,
+              },
+              {
+                title: "Résultat final",
+                body: `<div class="formula">x<sup>${n}</sup> − 1 = <span class="c-r">(x − 1)</span>(<span class="c-g">${poly}</span>)</div>`,
+              },
+              {
+                title: "Vérification numérique",
+                body: generateVerif(n, "minus"),
+              },
+            ];
+            panel.appendChild(
+              buildSteps(
+                steps,
+                step,
+                () => {
+                  st.step++;
+                  renderPanel();
+                },
+                () => {
+                  st.step = 0;
+                  renderPanel();
+                },
+              ),
+            );
+            panel.appendChild(
+              ruleCard(
+                "💡 RÈGLE 1 — xⁿ − 1",
+                `<div class="formula">x<sup>n</sup> − 1 = (x − 1)(x<sup>n−1</sup> + x<sup>n−2</sup> + … + x + 1)</div>
+               <p class="hint">
+                 ✅ Marche pour TOUS les n (pair ou impair)<br>
+                 ✅ Les signes dans la grande parenthèse sont <b>TOUS +</b><br>
+                 ✅ On part de x<sup>n−1</sup> et on descend jusqu'à x⁰ = 1
+               </p>`,
+              ),
+            );
+          } else {
+            // xⁿ + 1 — seulement si n est IMPAIR
+            const nIsOdd = n % 2 !== 0;
+            panel.appendChild(exprBox(`x<sup>${n}</sup> + 1`));
+
+            if (!nIsOdd) {
+              // n pair → IMPOSSIBLE
+              const hint = n > 2 ? n - 1 : n + 1;
+              panel.appendChild(
+                card(
+                  "⛔ Impossible dans ℝ",
+                  `<p style="margin-bottom:8px"><span class="c-r">n = ${n} est pair</span> → on ne peut <b>PAS</b> factoriser x<sup>${n}</sup> + 1 dans ℝ</p>
+                 <p style="margin-bottom:8px">La formule magique ne marche que si n est <b>impair</b> (3, 5, 7…)</p>
+                 <p>💡 Essaie n = ${hint} dans le slider !</p>`,
+                ),
+              );
+              panel.appendChild(
+                ruleCard(
+                  "⚠️ RÈGLE IMPORTANTE",
+                  `<div class="formula">x<sup>n</sup> + 1 → factorisable SEULEMENT si n est IMPAIR</div>
+                 <p class="hint">
+                   n pair (2, 4, 6…) → <span class="c-r">IMPOSSIBLE dans ℝ</span><br>
+                   n impair (3, 5, 7…) → <span class="c-g">POSSIBLE ✅</span>
+                 </p>`,
+                ),
+              );
+            } else {
+              // n impair → factorisation possible
+              // xⁿ + 1 = (x + 1)(xⁿ⁻¹ − xⁿ⁻² + xⁿ⁻³ − … + 1)  signes alternés
+              const poly = buildPoly(n - 1, true);
+              const steps = [
+                {
+                  title: "Vérifier que n est impair",
+                  body: `n = <span class="c-g">${n}</span> → <span class="c-g">impair ✅</span><br>
+                         On peut utiliser la technique !`,
+                },
+                {
+                  title: "Écrire le 1er facteur : (x + 1)",
+                  body: `La règle dit que <span class="c-r">(x + 1)</span> est toujours un facteur de xⁿ + 1 quand n est impair<br>
+                         On écrit : <span class="c-r">(x + 1)</span> × (quelque chose)`,
+                },
+                {
+                  title: "Descendre les puissances en alternant les signes",
+                  body: `On part de x<sup>${n - 1}</sup> et on descend :<br><br>
+                         <span class="c-g">${poly}</span><br><br>
+                         ⚡ Les signes <b>alternent</b> : +, −, +, −, …<br>
+                         ✅ Ça finit TOUJOURS par <b>+1</b>`,
+                },
+                {
+                  title: "Résultat final",
+                  body: `<div class="formula">x<sup>${n}</sup> + 1 = <span class="c-r">(x + 1)</span>(<span class="c-g">${poly}</span>)</div>`,
+                },
+                {
+                  title: "Vérification numérique",
+                  body: generateVerif(n, "plus"),
+                },
+              ];
+              panel.appendChild(
+                buildSteps(
+                  steps,
+                  step,
+                  () => {
+                    st.step++;
+                    renderPanel();
+                  },
+                  () => {
+                    st.step = 0;
+                    renderPanel();
+                  },
+                ),
+              );
+              panel.appendChild(
+                ruleCard(
+                  "💡 RÈGLE 2 — xⁿ + 1 (n impair)",
+                  `<div class="formula">x<sup>n</sup> + 1 = (x + 1)(x<sup>n−1</sup> − x<sup>n−2</sup> + x<sup>n−3</sup> − … + 1)</div>
+                 <p class="hint">
+                   ⚠️ Marche <b>UNIQUEMENT</b> si n est <b>IMPAIR</b><br>
+                   ✅ Les puissances descendent de n−1 jusqu'à 0<br>
+                   ✅ Les signes <b>alternent</b> : +, −, +, −, …<br>
+                   ✅ Ça finit TOUJOURS par <span>+1</span>
+                 </p>`,
+                ),
+              );
+            }
+          }
+
+          // ─── Summary table ───
+          panel.appendChild(
+            card(
+              "🧠 Résumé ultra clair",
+              `<table style="width:100%;border-collapse:collapse;font-size:0.82rem">
+               <tr style="color:var(--muted);border-bottom:1px solid var(--border)">
+                 <th style="text-align:left;padding:6px 4px">Expression</th>
+                 <th style="text-align:left;padding:6px 4px">Factorisable ?</th>
+                 <th style="text-align:left;padding:6px 4px">Ce qu'on fait</th>
+               </tr>
+               <tr style="border-bottom:1px solid var(--border)">
+                 <td style="padding:5px 4px">xⁿ − 1</td>
+                 <td style="padding:5px 4px;color:#4ade80">✅ Oui (tous n)</td>
+                 <td style="padding:5px 4px">(x − 1) × toutes puissances avec <b>+</b></td>
+               </tr>
+               <tr style="border-bottom:1px solid var(--border)">
+                 <td style="padding:5px 4px">xⁿ + 1 (n impair)</td>
+                 <td style="padding:5px 4px;color:#4ade80">✅ Oui</td>
+                 <td style="padding:5px 4px">(x + 1) × puissances signes <b>alternés</b></td>
+               </tr>
+               <tr>
+                 <td style="padding:5px 4px">xⁿ + 1 (n pair)</td>
+                 <td style="padding:5px 4px;color:var(--accent)">❌ Non</td>
+                 <td style="padding:5px 4px">Impossible dans ℝ</td>
+               </tr>
+             </table>`,
+            ),
+          );
+        }
+      }
+
+      // ===================== TAB 6: TRINÔMES =====================
+      function renderTrinomes(panel) {
+        const st = state.trinomes;
+        const { a, b, c, step, mode } = st;
+
+        const modeEl = document.createElement("div");
+        modeEl.className = "mode-row";
+        modeEl.innerHTML = `<button class="mode-btn ${mode === "demo" ? "active" : ""}" data-m="demo">📖 Démonstration</button>
+    <button class="mode-btn ${mode === "exercice" ? "active" : ""}" data-m="exercice">✏️ À toi !</button>`;
+        modeEl.querySelectorAll(".mode-btn").forEach(
+          (btn) =>
+            (btn.onclick = () => {
+              st.mode = btn.dataset.m;
+              if (btn.dataset.m === "exercice") genTriEx();
+              st.step = 0;
+              renderPanel();
+            }),
+        );
+        panel.appendChild(modeEl);
+
+        if (mode === "demo") {
+          const ctrl = document.createElement("div");
+          ctrl.className = "card";
+          ctrl.innerHTML = `<div class="card-title">🎮 RÉGLAGES (ax² + bx + c)</div>`;
+          ctrl.appendChild(
+            slider("t_a", "a", a, -5, 5, 1, "#ff6b6b", (v) => {
+              st.a = v;
+              st.step = 0;
+            }),
+          );
+          ctrl.appendChild(
+            slider("t_b", "b", b, -12, 12, 1, "#00f5c3", (v) => {
+              st.b = v;
+              st.step = 0;
+            }),
+          );
+          ctrl.appendChild(
+            slider("t_c", "c", c, -12, 12, 1, "#ffd93d", (v) => {
+              st.c = v;
+              st.step = 0;
+            }),
+          );
+          panel.appendChild(ctrl);
+
+          if (a === 0) {
+            panel.appendChild(
+              card(
+                "⚠️",
+                `<p style="color:var(--muted);text-align:center;">a ne peut pas être 0 pour un trinôme. Change la valeur de a.</p>`,
+              ),
+            );
+            return;
+          }
+
+          // Build expression display
+          let exprStr = "";
+          if (a === 1) exprStr += `<span class="c-r">x²</span>`;
+          else if (a === -1) exprStr += `<span class="c-r">−x²</span>`;
+          else exprStr += `<span class="c-r">${a}x²</span>`;
+          if (b !== 0)
+            exprStr += ` <span class="op">${S(b)}</span> <span class="c-g">${A(b)}x</span>`;
+          if (c !== 0)
+            exprStr += ` <span class="op">${S(c)}</span> <span class="c-y">${A(c)}</span>`;
+          panel.appendChild(exprBox(exprStr));
+
+          const delta = b * b - 4 * a * c;
+          const sqrtDelta = Math.sqrt(Math.abs(delta));
+
+          const steps = [
+            {
+              title: "Calcul du discriminant Δ",
+              body: `Δ = b² − 4ac = <span class="c-g">${b}</span>² − 4×<span class="c-r">${a}</span>×<span class="c-y">${c}</span><br>= ${b * b} − ${4 * a * c} = <span class="c-p" style="font-size:1.2rem;">${delta}</span>`,
+            },
+          ];
+
+          if (delta > 0) {
+            const x1 = (-b - sqrtDelta) / (2 * a);
+            const x2 = (-b + sqrtDelta) / (2 * a);
+            const isNice =
+              Number.isInteger(delta) &&
+              Math.sqrt(delta) === Math.floor(Math.sqrt(delta));
+            steps.push({
+              title: "Δ > 0 → Deux racines !",
+              body: `<div class="delta-badge delta-pos">Δ = ${delta} > 0 → 2 solutions</div>`,
+            });
+            steps.push({
+              title: "Calcul des racines",
+              body:
+                `x₁ = (−b − √Δ) / (2a) = (${-b} − √${delta}) / ${2 * a} = <span class="c-o">${F(x1)}</span><br>` +
+                `x₂ = (−b + √Δ) / (2a) = (${-b} + √${delta}) / ${2 * a} = <span class="c-b">${F(x2)}</span>`,
+            });
+            steps.push({
+              title: "Factorisation !",
+              body: `<span style="font-size:1.1rem;">${a === 1 ? "" : a === -1 ? "−" : a}(x − <span class="c-o">${F(x1)}</span>)(x − <span class="c-b">${F(x2)}</span>)</span>`,
+            });
+          } else if (delta === 0) {
+            const x0 = -b / (2 * a);
+            steps.push({
+              title: "Δ = 0 → Racine double !",
+              body: `<div class="delta-badge delta-zero">Δ = 0 → 1 racine double</div>`,
+            });
+            steps.push({
+              title: "La racine double",
+              body: `x₀ = −b / (2a) = ${-b} / ${2 * a} = <span class="c-o">${F(x0)}</span>`,
+            });
+            steps.push({
+              title: "Factorisation !",
+              body: `<span style="font-size:1.1rem;">${a === 1 ? "" : a === -1 ? "−" : a}(x − <span class="c-o">${F(x0)}</span>)²</span>`,
+            });
+          } else {
+            steps.push({
+              title: "Δ < 0 → Pas de racines réelles",
+              body: `<div class="delta-badge delta-neg">Δ = ${delta} < 0 → Pas de factorisation dans ℝ</div>`,
+            });
+            steps.push({
+              title: "Conclusion",
+              body: `Ce trinôme n'a <span class="c-r">pas de racine réelle</span>.<br>On ne peut pas le factoriser avec des nombres réels.`,
+            });
+          }
+
+          panel.appendChild(
+            buildSteps(
+              steps,
+              step,
+              () => {
+                st.step++;
+                renderPanel();
+              },
+              () => {
+                st.step = 0;
+                renderPanel();
+              },
+            ),
+          );
+
+          // Produit-somme method hint
+          if (a === 1 || a === -1) {
+            panel.appendChild(
+              ruleCard(
+                "🔎 ASTUCE : MÉTHODE PRODUIT-SOMME",
+                `<p class="hint">Quand a = ${a}, on cherche deux nombres <span>p</span> et <span>q</span> tels que :<br><br>
+        • p × q = ${a === 1 ? "c" : "−c"} = <span>${a === 1 ? c : -c}</span><br>
+        • p + q = ${a === 1 ? "b" : "−b"} = <span>${a === 1 ? b : -b}</span><br><br>
+        Si on les trouve → x² ${signedSp(b)}x ${signedSp(c)} = (x ${a === 1 ? signedSp("p") : signedSp("p")})(x ${a === 1 ? signedSp("q") : signedSp("q")})</p>`,
+              ),
+            );
+          }
+
+          panel.appendChild(
+            ruleCard(
+              "💡 FORMULES",
+              `<div class="formula">Δ = b² − 4ac</div>
+      <p class="hint">
+      Si Δ > 0 : x₁ = (−b − √Δ) / (2a), x₂ = (−b + √Δ) / (2a)<br>
+      Si Δ = 0 : x₀ = −b / (2a) (racine double)<br>
+      Si Δ < 0 : pas de racine réelle<br><br>
+      ax² + bx + c = <span>a(x − x₁)(x − x₂)</span></p>`,
+            ),
+          );
+        } else {
+          // Exercise
+          const sc = st.score;
+          const ex = st.ex;
+          if (!ex) {
+            genTriEx();
+            renderPanel();
+            return;
+          }
+
+          panel.appendChild(scoreBar(sc));
+          panel.appendChild(
+            card(
+              "✏️ CALCULE LE DISCRIMINANT",
+              `<div class="expr-box" style="font-size:1.15rem;">${ex.display}</div>
+      <p style="font-size:0.85rem;color:var(--muted);margin-top:8px;">Δ = b² − 4ac = ?</p>`,
+            ),
+          );
+
+          if (!st.answered) {
+            const row = document.createElement("div");
+            row.className = "ex-input-row";
+            row.innerHTML = `<input class="ex-input" id="tr_ans" type="number" placeholder="Δ = ?" autofocus>
+        <button class="ex-check" id="tr_btn">Vérifier ✓</button>`;
+            panel.appendChild(row);
+            setTimeout(() => {
+              const inp = document.getElementById("tr_ans");
+              const btn = document.getElementById("tr_btn");
+              if (!inp || !btn) return;
+              const check = () => {
+                const v = parseFloat(inp.value);
+                if (isNaN(v)) return;
+                st.answered = true;
+                sc.total++;
+                ex.userAnswer = v;
+                if (v === ex.delta) {
+                  sc.ok++;
+                  sc.streak++;
+                } else {
+                  sc.streak = 0;
+                }
+                renderPanel();
+              };
+              btn.onclick = check;
+              inp.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") check();
+              });
+            }, 50);
+          } else {
+            const ok = ex.userAnswer === ex.delta;
+            const fb = document.createElement("div");
+            fb.className = "ex-feedback " + (ok ? "ok" : "ko");
+            fb.innerHTML = ok
+              ? `✅ Bravo ! Δ = ${ex.b}² − 4×${ex.a}×${ex.c} = ${ex.b * ex.b} − ${4 * ex.a * ex.c} = <strong>${ex.delta}</strong>`
+              : `❌ Δ = ${ex.b}² − 4×${ex.a}×${ex.c} = ${ex.b * ex.b} − ${4 * ex.a * ex.c} = <strong>${ex.delta}</strong>`;
+            panel.appendChild(fb);
+
+            if (ex.delta >= 0) {
+              const info = document.createElement("div");
+              info.className = "card";
+              if (ex.delta > 0) {
+                info.innerHTML = `<div class="card-title" style="color:var(--green)">RACINES</div>
+            <div style="font-family:Space Mono;font-size:0.9rem;text-align:center;">
+            x₁ = <span style="color:var(--orange)">${F(ex.x1)}</span> &nbsp;&nbsp; x₂ = <span style="color:var(--blue)">${F(ex.x2)}</span></div>`;
+              } else {
+                info.innerHTML = `<div class="card-title" style="color:var(--yellow)">RACINE DOUBLE</div>
+            <div style="font-family:Space Mono;font-size:0.9rem;text-align:center;">x₀ = <span style="color:var(--orange)">${F(ex.x1)}</span></div>`;
+              }
+              panel.appendChild(info);
+            }
+
+            const nb = document.createElement("button");
+            nb.className = "btn-step";
+            nb.textContent = "Exercice suivant →";
+            nb.onclick = () => {
+              genTriEx();
+              st.answered = false;
+              renderPanel();
+            };
+            panel.appendChild(nb);
+          }
+        }
+      }
+
+      function genTriEx() {
+        // Generate from nice roots
+        const a = 1;
+        const r1 = randInt(-6, 6);
+        const r2 = randInt(-6, 6);
+        const b = -(r1 + r2);
+        const c = r1 * r2;
+        const delta = b * b - 4 * a * c;
+        const sqrtD = Math.sqrt(Math.abs(delta));
+        let display = `<span class="c-r">x²</span>`;
+        if (b !== 0)
+          display += ` <span class="op">${S(b)}</span> <span class="c-g">${A(b)}x</span>`;
+        if (c !== 0)
+          display += ` <span class="op">${S(c)}</span> <span class="c-y">${A(c)}</span>`;
+        const st = state.trinomes;
+        st.ex = {
+          a,
+          b,
+          c,
+          delta,
+          display,
+          x1: r1 < r2 ? r1 : r2,
+          x2: r1 < r2 ? r2 : r1,
+        };
+        st.answered = false;
+      }
+
+      // ===================== TAB 7: QUADRINÔMES =====================
+      const QUAD_BANK = [
+        {
+          terms: ["x³", "x²", "2x", "2"],
+          expr: "x³ + x² + 2x + 2",
+          steps: [
+            {
+              title: "Expression de départ",
+              body: `<span class="c-r">x³</span> + <span class="c-r">x²</span> + <span class="c-g">2x</span> + <span class="c-g">2</span>`,
+            },
+            {
+              title: "Regrouper par paires",
+              body: `(<span class="c-r">x³</span> + <span class="c-r">x²</span>) + (<span class="c-g">2x</span> + <span class="c-g">2</span>)`,
+            },
+            {
+              title: "Factoriser chaque paire",
+              body: `<span class="c-r">x²</span>(<span class="c-p">x + 1</span>) + <span class="c-g">2</span>(<span class="c-p">x + 1</span>)`,
+            },
+            {
+              title: "Facteur commun final !",
+              body: `<span style="font-size:1.2rem;">(<span class="c-p">x + 1</span>)(<span class="c-r">x²</span> + <span class="c-g">2</span>)</span>`,
+            },
+          ],
+        },
+        {
+          terms: ["x³", "−3x²", "4x", "−12"],
+          expr: "x³ − 3x² + 4x − 12",
+          steps: [
+            {
+              title: "Expression de départ",
+              body: `<span class="c-r">x³</span> − <span class="c-r">3x²</span> + <span class="c-g">4x</span> − <span class="c-g">12</span>`,
+            },
+            {
+              title: "Regrouper par paires",
+              body: `(<span class="c-r">x³</span> − <span class="c-r">3x²</span>) + (<span class="c-g">4x</span> − <span class="c-g">12</span>)`,
+            },
+            {
+              title: "Factoriser chaque paire",
+              body: `<span class="c-r">x²</span>(<span class="c-p">x − 3</span>) + <span class="c-g">4</span>(<span class="c-p">x − 3</span>)`,
+            },
+            {
+              title: "Facteur commun final !",
+              body: `<span style="font-size:1.2rem;">(<span class="c-p">x − 3</span>)(<span class="c-r">x²</span> + <span class="c-g">4</span>)</span>`,
+            },
+          ],
+        },
+        {
+          terms: ["2x³", "6x²", "x", "3"],
+          expr: "2x³ + 6x² + x + 3",
+          steps: [
+            {
+              title: "Expression de départ",
+              body: `<span class="c-r">2x³</span> + <span class="c-r">6x²</span> + <span class="c-g">x</span> + <span class="c-g">3</span>`,
+            },
+            {
+              title: "Regrouper par paires",
+              body: `(<span class="c-r">2x³</span> + <span class="c-r">6x²</span>) + (<span class="c-g">x</span> + <span class="c-g">3</span>)`,
+            },
+            {
+              title: "Factoriser chaque paire",
+              body: `<span class="c-r">2x²</span>(<span class="c-p">x + 3</span>) + <span class="c-g">1</span>(<span class="c-p">x + 3</span>)`,
+            },
+            {
+              title: "Facteur commun final !",
+              body: `<span style="font-size:1.2rem;">(<span class="c-p">x + 3</span>)(<span class="c-r">2x²</span> + <span class="c-g">1</span>)</span>`,
+            },
+          ],
+        },
+        {
+          terms: ["x³", "2x²", "−x", "−2"],
+          expr: "x³ + 2x² − x − 2",
+          steps: [
+            {
+              title: "Expression de départ",
+              body: `<span class="c-r">x³</span> + <span class="c-r">2x²</span> − <span class="c-g">x</span> − <span class="c-g">2</span>`,
+            },
+            {
+              title: "Regrouper par paires",
+              body: `(<span class="c-r">x³</span> + <span class="c-r">2x²</span>) + (<span class="c-g">−x</span> − <span class="c-g">2</span>)`,
+            },
+            {
+              title: "Factoriser chaque paire",
+              body: `<span class="c-r">x²</span>(<span class="c-p">x + 2</span>) − <span class="c-g">1</span>(<span class="c-p">x + 2</span>)`,
+            },
+            {
+              title: "Facteur commun final !",
+              body: `<span style="font-size:1.2rem;">(<span class="c-p">x + 2</span>)(<span class="c-r">x²</span> − <span class="c-g">1</span>)</span>`,
+            },
+            {
+              title: "Bonus : encore factoriser !",
+              body: `x² − 1 = (x+1)(x−1) — identité remarquable !<br><span style="font-size:1.1rem;">= (<span class="c-p">x+2</span>)(<span class="c-o">x+1</span>)(<span class="c-b">x−1</span>)</span>`,
+            },
+          ],
+        },
+        {
+          terms: ["x³", "−x²", "−4x", "4"],
+          expr: "x³ − x² − 4x + 4",
+          steps: [
+            {
+              title: "Expression de départ",
+              body: `<span class="c-r">x³</span> − <span class="c-r">x²</span> − <span class="c-g">4x</span> + <span class="c-g">4</span>`,
+            },
+            {
+              title: "Regrouper par paires",
+              body: `(<span class="c-r">x³</span> − <span class="c-r">x²</span>) + (<span class="c-g">−4x</span> + <span class="c-g">4</span>)`,
+            },
+            {
+              title: "Factoriser chaque paire",
+              body: `<span class="c-r">x²</span>(<span class="c-p">x − 1</span>) − <span class="c-g">4</span>(<span class="c-p">x − 1</span>)`,
+            },
+            {
+              title: "Facteur commun final !",
+              body: `<span style="font-size:1.2rem;">(<span class="c-p">x − 1</span>)(<span class="c-r">x²</span> − <span class="c-g">4</span>)</span>`,
+            },
+            {
+              title: "Bonus : a² − b² !",
+              body: `x² − 4 = (x+2)(x−2)<br><span style="font-size:1.1rem;">= (<span class="c-p">x−1</span>)(<span class="c-o">x+2</span>)(<span class="c-b">x−2</span>)</span>`,
+            },
+          ],
+        },
+      ];
+
+      function renderQuadrinomes(panel) {
+        const st = state.quadrinomes;
+        const { level, step } = st;
+        const item = QUAD_BANK[level];
+
+        // Nav
+        const nav = document.createElement("div");
+        nav.className = "nav-row";
+        nav.innerHTML = `<button class="nav-btn" ${level === 0 ? "disabled" : ""}>← Précédent</button>
+    <button class="nav-btn" style="text-align:center;color:var(--accent);">Exemple ${level + 1} / ${QUAD_BANK.length}</button>
+    <button class="nav-btn" ${level >= QUAD_BANK.length - 1 ? "disabled" : ""}>Suivant →</button>`;
+        const btns = nav.querySelectorAll(".nav-btn");
+        btns[0].onclick = () => {
+          st.level = Math.max(0, level - 1);
+          st.step = 0;
+          renderPanel();
+        };
+        btns[2].onclick = () => {
+          st.level = Math.min(QUAD_BANK.length - 1, level + 1);
+          st.step = 0;
+          renderPanel();
+        };
+        panel.appendChild(nav);
+
+        // Term blocks
+        const tb = document.createElement("div");
+        tb.className = "card";
+        tb.innerHTML = `<div class="card-title">📦 LES 4 TERMES</div>`;
+        const blocks = document.createElement("div");
+        blocks.className = "term-blocks";
+        item.terms.forEach((t, i) => {
+          const b = document.createElement("div");
+          b.className = "term-block" + (i < 2 ? " sel-a" : " sel-b");
+          b.textContent = t;
+          blocks.appendChild(b);
+        });
+        tb.appendChild(blocks);
+        tb.innerHTML += `<p style="font-size:0.72rem;color:var(--muted);text-align:center;margin-top:8px;">On regroupe les <span style="color:var(--green)">verts</span> ensemble et les <span style="color:var(--yellow)">jaunes</span> ensemble</p>`;
+        panel.appendChild(tb);
+
+        // Expression
+        panel.appendChild(exprBox(item.expr));
+
+        // Steps
+        panel.appendChild(
+          buildSteps(
+            item.steps,
+            step,
+            () => {
+              st.step++;
+              renderPanel();
+            },
+            () => {
+              st.step = 0;
+              renderPanel();
+            },
+          ),
+        );
+
+        panel.appendChild(
+          ruleCard(
+            "💡 MÉTHODE DU REGROUPEMENT",
+            `<p class="hint">
+    <span>1.</span> Séparer le quadrinôme en <span>2 paires</span> de termes.<br>
+    <span>2.</span> Factoriser <span>chaque paire</span> séparément.<br>
+    <span>3.</span> Si un <span>facteur commun</span> apparaît dans les deux → le sortir !<br><br>
+    ⚠️ Parfois il faut <span>changer l'ordre</span> des termes pour que le regroupement marche.</p>`,
+          ),
+        );
+      }
+
+      // ===================== PDF MAP =====================
+      const CORR_FACT = "pdfs/correction_exo/Correctif%20exo.pdf";
+      const PDF_MAP = {
+        distributivite: {
+          slide: "pdfs/distributiovit%C3%A9/SLIDE.pdf",
+          synth: "pdfs/distributiovit%C3%A9/Synth%C3%A8se.pdf",
+          correction: CORR_FACT,
+        },
+        puissances: {
+          slide: "pdfs/puissances/SLIDES.pdf",
+          synth: "pdfs/puissances/Synth%C3%A8se.pdf",
+          correction: CORR_FACT,
+        },
+        facteur: {
+          slide: "pdfs/facteur%20commun/SLIDE.pdf",
+          synth: "pdfs/facteur%20commun/Synth%C3%A8se.pdf",
+          correction: CORR_FACT,
+        },
+        identites: {
+          slide: "pdfs/identit%C3%A9s%20remarquable/SLIDES.pdf",
+          synth: "pdfs/identit%C3%A9s%20remarquable/Synth%C3%A8se.pdf",
+          correction: CORR_FACT,
+        },
+        binomes: {
+          slide: "pdfs/binomes/SLIDE.pdf",
+          synth: "pdfs/binomes/Synth%C3%A8se.pdf",
+          correction: CORR_FACT,
+        },
+        trinomes: {
+          slide: "pdfs/trinome/SLIDE.pdf",
+          synth: "pdfs/trinome/1.pdf",
+          correction: CORR_FACT,
+        },
+        quadrinomes: {
+          slide: "pdfs/quadrinomes/SLIDE.pdf",
+          synth: "pdfs/quadrinomes/Synth%C3%A8se.pdf",
+          correction: CORR_FACT,
+        },
+      };
+
+      function renderPdfSection() {
+        const sec = document.getElementById("pdf-section");
+        const pdfs = PDF_MAP[state.tab];
+        if (!pdfs) {
+          sec.innerHTML = "";
+          return;
+        }
+
+        sec.innerHTML = `
+          <div class="pdf-outer-card">
+            <div class="pdf-header">
+              <span class="pdf-header-title">📄 Documents du chapitre</span>
+              <div class="pdf-header-line"></div>
+            </div>
+            <div class="pdf-toggle-row">
+              <button class="pdf-toggle-btn active" onclick="pdfSwitch(this,'pdf-slide')">&#127902;&#65039; Slides</button>
+              <button class="pdf-toggle-btn" onclick="pdfSwitch(this,'pdf-synth')">&#128203; Synth&egrave;se</button>
+              <button class="pdf-toggle-btn" onclick="pdfSwitch(this,'pdf-correction')">&#128221; Correction</button>
+            </div>
+            <div class="pdf-pane active" id="pdf-slide">
+              <embed src="${pdfs.slide}" type="application/pdf" class="pdf-embed">
+              <a href="${pdfs.slide}" target="_blank" class="pdf-fallback">&#128279; Ouvrir en plein &eacute;cran</a>
+            </div>
+            <div class="pdf-pane" id="pdf-synth">
+              <embed src="${pdfs.synth}" type="application/pdf" class="pdf-embed">
+              <a href="${pdfs.synth}" target="_blank" class="pdf-fallback">&#128279; Ouvrir en plein &eacute;cran</a>
+            </div>
+            <div class="pdf-pane" id="pdf-correction">
+              <embed src="${pdfs.correction}" type="application/pdf" class="pdf-embed">
+              <a href="${pdfs.correction}" target="_blank" class="pdf-fallback">&#128279; Ouvrir en plein &eacute;cran</a>
+            </div>
+          </div>`;
+      }
+
+      function pdfSwitch(btn, paneId) {
+        const card = btn.closest(".pdf-outer-card");
+        card
+          .querySelectorAll(".pdf-toggle-btn")
+          .forEach((b) => b.classList.remove("active"));
+        card
+          .querySelectorAll(".pdf-pane")
+          .forEach((p) => p.classList.remove("active"));
+        btn.classList.add("active");
+        card.querySelector("#" + paneId).classList.add("active");
+      }
+
+      // ===================== TABS + INIT =====================
+      document.querySelectorAll(".tab").forEach((t) => {
+        t.addEventListener("click", () => {
+          document
+            .querySelectorAll(".tab")
+            .forEach((x) => x.classList.remove("active"));
+          t.classList.add("active");
+          state.tab = t.dataset.tab;
+          renderPanel();
+          renderPdfSection();
+        });
+      });
+
+      renderPanel();
+      renderPdfSection();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,3128 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trigonométrie — SIS SANAA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;700;900&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0a0a14;
+        --panel: #12121f;
+        --card: #161628;
+        --border: #1e1e3a;
+        --text: #eeeeff;
+        --muted: #6b6b9a;
+        --accent: #ffd93d;
+        --red: #ff6b6b;
+        --green: #4ade80;
+        --blue: #60a5fa;
+        --purple: #a78bfa;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Lexend", sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* HEADER */
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 20px;
+        background: var(--panel);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        gap: 12px;
+      }
+      .back-btn {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        padding: 6px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: "Lexend", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .back-btn:hover {
+        color: var(--text);
+        border-color: var(--accent);
+      }
+      .header-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .header-title .dot {
+        width: 18px;
+        height: 18px;
+        background: var(--accent);
+        border-radius: 4px;
+        box-shadow: 0 0 10px rgba(255, 217, 61, 0.5);
+      }
+      .header-title h1 {
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: var(--text);
+      }
+      .header-title p {
+        font-size: 0.75rem;
+        color: var(--muted);
+        display: none;
+      }
+      @media (min-width: 500px) {
+        .header-title p {
+          display: block;
+        }
+      }
+
+      /* TABS */
+      .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 14px 20px;
+        justify-content: center;
+        align-items: center;
+        background: var(--panel);
+        border-bottom: 1px solid var(--border);
+      }
+      .tab {
+        flex-shrink: 0;
+        padding: 9px 16px;
+        border-radius: 30px;
+        border: 1.5px solid transparent;
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .tab:hover {
+        color: var(--text);
+        border-color: rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .tab.active {
+        background: rgba(255, 217, 61, 0.15);
+        border-color: rgba(255, 217, 61, 0.5);
+        color: var(--accent);
+        box-shadow: 0 0 12px rgba(255, 217, 61, 0.18);
+      }
+
+      /* LAYOUT */
+      .layout {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: 0;
+        flex: 1;
+        min-height: 0;
+        height: calc(100vh - 138px);
+      }
+      .layout.layout-full {
+        grid-template-columns: 1fr;
+      }
+      @media (max-width: 768px) {
+        .layout {
+          grid-template-columns: 1fr;
+          height: auto;
+        }
+      }
+
+      /* CANVAS */
+      .canvas-zone {
+        background: var(--bg);
+        border-right: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+        min-height: 340px;
+      }
+      .layout.layout-full .canvas-zone {
+        display: none;
+      }
+      canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      /* PANEL */
+      .panel {
+        background: var(--panel);
+        overflow-y: auto;
+        padding: 16px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+      }
+      .layout.layout-full .panel {
+        max-width: 820px;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      /* CARDS */
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px 16px;
+      }
+      .card-title {
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+      .rule-card {
+        background: rgba(167, 139, 250, 0.06);
+        border: 1px solid rgba(167, 139, 250, 0.22);
+        border-radius: 14px;
+        padding: 14px 16px;
+      }
+      .rule-card .card-title {
+        color: var(--purple);
+      }
+      .formula {
+        font-family: "Space Mono", monospace;
+        font-size: 1.1rem;
+        background: rgba(255, 217, 61, 0.07);
+        border: 1px solid rgba(255, 217, 61, 0.18);
+        border-radius: 10px;
+        padding: 12px 16px;
+        text-align: center;
+        margin: 8px 0;
+        color: var(--text);
+      }
+      .formula.sm {
+        font-size: 0.85rem;
+      }
+      .hint {
+        font-size: 0.82rem;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+      .hint span {
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      /* TABLE */
+      .trig-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.78rem;
+        font-family: "Space Mono", monospace;
+      }
+      .trig-table th {
+        color: var(--muted);
+        padding: 5px 4px;
+        border-bottom: 1px solid var(--border);
+        text-align: center;
+        font-weight: 700;
+        font-size: 0.68rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .trig-table td {
+        padding: 6px 4px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        text-align: center;
+      }
+      .trig-table tr:last-child td {
+        border-bottom: none;
+      }
+      .trig-table tr:hover td {
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .trig-table .hl {
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      /* SLIDERS */
+      .slider-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 4px 0;
+      }
+      .slider-label {
+        min-width: 110px;
+        font-size: 0.77rem;
+        color: var(--muted);
+        font-weight: 600;
+      }
+      .slider-row input[type="range"] {
+        flex: 1;
+        height: 6px;
+        cursor: pointer;
+        border-radius: 3px;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #fff;
+        border: 3px solid var(--accent);
+        cursor: pointer;
+        box-shadow: 0 0 6px rgba(255, 217, 61, 0.4);
+      }
+      input[type="range"]::-moz-range-thumb {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #fff;
+        border: 3px solid var(--accent);
+        cursor: pointer;
+      }
+      .slider-val {
+        min-width: 44px;
+        text-align: right;
+        font-family: "Space Mono", monospace;
+        font-size: 0.82rem;
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      /* BIG VALUE DISPLAY */
+      .big-val {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin: 4px 0;
+      }
+      .big-val-item {
+        flex: 1;
+        min-width: 56px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 7px 7px;
+        text-align: center;
+      }
+      .big-val-item .bv-label {
+        font-size: 0.58rem;
+        color: var(--muted);
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .big-val-item .bv-num {
+        font-family: "Space Mono", monospace;
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* STEPS */
+      .steps-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .step {
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition:
+          max-height 0.45s ease,
+          opacity 0.4s ease;
+      }
+      .step.visible {
+        max-height: 280px;
+        opacity: 1;
+      }
+      .step-inner {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        border-radius: 0 10px 10px 0;
+        padding: 10px 14px;
+      }
+      .step-num {
+        font-size: 0.65rem;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 4px;
+      }
+      .step-title {
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .step-body {
+        font-size: 0.8rem;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+      .step-body .hl {
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .step-body .hg {
+        color: var(--green);
+        font-weight: 700;
+      }
+      .step-body .hr {
+        color: var(--red);
+        font-weight: 700;
+      }
+      .step-body .hb {
+        color: var(--blue);
+        font-weight: 700;
+      }
+      .step-btn {
+        padding: 8px 18px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 217, 61, 0.3);
+        background: rgba(255, 217, 61, 0.08);
+        color: var(--accent);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .step-btn:hover {
+        background: rgba(255, 217, 61, 0.15);
+      }
+      .step-btn.reset {
+        border-color: var(--border);
+        background: transparent;
+        color: var(--muted);
+      }
+      .step-btn.reset:hover {
+        color: var(--text);
+      }
+
+      /* MODE TOGGLE */
+      .mode-row {
+        display: flex;
+        gap: 8px;
+      }
+      .mode-btn {
+        flex: 1;
+        padding: 8px;
+        border-radius: 10px;
+        border: 1.5px solid var(--border);
+        background: transparent;
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .mode-btn.active {
+        background: rgba(255, 217, 61, 0.12);
+        border-color: rgba(255, 217, 61, 0.4);
+        color: var(--accent);
+      }
+
+      /* TYPE BTN (sub-tabs in panel) */
+      .type-row {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .type-btn {
+        padding: 6px 14px;
+        border-radius: 20px;
+        border: 1.5px solid var(--border);
+        background: transparent;
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .type-btn.active {
+        background: rgba(255, 217, 61, 0.12);
+        border-color: rgba(255, 217, 61, 0.4);
+        color: var(--accent);
+      }
+
+      /* EXERCISE */
+      .ex-input-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-top: 8px;
+      }
+      .ex-input {
+        flex: 1;
+        padding: 8px 12px;
+        background: var(--bg);
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        color: var(--text);
+        font-family: "Space Mono", monospace;
+        font-size: 0.9rem;
+        outline: none;
+      }
+      .ex-input:focus {
+        border-color: var(--accent);
+      }
+      .ex-submit {
+        padding: 8px 18px;
+        background: var(--accent);
+        color: #0a0a14;
+        border: none;
+        border-radius: 8px;
+        font-family: "Lexend", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: filter 0.2s;
+      }
+      .ex-submit:hover {
+        filter: brightness(1.1);
+      }
+      .ex-feedback {
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        margin-top: 6px;
+      }
+      .ex-feedback.ok {
+        background: rgba(74, 222, 128, 0.12);
+        border: 1px solid rgba(74, 222, 128, 0.3);
+        color: var(--green);
+      }
+      .ex-feedback.ko {
+        background: rgba(255, 107, 107, 0.12);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        color: var(--red);
+      }
+      .ex-choice {
+        padding: 8px 14px;
+        border-radius: 8px;
+        border: 1.5px solid var(--border);
+        background: transparent;
+        color: var(--text);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        width: 100%;
+        text-align: left;
+        margin-top: 5px;
+      }
+      .ex-choice:hover {
+        border-color: var(--accent);
+      }
+      .ex-choice.correct {
+        background: rgba(74, 222, 128, 0.12);
+        border-color: var(--green);
+        color: var(--green);
+      }
+      .ex-choice.wrong {
+        background: rgba(255, 107, 107, 0.12);
+        border-color: var(--red);
+        color: var(--red);
+      }
+      .score-bar {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        font-size: 0.78rem;
+        color: var(--muted);
+        flex-wrap: wrap;
+      }
+      .score-bar strong {
+        color: var(--text);
+      }
+
+      /* PDF SECTION */
+      #pdf-section {
+        max-width: 900px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0 14px 48px;
+      }
+      .pdf-outer-card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 18px 20px;
+      }
+      .pdf-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .pdf-header-title {
+        font-family: "Lexend", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .pdf-header-line {
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+      .pdf-toggle-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+      }
+      .pdf-toggle-btn {
+        padding: 7px 20px;
+        border-radius: 30px;
+        border: 1.5px solid var(--border);
+        background: transparent;
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .pdf-toggle-btn:hover {
+        border-color: rgba(255, 217, 61, 0.4);
+        color: var(--text);
+      }
+      .pdf-toggle-btn.active {
+        background: rgba(255, 217, 61, 0.12);
+        border-color: rgba(255, 217, 61, 0.5);
+        color: var(--accent);
+      }
+      .pdf-pane {
+        display: none;
+      }
+      .pdf-pane.active {
+        display: block;
+      }
+      .pdf-embed {
+        width: 100%;
+        height: 560px;
+        border: none;
+        border-radius: 10px;
+        display: block;
+      }
+      .pdf-fallback {
+        display: block;
+        margin-top: 10px;
+        text-align: center;
+        font-size: 0.78rem;
+        color: var(--muted);
+        text-decoration: none;
+      }
+      .pdf-fallback:hover {
+        color: var(--text);
+      }
+
+      /* COLORS */
+      .c-a {
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .c-r {
+        color: var(--red);
+        font-weight: 700;
+      }
+      .c-g {
+        color: var(--green);
+        font-weight: 700;
+      }
+      .c-b {
+        color: var(--blue);
+        font-weight: 700;
+      }
+      .c-p {
+        color: var(--purple);
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <button class="back-btn" onclick="location.href = '../index.html'">
+        ← Retour
+      </button>
+      <div class="header-title">
+        <div class="dot"></div>
+        <div>
+          <h1>Trigonométrie</h1>
+          <p>Triangle, cercle, lois et identités</p>
+        </div>
+      </div>
+      <div style="width: 80px"></div>
+    </header>
+
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-tab="rappels">🔄 Rappels</button>
+      <button class="tab" data-tab="triangle">🔺 Triangle rect.</button>
+      <button class="tab" data-tab="problemes">🌍 Problèmes réels</button>
+      <button class="tab" data-tab="cercle">⭕ Cercle trigo</button>
+      <button class="tab" data-tab="identites">🔗 Identités</button>
+      <button class="tab" data-tab="sinus">⚖️ Loi des sinus</button>
+      <button class="tab" data-tab="cosinus">📐 Loi des cosinus</button>
+      <button class="tab" data-tab="aire">📊 Aire triangle</button>
+    </div>
+
+    <div class="layout" id="layout">
+      <div class="canvas-zone">
+        <canvas id="canvas"></canvas>
+      </div>
+      <div class="panel" id="panel"></div>
+    </div>
+
+    <div id="pdf-section"></div>
+
+    <script>
+      // ===================== STATE =====================
+      const state = {
+        tab: "rappels",
+        rappels: { angle: 45 },
+        triangle: {
+          angle: 35,
+          hyp: 5,
+          mode: "demo",
+          step: 0,
+          ex: null,
+          answered: false,
+          score: { ok: 0, total: 0, streak: 0 },
+        },
+        problemes: { dist: 8, angle: 30, type: "hauteur" },
+        cercle: { angle: 60 },
+        identites: {
+          angle: 37,
+          step: 0,
+          idType: "pythagore",
+          mode: "demo",
+          ex: null,
+          answered: false,
+          score: { ok: 0, total: 0, streak: 0 },
+        },
+        sinus: { a: 6, A: 45, B: 65, step: 0 },
+        cosinus: { a: 5, b: 7, C: 60, step: 0 },
+        aire: {
+          a: 6,
+          b: 8,
+          C: 45,
+          step: 0,
+          mode: "demo",
+          ex: null,
+          answered: false,
+          score: { ok: 0, total: 0, streak: 0 },
+        },
+      };
+
+      // ===================== CANVAS =====================
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+
+      function resize() {
+        const cz = document.querySelector(".canvas-zone");
+        if (!cz || cz.style.display === "none") return;
+        canvas.width = cz.clientWidth;
+        canvas.height = cz.clientHeight;
+        draw();
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const t = state.tab;
+        if (t === "rappels") drawRappels();
+        else if (t === "triangle") drawTriangle();
+        else if (t === "problemes") drawProblemes();
+        else if (t === "cercle") drawCercle();
+        else if (t === "sinus") drawSinus();
+        else if (t === "cosinus") drawCosinus();
+        else if (t === "aire") drawAire();
+      }
+
+      // ─── Helpers ───────────────────────────────────────────
+      function P(cx, cy, sc, mx, my) {
+        return { x: cx + mx * sc, y: cy - my * sc };
+      }
+
+      function drawAxes(cx, cy, sc, W, H) {
+        ctx.save();
+        ctx.strokeStyle = "#1e1e3a";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, cy);
+        ctx.lineTo(W, cy);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(cx, 0);
+        ctx.lineTo(cx, H);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function drawDashedLine(x1, y1, x2, y2, color) {
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function label(txt, x, y, color = "#eeeeff", size = 13, font = "Lexend") {
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.font = `700 ${size}px ${font}`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(txt, x, y);
+        ctx.restore();
+      }
+
+      function drawArcAngle(cx, cy, r, a0, a1, color) {
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, -a1, -a0);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // ─── Draw: RAPPELS ─────────────────────────────────────
+      function drawRappels() {
+        const W = canvas.width,
+          H = canvas.height;
+        const cx = W / 2,
+          cy = H / 2;
+        const sc = Math.min(W, H) * 0.35;
+        const theta = (state.rappels.angle * Math.PI) / 180;
+
+        drawAxes(cx, cy, sc, W, H);
+
+        // Grid circles
+        ctx.save();
+        ctx.strokeStyle = "#1e1e3a";
+        ctx.lineWidth = 0.5;
+        for (let r of [sc]) {
+          ctx.beginPath();
+          ctx.arc(cx, cy, r, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        // Unit circle
+        ctx.save();
+        ctx.strokeStyle = "#2a2a4a";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, sc, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+
+        const px = cx + Math.cos(theta) * sc;
+        const py = cy - Math.sin(theta) * sc;
+
+        // Angle arc
+        drawArcAngle(cx, cy, sc * 0.2, 0, theta, "rgba(255,217,61,0.5)");
+        ctx.save();
+        ctx.fillStyle = "rgba(255,217,61,0.08)";
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, sc * 0.2, -theta, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        // cos dashed line
+        drawDashedLine(px, py, px, cy, "#60a5fa");
+        // sin dashed line
+        drawDashedLine(cx, cy, px, cy, "#4ade80");
+
+        // Radius line
+        ctx.save();
+        ctx.strokeStyle = "#ffd93d";
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(px, py);
+        ctx.stroke();
+        ctx.restore();
+
+        // Point
+        ctx.save();
+        ctx.fillStyle = "#ffd93d";
+        ctx.shadowColor = "#ffd93d";
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        ctx.arc(px, py, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // cos projection (on x-axis)
+        ctx.save();
+        ctx.fillStyle = "#4ade80";
+        ctx.beginPath();
+        ctx.arc(px, cy, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // Labels
+        label(
+          `${state.rappels.angle}°`,
+          cx + sc * 0.12 * Math.cos(theta / 2) + 14,
+          cy - sc * 0.12 * Math.sin(theta / 2),
+          "#ffd93d",
+          13,
+        );
+        label(`cos = ${fmt(Math.cos(theta))}`, px, cy + 16, "#4ade80", 11);
+        label(
+          `sin = ${fmt(Math.sin(theta))}`,
+          px + 36,
+          (py + cy) / 2,
+          "#60a5fa",
+          11,
+        );
+        label(
+          "1",
+          cx + sc * 0.5 * Math.cos(theta) - 10,
+          cy - sc * 0.5 * Math.sin(theta) - 10,
+          "#ffd93d",
+          11,
+        );
+
+        // Axis labels
+        label("cos θ", cx + sc + 22, cy, "#4ade80", 11);
+        label("sin θ", cx, cy - sc - 14, "#60a5fa", 11);
+      }
+
+      // ─── Draw: TRIANGLE RECTANGLE ──────────────────────────
+      function drawTriangle() {
+        const W = canvas.width,
+          H = canvas.height;
+        const theta = (state.triangle.angle * Math.PI) / 180;
+        const hyp = state.triangle.hyp;
+        const adj = hyp * Math.cos(theta);
+        const opp = hyp * Math.sin(theta);
+
+        // Pad generously for labels (left/right for vertex+side labels, top/bottom)
+        const padL = 200,
+          padR = 260,
+          padT = 170,
+          padB = 170;
+        const sc = Math.min((W - padL - padR) / adj, (H - padT - padB) / opp);
+
+        // Place A bottom-left, B bottom-right, C top-right — centered
+        const triW = adj * sc,
+          triH = opp * sc;
+        const bx = (W - triW) / 2;
+        const by = (H + triH) / 2;
+
+        // Triangle fill
+        ctx.save();
+        ctx.fillStyle = "rgba(255,217,61,0.04)";
+        ctx.beginPath();
+        ctx.moveTo(bx, by);
+        ctx.lineTo(bx + triW, by);
+        ctx.lineTo(bx + triW, by - triH);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        // Triangle stroke
+        ctx.save();
+        ctx.strokeStyle = "#ffd93d";
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(bx, by);
+        ctx.lineTo(bx + triW, by);
+        ctx.lineTo(bx + triW, by - triH);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+
+        // Right angle marker
+        const rs = Math.max(10, Math.min(18, sc * 0.15));
+        ctx.save();
+        ctx.strokeStyle = "#60a5fa";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(bx + triW - rs, by);
+        ctx.lineTo(bx + triW - rs, by - rs);
+        ctx.lineTo(bx + triW, by - rs);
+        ctx.stroke();
+        ctx.restore();
+
+        // Angle arc at A
+        const arcR = Math.max(24, Math.min(40, sc * 0.18));
+        drawArcAngle(bx, by, arcR, 0, theta, "#ffd93d");
+        label(
+          `${state.triangle.angle}°`,
+          bx + arcR + 16,
+          by - 14,
+          "#ffd93d",
+          12,
+        );
+
+        // Side labels (centered on each side, offset outward)
+        // Base AB (horizontal)
+        label(`Adjacent = ${fmt(adj)}`, bx + triW / 2, by + 20, "#4ade80", 11);
+        // Right side BC (vertical) — right of line
+        label(
+          `Opposée = ${fmt(opp)}`,
+          bx + triW + 52,
+          by - triH / 2,
+          "#60a5fa",
+          11,
+        );
+        // Hypotenuse AC — offset above-left
+        const hAngle = Math.atan2(triH, triW);
+        const hMidX = bx + triW / 2 - Math.sin(hAngle) * 16;
+        const hMidY = by - triH / 2 - Math.cos(hAngle) * 16;
+        label(`Hyp = ${fmt(hyp)}`, hMidX, hMidY, "#ffd93d", 11);
+
+        // Vertex labels
+        label("A", bx - 16, by + 4, "#a78bfa", 14);
+        label("B", bx + triW + 18, by + 4, "#a78bfa", 14);
+        label("C", bx + triW + 18, by - triH, "#a78bfa", 14);
+      }
+
+      // ─── Draw: PROBLÈMES RÉELS ──────────────────────────────
+      function drawProblemes() {
+        const W = canvas.width,
+          H = canvas.height;
+        const dist = state.problemes.dist;
+        const angle = (state.problemes.angle * Math.PI) / 180;
+        const height = dist * Math.tan(angle);
+        const type = state.problemes.type;
+
+        // Scale to fill ~50% of canvas, keeping aspect
+        const padH = 140,
+          padV = 120;
+        const sc = Math.min(
+          (W - padH * 2) / Math.max(dist, 0.1),
+          (H - padV * 2) / Math.max(height, 0.1),
+        );
+        // Observer left at 18% of width, ground at 62% (higher up)
+        const gx = W * 0.18,
+          gy = H * 0.62;
+
+        // Ground
+        ctx.save();
+        ctx.strokeStyle = "#2a2a4a";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(gx - 20, gy);
+        ctx.lineTo(W - 20, gy);
+        ctx.stroke();
+        ctx.restore();
+
+        if (type === "hauteur") {
+          const tx = gx + dist * sc;
+          const ty = gy - height * sc;
+
+          // Building
+          ctx.save();
+          ctx.strokeStyle = "#60a5fa";
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(tx, gy);
+          ctx.lineTo(tx, ty);
+          ctx.stroke();
+          ctx.restore();
+
+          // Line of sight
+          ctx.save();
+          ctx.strokeStyle = "#ffd93d";
+          ctx.lineWidth = 2;
+          ctx.setLineDash([6, 4]);
+          ctx.beginPath();
+          ctx.moveTo(gx, gy);
+          ctx.lineTo(tx, ty);
+          ctx.stroke();
+          ctx.restore();
+
+          // Dashed horizontal
+          drawDashedLine(gx, gy, tx, gy, "#2a2a4a");
+
+          // Angle arc
+          drawArcAngle(
+            gx,
+            gy,
+            35,
+            0,
+            Math.atan2(height * sc, dist * sc),
+            "#ffd93d",
+          );
+          label(`${state.problemes.angle}°`, gx + 50, gy - 16, "#ffd93d", 12);
+
+          // Observer dot
+          ctx.save();
+          ctx.fillStyle = "#a78bfa";
+          ctx.beginPath();
+          ctx.arc(gx, gy, 6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+
+          // Top dot
+          ctx.save();
+          ctx.fillStyle = "#60a5fa";
+          ctx.shadowColor = "#60a5fa";
+          ctx.shadowBlur = 8;
+          ctx.beginPath();
+          ctx.arc(tx, ty, 5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+
+          // Labels
+          label(
+            `d = ${fmt(dist)} m`,
+            gx + (dist * sc) / 2,
+            gy + 18,
+            "#4ade80",
+            12,
+          );
+          label(
+            `h = ${fmt(height)} m`,
+            tx + 44,
+            gy - (height * sc) / 2,
+            "#60a5fa",
+            12,
+          );
+          label("Observateur", gx, gy - 18, "#a78bfa", 10);
+          label("Sommet", tx + 32, ty - 10, "#60a5fa", 10);
+        } else {
+          // Angle d'angle d'un toit : distance horizontale, hauteur connue → angle
+          const bHeight = 6;
+          const bDist = bHeight / Math.tan(angle);
+          const bSc = Math.min(
+            (W - 160) / Math.max(bDist * 1.2, 0.1),
+            (H - 120) / Math.max(bHeight * 1.3, 0.1),
+          );
+          const tx = gx + bDist * bSc,
+            ty = gy - bHeight * bSc;
+
+          ctx.save();
+          ctx.strokeStyle = "#ff6b6b";
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(tx, gy);
+          ctx.lineTo(tx, ty);
+          ctx.stroke();
+          ctx.restore();
+
+          ctx.save();
+          ctx.strokeStyle = "#ffd93d";
+          ctx.lineWidth = 2;
+          ctx.setLineDash([6, 4]);
+          ctx.beginPath();
+          ctx.moveTo(gx, gy);
+          ctx.lineTo(tx, ty);
+          ctx.stroke();
+          ctx.restore();
+
+          drawArcAngle(
+            gx,
+            gy,
+            35,
+            0,
+            Math.atan2(bHeight * bSc, bDist * bSc),
+            "#ffd93d",
+          );
+          label(`${state.problemes.angle}°`, gx + 50, gy - 14, "#ffd93d", 12);
+          ctx.save();
+          ctx.fillStyle = "#a78bfa";
+          ctx.beginPath();
+          ctx.arc(gx, gy, 6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+          label(
+            `h = ${fmt(bHeight)} m`,
+            tx + 40,
+            gy - (bHeight * bSc) / 2,
+            "#ff6b6b",
+            12,
+          );
+          label(
+            `d = ${fmt(bDist)} m`,
+            gx + (bDist * bSc) / 2,
+            gy + 18,
+            "#4ade80",
+            12,
+          );
+        }
+      }
+
+      // ─── Draw: CERCLE TRIGONO ───────────────────────────────
+      function drawCercle() {
+        const W = canvas.width,
+          H = canvas.height;
+        const cx = W / 2,
+          cy = H / 2;
+        const sc = Math.min(W, H) * 0.37;
+        const theta = (state.cercle.angle * Math.PI) / 180;
+
+        // Outer ring
+        ctx.save();
+        ctx.strokeStyle = "#1e1e3a";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(cx, cy, sc, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+
+        // Axes
+        ctx.save();
+        ctx.strokeStyle = "#2a2a4a";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, cy);
+        ctx.lineTo(W, cy);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(cx, 0);
+        ctx.lineTo(cx, H);
+        ctx.stroke();
+        ctx.restore();
+
+        // Key angle markers on circle
+        for (const [deg, lbl] of [
+          [0, "0°"],
+          [90, "90°"],
+          [180, "180°"],
+          [270, "270°"],
+        ]) {
+          const a = (deg * Math.PI) / 180;
+          const px = cx + Math.cos(a) * (sc + 18),
+            py = cy - Math.sin(a) * (sc + 18);
+          label(lbl, px, py, "#2a2a4a", 11);
+        }
+
+        // Quadrant angle shading
+        ctx.save();
+        ctx.fillStyle = "rgba(255,217,61,0.06)";
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, sc, -theta, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        const px = cx + Math.cos(theta) * sc;
+        const py = cy - Math.sin(theta) * sc;
+
+        // cos line
+        ctx.save();
+        ctx.strokeStyle = "#4ade80";
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(px, cy);
+        ctx.stroke();
+        ctx.restore();
+
+        // sin line
+        ctx.save();
+        ctx.strokeStyle = "#60a5fa";
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(px, cy);
+        ctx.stroke();
+        ctx.restore();
+
+        // Radius arrow
+        ctx.save();
+        ctx.strokeStyle = "#ffd93d";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(px, py);
+        ctx.stroke();
+        ctx.restore();
+
+        // Projection on x-axis
+        drawDashedLine(px, cy, px, py, "rgba(255,255,255,0.1)");
+        drawDashedLine(cx, py, px, py, "rgba(255,255,255,0.1)");
+
+        // Point
+        ctx.save();
+        ctx.fillStyle = "#ffd93d";
+        ctx.shadowColor = "#ffd93d";
+        ctx.shadowBlur = 14;
+        ctx.beginPath();
+        ctx.arc(px, py, 7, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // Angle arc label
+        drawArcAngle(cx, cy, sc * 0.18, 0, theta, "rgba(255,217,61,0.6)");
+        label(`${state.cercle.angle}°`, cx + 28, cy - 20, "#ffd93d", 13);
+
+        // Cos/sin labels
+        ctx.save();
+        ctx.fillStyle = "#4ade80";
+        ctx.beginPath();
+        ctx.arc(px, cy, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+        label(
+          `cos = ${fmt(Math.cos(theta))}`,
+          (cx + px) / 2,
+          cy + 18,
+          "#4ade80",
+          11,
+        );
+        label(
+          `sin = ${fmt(Math.sin(theta))}`,
+          px + (Math.cos(theta) > 0 ? 44 : -44),
+          (py + cy) / 2,
+          "#60a5fa",
+          11,
+        );
+
+        // Coordinates label near point
+        const rad = (state.cercle.angle * Math.PI) / 180;
+        const radStr =
+          state.cercle.angle === 0
+            ? "0"
+            : state.cercle.angle === 30
+              ? "π/6"
+              : state.cercle.angle === 45
+                ? "π/4"
+                : state.cercle.angle === 60
+                  ? "π/3"
+                  : state.cercle.angle === 90
+                    ? "π/2"
+                    : state.cercle.angle === 180
+                      ? "π"
+                      : state.cercle.angle === 270
+                        ? "3π/2"
+                        : `${((state.cercle.angle * Math.PI) / 180).toFixed(2)} rad`;
+        const lx = px + (Math.cos(theta) > 0 ? 12 : -12);
+        const ly = py - 18;
+        ctx.save();
+        ctx.font = "bold 11px Lexend";
+        ctx.fillStyle = "#ffd93d";
+        ctx.textAlign = Math.cos(theta) > 0 ? "left" : "right";
+        ctx.fillText(
+          `(${fmt(Math.cos(theta))} ; ${fmt(Math.sin(theta))})`,
+          lx,
+          ly,
+        );
+        ctx.fillText(radStr, lx, ly - 14);
+        ctx.restore();
+
+        // ─── Tangente (droite tangente verticale en x=1) ───────
+        if (Math.abs(Math.cos(theta)) > 0.08) {
+          const tanVal = Math.sin(theta) / Math.cos(theta);
+          const tx = cx + sc;
+          const ty2 = cy - tanVal * sc;
+          // Vertical dashed tangent line
+          ctx.save();
+          ctx.strokeStyle = "rgba(255,107,107,0.35)";
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([4, 4]);
+          ctx.beginPath();
+          ctx.moveTo(tx, Math.max(4, cy - 3.2 * sc));
+          ctx.lineTo(tx, Math.min(H - 4, cy + 3.2 * sc));
+          ctx.stroke();
+          ctx.restore();
+          if (Math.abs(tanVal) <= 3.2) {
+            // Extended radius line to tangent point
+            ctx.save();
+            ctx.strokeStyle = "rgba(255,107,107,0.5)";
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(tx, ty2);
+            ctx.stroke();
+            ctx.restore();
+            // tan segment on vertical line
+            ctx.save();
+            ctx.strokeStyle = "#ff6b6b";
+            ctx.lineWidth = 3;
+            ctx.setLineDash([]);
+            ctx.beginPath();
+            ctx.moveTo(tx, cy);
+            ctx.lineTo(tx, ty2);
+            ctx.stroke();
+            ctx.restore();
+            // tan point
+            ctx.save();
+            ctx.fillStyle = "#ff6b6b";
+            ctx.shadowColor = "#ff6b6b";
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.arc(tx, ty2, 5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+            const tlx = tx + (Math.cos(theta) > 0 ? 46 : -46);
+            label(`tan = ${fmt(tanVal)}`, tlx, (cy + ty2) / 2, "#ff6b6b", 11);
+          }
+          // Base point at (1,0) on circle intersection
+          ctx.save();
+          ctx.fillStyle = "#ff6b6b";
+          ctx.beginPath();
+          ctx.arc(tx, cy, 4, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        // ─── Cotangente (droite tangente horizontale en y=1) ───
+        if (Math.abs(Math.sin(theta)) > 0.08) {
+          const cotanVal = Math.cos(theta) / Math.sin(theta);
+          const tyC = cy - sc; // y=1 screen
+          const txC = cx + cotanVal * sc;
+          // Horizontal dashed cotan line
+          ctx.save();
+          ctx.strokeStyle = "rgba(167,139,250,0.35)";
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([4, 4]);
+          ctx.beginPath();
+          ctx.moveTo(Math.max(4, cx - 3.2 * sc), tyC);
+          ctx.lineTo(Math.min(W - 4, cx + 3.2 * sc), tyC);
+          ctx.stroke();
+          ctx.restore();
+          if (Math.abs(cotanVal) <= 3.2) {
+            // Extended radius line to cotan point
+            ctx.save();
+            ctx.strokeStyle = "rgba(167,139,250,0.5)";
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(txC, tyC);
+            ctx.stroke();
+            ctx.restore();
+            // cotan segment on horizontal line
+            ctx.save();
+            ctx.strokeStyle = "#a78bfa";
+            ctx.lineWidth = 3;
+            ctx.setLineDash([]);
+            ctx.beginPath();
+            ctx.moveTo(cx, tyC);
+            ctx.lineTo(txC, tyC);
+            ctx.stroke();
+            ctx.restore();
+            // cotan point
+            ctx.save();
+            ctx.fillStyle = "#a78bfa";
+            ctx.shadowColor = "#a78bfa";
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.arc(txC, tyC, 5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+            label(`cotan = ${fmt(cotanVal)}`, txC, tyC - 16, "#a78bfa", 11);
+          }
+          // Base point at (0,1)
+          ctx.save();
+          ctx.fillStyle = "#a78bfa";
+          ctx.beginPath();
+          ctx.arc(cx, tyC, 4, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      // ─── Draw: SINUS ─────────────────────────────────────────
+      function drawGeneralTriangle(ax, ay, bx, by, cx2, cy2, labels) {
+        ctx.save();
+        ctx.fillStyle = "rgba(255,217,61,0.05)";
+        ctx.beginPath();
+        ctx.moveTo(ax, ay);
+        ctx.lineTo(bx, by);
+        ctx.lineTo(cx2, cy2);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+        ctx.save();
+        ctx.strokeStyle = "#ffd93d";
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(ax, ay);
+        ctx.lineTo(bx, by);
+        ctx.lineTo(cx2, cy2);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+
+        // Vertices
+        for (const [x, y, lbl, col] of labels.verts) {
+          ctx.save();
+          ctx.fillStyle = col || "#a78bfa";
+          ctx.beginPath();
+          ctx.arc(x, y, 5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+          label(lbl, x, y - 16, col || "#a78bfa", 14);
+        }
+        // Side labels
+        for (const [x, y, lbl, col] of labels.sides || []) {
+          label(lbl, x, y, col || "#ffd93d", 11);
+        }
+        // Angle labels
+        for (const [x, y, lbl, col] of labels.angles || []) {
+          label(lbl, x, y, col || "#4ade80", 11);
+        }
+      }
+
+      // Helper: place a general triangle centered in canvas
+      function centerTriangle(W, H, mathPts, pad) {
+        // mathPts = [[mx0,my0],[mx1,my1],[mx2,my2]]   (Y up in math space)
+        pad = pad || 80;
+        const xs = mathPts.map((p) => p[0]);
+        const ys = mathPts.map((p) => p[1]);
+        const minX = Math.min(...xs),
+          maxX = Math.max(...xs);
+        const minY = Math.min(...ys),
+          maxY = Math.max(...ys);
+        const tw = maxX - minX,
+          th = maxY - minY;
+        if (tw < 0.001 || th < 0.001) return null;
+        const sc = Math.min((W - pad * 2) / tw, (H - pad * 2) / th);
+        const offX = W / 2 - ((minX + maxX) / 2) * sc;
+        const offY = H / 2 + ((minY + maxY) / 2) * sc;
+        const toS = ([mx, my]) => [offX + mx * sc, offY - my * sc];
+        return { sc, toS };
+      }
+
+      function drawSinus() {
+        const W = canvas.width,
+          H = canvas.height;
+        const { a, A, B } = state.sinus;
+        const Ar = (A * Math.PI) / 180,
+          Br = (B * Math.PI) / 180;
+        const Cr = Math.PI - Ar - Br;
+        if (Cr <= 0.05) return;
+        const b = (a * Math.sin(Br)) / Math.sin(Ar);
+        const c = (a * Math.sin(Cr)) / Math.sin(Ar);
+
+        // Math coords: A(0,0), B(c,0), C(b·cosA, b·sinA)
+        const mA = [0, 0],
+          mB = [c, 0],
+          mC = [b * Math.cos(Ar), b * Math.sin(Ar)];
+        const p = centerTriangle(W, H, [mA, mB, mC], 230);
+        if (!p) return;
+        const [ax, ay] = p.toS(mA);
+        const [bx, by_coord] = p.toS(mB);
+        const [cx2, cy2] = p.toS(mC);
+        const sc = p.sc;
+
+        // Side midpoints with outward offset
+        const sMid = (p1, p2, dx, dy) => [
+          (p1[0] + p2[0]) / 2 + dx,
+          (p1[1] + p2[1]) / 2 + dy,
+        ];
+
+        drawGeneralTriangle(ax, ay, bx, by_coord, cx2, cy2, {
+          verts: [
+            [ax, ay, "A", "#ff6b6b"],
+            [bx, by_coord, "B", "#4ade80"],
+            [cx2, cy2, "C", "#60a5fa"],
+          ],
+          sides: [
+            [
+              ...sMid([bx, by_coord], [cx2, cy2], cx2 > bx ? 26 : -26, 0),
+              `a = ${fmt(a)}`,
+              "#ff6b6b",
+            ],
+            [
+              ...sMid([ax, ay], [cx2, cy2], cx2 > ax ? -30 : 30, -8),
+              `b = ${fmt(b)}`,
+              "#4ade80",
+            ],
+            [
+              ...sMid([ax, ay], [bx, by_coord], 0, 20),
+              `c = ${fmt(c)}`,
+              "#60a5fa",
+            ],
+          ],
+          angles: [
+            [ax + 36, ay - 16, `${A}°`, "#ff6b6b"],
+            [bx - 36, by_coord - 16, `${B}°`, "#4ade80"],
+            [
+              cx2,
+              cy2 - 20,
+              `${Math.round(((Math.PI - Ar - Br) * 180) / Math.PI)}°`,
+              "#60a5fa",
+            ],
+          ],
+        });
+      }
+
+      // ─── Draw: COSINUS ───────────────────────────────────────
+      function drawCosinus() {
+        const W = canvas.width,
+          H = canvas.height;
+        const { a, b, C } = state.cosinus;
+        const Cr = (C * Math.PI) / 180;
+        const c2 = a * a + b * b - 2 * a * b * Math.cos(Cr);
+        if (c2 <= 0) return;
+        const c = Math.sqrt(c2);
+
+        // Math coords: A(0,0), B(a,0), C(b·cosC, b·sinC)
+        const mA = [0, 0],
+          mB = [a, 0],
+          mC = [b * Math.cos(Cr), b * Math.sin(Cr)];
+        const p = centerTriangle(W, H, [mA, mB, mC], 230);
+        if (!p) return;
+        const [ax, ay] = p.toS(mA);
+        const [bx, by_coord] = p.toS(mB);
+        const [cx2, cy2] = p.toS(mC);
+
+        const sMid = (p1, p2, dx, dy) => [
+          (p1[0] + p2[0]) / 2 + dx,
+          (p1[1] + p2[1]) / 2 + dy,
+        ];
+
+        drawGeneralTriangle(ax, ay, bx, by_coord, cx2, cy2, {
+          verts: [
+            [ax, ay, "A", "#ff6b6b"],
+            [bx, by_coord, "B", "#4ade80"],
+            [cx2, cy2, "C", "#60a5fa"],
+          ],
+          sides: [
+            [
+              ...sMid([ax, ay], [bx, by_coord], 0, 20),
+              `a = ${fmt(a)}`,
+              "#4ade80",
+            ],
+            [
+              ...sMid([ax, ay], [cx2, cy2], cx2 > ax ? -30 : 30, -8),
+              `b = ${fmt(b)}`,
+              "#60a5fa",
+            ],
+            [
+              ...sMid([bx, by_coord], [cx2, cy2], cx2 > bx ? 26 : -26, 0),
+              `c = ${fmt(c)}`,
+              "#ffd93d",
+            ],
+          ],
+          angles: [
+            [ax + 32, ay - 16, "A", "#ff6b6b"],
+            [bx - 30, by_coord - 16, "B", "#4ade80"],
+            [cx2, cy2 - 20, `${C}°`, "#60a5fa"],
+          ],
+        });
+      }
+
+      // ─── Draw: AIRE ──────────────────────────────────────────
+      function drawAire() {
+        const W = canvas.width,
+          H = canvas.height;
+        const { a, b, C } = state.aire;
+        const Cr = (C * Math.PI) / 180;
+        if (Math.sin(Cr) < 0.01) return;
+
+        // Math coords: A(0,0), B(a,0), C(b·cosC, b·sinC)
+        const mA = [0, 0],
+          mB = [a, 0],
+          mC = [b * Math.cos(Cr), b * Math.sin(Cr)];
+        const p = centerTriangle(W, H, [mA, mB, mC], 230);
+        if (!p) return;
+        const [ax, ay] = p.toS(mA);
+        const [bx, by_coord] = p.toS(mB);
+        const [cx2, cy2] = p.toS(mC);
+        const S = 0.5 * a * b * Math.sin(Cr);
+
+        // Triangle fill (area colored)
+        ctx.save();
+        ctx.fillStyle = "rgba(255,217,61,0.1)";
+        ctx.beginPath();
+        ctx.moveTo(ax, ay);
+        ctx.lineTo(bx, by_coord);
+        ctx.lineTo(cx2, cy2);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        const sMidAire = (p1, p2, dx, dy) => [
+          (p1[0] + p2[0]) / 2 + dx,
+          (p1[1] + p2[1]) / 2 + dy,
+        ];
+
+        drawGeneralTriangle(ax, ay, bx, by_coord, cx2, cy2, {
+          verts: [
+            [ax, ay, "A", "#ff6b6b"],
+            [bx, by_coord, "B", "#4ade80"],
+            [cx2, cy2, "C", "#60a5fa"],
+          ],
+          sides: [
+            [
+              ...sMidAire([ax, ay], [bx, by_coord], 0, 20),
+              `a = ${fmt(a)}`,
+              "#4ade80",
+            ],
+            [
+              ...sMidAire([ax, ay], [cx2, cy2], cx2 > ax ? -30 : 30, -8),
+              `b = ${fmt(b)}`,
+              "#60a5fa",
+            ],
+          ],
+          angles: [[ax + 32, ay - 16, `${C}°`, "#ff6b6b"]],
+        });
+
+        // Area label inside triangle
+        const tc_x = (ax + bx + cx2) / 3,
+          tc_y = (ay + by_coord + cy2) / 3;
+        ctx.save();
+        ctx.fillStyle = "rgba(255,217,61,0.9)";
+        ctx.font = "bold 13px Space Mono";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(`S = ${fmt(S)}`, tc_x, tc_y);
+        ctx.restore();
+      }
+
+      // ===================== HELPERS =====================
+      function fmt(n) {
+        if (isNaN(n) || !isFinite(n)) return "—";
+        return Math.abs(n) < 0.001 ? "0" : parseFloat(n.toFixed(3)).toString();
+      }
+      function deg(d) {
+        return (d * Math.PI) / 180;
+      }
+      function round2(n) {
+        return Math.round(n * 100) / 100;
+      }
+
+      function slider(id, label, val, min, max, step, onChange) {
+        const row = document.createElement("div");
+        row.className = "slider-row";
+        row.innerHTML = `
+    <span class="slider-label">${label}</span>
+    <input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}">
+    <span class="slider-val" id="${id}_val">${val}</span>`;
+        const inp = row.querySelector("input");
+        const valEl = row.querySelector(`#${id}_val`);
+        inp.addEventListener("input", () => {
+          const v = parseFloat(inp.value);
+          valEl.textContent = v;
+          onChange(v);
+          draw();
+          renderPanel();
+        });
+        return row;
+      }
+
+      function card(title, html) {
+        const d = document.createElement("div");
+        d.className = "card";
+        d.innerHTML = `<div class="card-title">${title}</div>${html}`;
+        return d;
+      }
+
+      function ruleCard(title, html) {
+        const d = document.createElement("div");
+        d.className = "rule-card";
+        d.innerHTML = `<div class="card-title">${title}</div>${html}`;
+        return d;
+      }
+
+      function bigVal(items) {
+        const d = document.createElement("div");
+        d.className = "big-val";
+        for (const [lbl, val, col] of items) {
+          d.innerHTML += `<div class="big-val-item"><div class="bv-label">${lbl}</div><div class="bv-num" style="color:${col || "var(--accent)"}">${val}</div></div>`;
+        }
+        return d;
+      }
+
+      function buildSteps(steps, current, onNext, onReset) {
+        const wrap = document.createElement("div");
+        wrap.className = "steps-wrap";
+        steps.forEach((s, i) => {
+          const st = document.createElement("div");
+          st.className = `step${i <= current ? " visible" : ""}`;
+          st.innerHTML = `<div class="step-inner"><div class="step-num">Étape ${i + 1}</div><div class="step-title">${s.title}</div><div class="step-body">${s.body}</div></div>`;
+          wrap.appendChild(st);
+        });
+        const btnRow = document.createElement("div");
+        btnRow.style.cssText = "display:flex;gap:8px;margin-top:4px;";
+        if (current < steps.length - 1) {
+          const nxt = document.createElement("button");
+          nxt.className = "step-btn";
+          nxt.textContent = "Étape suivante →";
+          nxt.onclick = onNext;
+          btnRow.appendChild(nxt);
+        } else {
+          const rst = document.createElement("button");
+          rst.className = "step-btn reset";
+          rst.textContent = "↺ Recommencer";
+          rst.onclick = onReset;
+          btnRow.appendChild(rst);
+        }
+        wrap.appendChild(btnRow);
+        return wrap;
+      }
+
+      function scoreBar(sc) {
+        const d = document.createElement("div");
+        d.className = "score-bar";
+        d.innerHTML = `🔥 Série: <strong>${sc.streak}</strong> &nbsp;|&nbsp; ✅ <strong>${sc.ok}/${sc.total}</strong>`;
+        return d;
+      }
+
+      // ===================== RENDER PANELS =====================
+      function renderPanel() {
+        const panel = document.getElementById("panel");
+        const layout = document.getElementById("layout");
+        const t = state.tab;
+
+        // Layout-full for identites
+        layout.classList.toggle("layout-full", t === "identites");
+        panel.innerHTML = "";
+
+        if (t === "rappels") renderRappels(panel);
+        else if (t === "triangle") renderTriangle(panel);
+        else if (t === "problemes") renderProblemes(panel);
+        else if (t === "cercle") renderCercle(panel);
+        else if (t === "identites") renderIdentites(panel);
+        else if (t === "sinus") renderSinus(panel);
+        else if (t === "cosinus") renderCosinus(panel);
+        else if (t === "aire") renderAire(panel);
+      }
+
+      // ─── RAPPELS ──────────────────────────────────────────────
+      function renderRappels(panel) {
+        const st = state.rappels;
+
+        panel.appendChild(card("🎮 RÉGLAGES", "")).lastChild;
+        const ctrl =
+          panel.querySelector(".card:last-child") ||
+          panel.appendChild(document.createElement("div"));
+        ctrl.className = "card";
+        ctrl.innerHTML = `<div class="card-title">🎮 RÉGLAGES</div>`;
+        ctrl.appendChild(
+          slider("r_angle", "Angle θ (°)", st.angle, 0, 360, 1, (v) => {
+            st.angle = v;
+          }),
+        );
+        panel.appendChild(ctrl);
+
+        const a = (st.angle * Math.PI) / 180;
+        panel.appendChild(
+          bigVal([
+            ["Degrés", `${st.angle}°`, "#ffd93d"],
+            ["Radians", `${fmt(a)} rad`, "#a78bfa"],
+            ["cos θ", fmt(Math.cos(a)), "#4ade80"],
+            ["sin θ", fmt(Math.sin(a)), "#60a5fa"],
+            [
+              "tan θ",
+              Math.abs(Math.cos(a)) < 0.001
+                ? "∞"
+                : fmt(Math.sin(a) / Math.cos(a)),
+              "#ff6b6b",
+            ],
+          ]),
+        );
+
+        panel.appendChild(
+          ruleCard(
+            "📐 CONVERSION",
+            `<div class="formula sm">Degrés → Radians : θ<sub>rad</sub> = θ<sub>°</sub> × π / 180</div>
+     <div class="formula sm">Radians → Degrés : θ<sub>°</sub> = θ<sub>rad</sub> × 180 / π</div>`,
+          ),
+        );
+
+        const tableWrap = document.createElement("div");
+        tableWrap.className = "card";
+        tableWrap.innerHTML = `<div class="card-title">⭐ VALEURS REMARQUABLES</div>
+  <table class="trig-table">
+    <tr><th>θ°</th><th>θ rad</th><th>cos θ</th><th>sin θ</th><th>tan θ</th></tr>
+    <tr><td>0°</td><td>0</td><td class="hl">1</td><td class="hl">0</td><td class="hl">0</td></tr>
+    <tr><td>30°</td><td>π/6</td><td class="hl">√3/2</td><td class="hl">1/2</td><td class="hl">1/√3</td></tr>
+    <tr><td>45°</td><td>π/4</td><td class="hl">√2/2</td><td class="hl">√2/2</td><td class="hl">1</td></tr>
+    <tr><td>60°</td><td>π/3</td><td class="hl">1/2</td><td class="hl">√3/2</td><td class="hl">√3</td></tr>
+    <tr><td>90°</td><td>π/2</td><td class="hl">0</td><td class="hl">1</td><td class="hl">∞</td></tr>
+    <tr><td>180°</td><td>π</td><td class="hl">−1</td><td class="hl">0</td><td class="hl">0</td></tr>
+    <tr><td>270°</td><td>3π/2</td><td class="hl">0</td><td class="hl">−1</td><td class="hl">∞</td></tr>
+    <tr><td>360°</td><td>2π</td><td class="hl">1</td><td class="hl">0</td><td class="hl">0</td></tr>
+  </table>`;
+        panel.appendChild(tableWrap);
+      }
+
+      // ─── TRIANGLE RECT. ──────────────────────────────────────
+      function renderTriangle(panel) {
+        const st = state.triangle;
+        const { angle, hyp, mode, step, score } = st;
+
+        const modeRow = document.createElement("div");
+        modeRow.className = "mode-row";
+        modeRow.innerHTML = `
+    <button class="mode-btn ${mode === "demo" ? "active" : ""}" data-m="demo">📖 Démonstration</button>
+    <button class="mode-btn ${mode === "exercice" ? "active" : ""}" data-m="exercice">✏️ À toi !</button>`;
+        modeRow.querySelectorAll(".mode-btn").forEach(
+          (b) =>
+            (b.onclick = () => {
+              st.mode = b.dataset.m;
+              st.step = 0;
+              if (b.dataset.m === "exercice") genTriangleEx();
+              renderPanel();
+            }),
+        );
+        panel.appendChild(modeRow);
+
+        if (mode === "demo") {
+          const ctrl = document.createElement("div");
+          ctrl.className = "card";
+          ctrl.innerHTML = `<div class="card-title">🎮 RÉGLAGES</div>`;
+          ctrl.appendChild(
+            slider("tri_a", "Angle θ (°)", angle, 5, 85, 1, (v) => {
+              st.angle = v;
+              st.step = 0;
+            }),
+          );
+          ctrl.appendChild(
+            slider("tri_h", "Hypoténuse", hyp, 1, 12, 0.5, (v) => {
+              st.hyp = v;
+              st.step = 0;
+            }),
+          );
+          panel.appendChild(ctrl);
+
+          const a = deg(angle),
+            h = hyp;
+          const adj = round2(h * Math.cos(a)),
+            opp = round2(h * Math.sin(a));
+
+          panel.appendChild(
+            bigVal([
+              ["Adjacent", `${fmt(adj)}`, "#4ade80"],
+              ["Opposée", `${fmt(opp)}`, "#60a5fa"],
+              ["Hypoténuse", `${fmt(h)}`, "#ffd93d"],
+            ]),
+          );
+
+          const steps = [
+            {
+              title: "Nommer les côtés par rapport à θ",
+              body: `Par rapport à l'angle <span class="hl">θ = ${angle}°</span> :<br>• <span class="hg">Adjacent</span> = côté qui touche l'angle (pas l'hyp.)<br>• <span class="hb">Opposé</span> = côté en face de l'angle<br>• <span class="hl">Hypoténuse</span> = le plus long (en face du 90°)`,
+            },
+            {
+              title: "Rappel : SOH-CAH-TOA",
+              body: `<span class="hg">cos θ = Adjacent / Hyp</span> &nbsp;→ CAH<br><span class="hb">sin θ = Opposé / Hyp</span> &nbsp;→ SOH<br><span class="hr">tan θ = Opposé / Adjacent</span> &nbsp;→ TOA`,
+            },
+            {
+              title: "Calculer l'Adjacent",
+              body: `<span class="hg">Adjacent</span> = Hyp × cos θ<br>= <span class="hl">${fmt(h)}</span> × cos(<span class="hl">${angle}°</span>)<br>= <span class="hl">${fmt(h)}</span> × <span class="hl">${fmt(Math.cos(a))}</span><br>= <span class="hg">${fmt(adj)}</span>`,
+            },
+            {
+              title: "Calculer l'Opposé",
+              body: `<span class="hb">Opposé</span> = Hyp × sin θ<br>= <span class="hl">${fmt(h)}</span> × sin(<span class="hl">${angle}°</span>)<br>= <span class="hl">${fmt(h)}</span> × <span class="hl">${fmt(Math.sin(a))}</span><br>= <span class="hb">${fmt(opp)}</span>`,
+            },
+            {
+              title: "Vérification (Pythagore)",
+              body: `Adj² + Opp² = Hyp² ?<br><span class="hg">${fmt(adj)}</span>² + <span class="hb">${fmt(opp)}</span>² = ${fmt(adj * adj + opp * opp)}<br>Hyp² = <span class="hl">${fmt(h * h)}</span> ✓`,
+            },
+          ];
+          panel.appendChild(
+            buildSteps(
+              steps,
+              step,
+              () => {
+                st.step++;
+                renderPanel();
+                draw();
+              },
+              () => {
+                st.step = 0;
+                renderPanel();
+                draw();
+              },
+            ),
+          );
+          panel.appendChild(
+            ruleCard(
+              "💡 SOH-CAH-TOA",
+              `<div class="formula sm">sin θ = Opp/Hyp &nbsp;|&nbsp; cos θ = Adj/Hyp &nbsp;|&nbsp; tan θ = Opp/Adj</div>`,
+            ),
+          );
+        } else {
+          panel.appendChild(scoreBar(score));
+          if (!st.ex) genTriangleEx();
+          const ex = st.ex;
+          const exCard = document.createElement("div");
+          exCard.className = "card";
+          exCard.innerHTML = `<div class="card-title">✏️ EXERCICE</div>
+      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:8px;">Triangle rectangle — angle <span style="color:var(--accent);font-weight:700">${ex.angle}°</span>, hypoténuse <span style="color:var(--accent);font-weight:700">${ex.hyp}</span></p>
+      <p style="font-size:0.85rem;margin-bottom:10px;">Calcule <strong style="color:var(--accent)">${ex.question}</strong> (arrondi à 2 décimales) :</p>`;
+          if (!st.answered) {
+            const row = document.createElement("div");
+            row.className = "ex-input-row";
+            const inp = document.createElement("input");
+            inp.className = "ex-input";
+            inp.type = "number";
+            inp.step = "0.01";
+            inp.placeholder = "ta réponse…";
+            const btn = document.createElement("button");
+            btn.className = "ex-submit";
+            btn.textContent = "✓";
+            btn.onclick = () => {
+              const ans = parseFloat(inp.value);
+              const correct = Math.abs(ans - ex.answer) < 0.05;
+              if (correct) {
+                score.ok++;
+                score.streak++;
+              } else {
+                score.streak = 0;
+              }
+              score.total++;
+              st.answered = true;
+              st.lastCorrect = correct;
+              renderPanel();
+            };
+            row.appendChild(inp);
+            row.appendChild(btn);
+            exCard.appendChild(row);
+          } else {
+            const fb = document.createElement("div");
+            fb.className = `ex-feedback ${st.lastCorrect ? "ok" : "ko"}`;
+            fb.innerHTML = st.lastCorrect
+              ? `✅ Bravo ! Réponse : <strong>${fmt(ex.answer)}</strong>`
+              : `❌ Raté. Réponse : <strong>${fmt(ex.answer)}</strong> — Calcul : ${ex.calcStr}`;
+            exCard.appendChild(fb);
+            const nxt = document.createElement("button");
+            nxt.className = "step-btn";
+            nxt.textContent = "Prochain exercice →";
+            nxt.style.marginTop = "8px";
+            nxt.onclick = () => {
+              genTriangleEx();
+              st.answered = false;
+              renderPanel();
+            };
+            exCard.appendChild(nxt);
+          }
+          panel.appendChild(exCard);
+          panel.appendChild(
+            ruleCard(
+              "💡 SOH-CAH-TOA",
+              `<div class="formula sm">sin θ = Opp/Hyp &nbsp;|&nbsp; cos θ = Adj/Hyp &nbsp;|&nbsp; tan θ = Opp/Adj</div>`,
+            ),
+          );
+        }
+      }
+
+      function genTriangleEx() {
+        const st = state.triangle;
+        const angle = [25, 30, 35, 40, 45, 50, 55, 60, 65][
+          Math.floor(Math.random() * 9)
+        ];
+        const hyp = Math.round((2 + Math.random() * 8) * 10) / 10;
+        const q = ["Adjacent (cos)", "Opposée (sin)", "Tangente"][
+          Math.floor(Math.random() * 3)
+        ];
+        const a = deg(angle);
+        let answer, calcStr, question;
+        if (q === "Adjacent (cos)") {
+          answer = round2(hyp * Math.cos(a));
+          calcStr = `${fmt(hyp)} × cos(${angle}°) = ${fmt(answer)}`;
+          question = "l'Adjacent";
+        } else if (q === "Opposée (sin)") {
+          answer = round2(hyp * Math.sin(a));
+          calcStr = `${fmt(hyp)} × sin(${angle}°) = ${fmt(answer)}`;
+          question = "l'Opposée";
+        } else {
+          answer = round2(Math.tan(a));
+          calcStr = `tan(${angle}°) = ${fmt(answer)}`;
+          question = "tan θ";
+        }
+        st.ex = { angle, hyp, question, answer, calcStr };
+      }
+
+      // ─── PROBLÈMES RÉELS ──────────────────────────────────────
+      function renderProblemes(panel) {
+        const st = state.problemes;
+
+        const typeRow = document.createElement("div");
+        typeRow.className = "type-row";
+        typeRow.innerHTML = `
+    <button class="type-btn ${st.type === "hauteur" ? "active" : ""}" data-t="hauteur">🏗️ Hauteur</button>
+    <button class="type-btn ${st.type === "distance" ? "active" : ""}" data-t="distance">📏 Distance</button>`;
+        typeRow.querySelectorAll(".type-btn").forEach(
+          (b) =>
+            (b.onclick = () => {
+              st.type = b.dataset.t;
+              renderPanel();
+              draw();
+            }),
+        );
+        panel.appendChild(typeRow);
+
+        const ctrl = document.createElement("div");
+        ctrl.className = "card";
+        ctrl.innerHTML = `<div class="card-title">🎮 RÉGLAGES</div>`;
+        ctrl.appendChild(
+          slider(
+            "pb_dist",
+            st.type === "hauteur" ? "Distance d (m)" : "Hauteur h (m)",
+            st.dist,
+            2,
+            20,
+            0.5,
+            (v) => {
+              st.dist = v;
+            },
+          ),
+        );
+        ctrl.appendChild(
+          slider("pb_ang", "Angle d'élévation (°)", st.angle, 5, 80, 1, (v) => {
+            st.angle = v;
+          }),
+        );
+        panel.appendChild(ctrl);
+
+        const a = deg(st.angle);
+        if (st.type === "hauteur") {
+          const h = round2(st.dist * Math.tan(a));
+          panel.appendChild(
+            bigVal([
+              ["Distance", `${fmt(st.dist)} m`, "#4ade80"],
+              ["Angle", `${st.angle}°`, "#ffd93d"],
+              ["Hauteur", `${fmt(h)} m`, "#60a5fa"],
+            ]),
+          );
+          panel.appendChild(
+            ruleCard(
+              "💡 FORMULE — Hauteur",
+              `<div class="formula sm">tan α = h / d &nbsp;→&nbsp; <strong>h = d × tan α</strong></div>
+       <p class="hint">On connaît : distance <span>d</span> et angle <span>α</span><br>On cherche : hauteur <span>h</span></p>`,
+            ),
+          );
+          const steps = [
+            {
+              title: "Dessiner la situation",
+              body: `Observateur au sol, bâtiment à distance <span class="hg">d = ${fmt(st.dist)} m</span>. L'angle d'élévation est <span class="hl">α = ${st.angle}°</span>.`,
+            },
+            {
+              title: "Identifier le triangle",
+              body: `Triangle rectangle : adjacent = d (<span class="hg">distance</span>), opposé = h (<span class="hb">hauteur</span>), angle = α.`,
+            },
+            {
+              title: "Appliquer tan",
+              body: `tan α = Opposé/Adjacent = h/d<br>Donc : h = d × tan α<br>= <span class="hg">${fmt(st.dist)}</span> × tan(<span class="hl">${st.angle}°</span>)<br>= <span class="hg">${fmt(st.dist)}</span> × <span class="hl">${fmt(Math.tan(a))}</span><br>= <span class="hb">${fmt(h)} m</span>`,
+            },
+          ];
+          panel.appendChild(
+            buildSteps(
+              steps,
+              2,
+              () => {},
+              () => {},
+            ),
+          );
+        } else {
+          const bHeight = 6;
+          const d = round2(bHeight / Math.tan(a));
+          panel.appendChild(
+            bigVal([
+              ["Hauteur", `${fmt(bHeight)} m`, "#ff6b6b"],
+              ["Angle", `${st.angle}°`, "#ffd93d"],
+              ["Distance", `${fmt(d)} m`, "#4ade80"],
+            ]),
+          );
+          panel.appendChild(
+            ruleCard(
+              "💡 FORMULE — Distance",
+              `<div class="formula sm">tan α = h / d &nbsp;→&nbsp; <strong>d = h / tan α</strong></div>
+       <p class="hint">On connaît : hauteur <span>h</span> et angle <span>α</span><br>On cherche : distance <span>d</span></p>`,
+            ),
+          );
+        }
+      }
+
+      // ─── CERCLE TRIGO ─────────────────────────────────────────
+      function renderCercle(panel) {
+        const st = state.cercle;
+
+        const ctrl = document.createElement("div");
+        ctrl.className = "card";
+        ctrl.innerHTML = `<div class="card-title">🎮 RÉGLAGES</div>`;
+        ctrl.appendChild(
+          slider("ce_a", "Angle θ (°)", st.angle, 0, 360, 1, (v) => {
+            st.angle = v;
+          }),
+        );
+        panel.appendChild(ctrl);
+
+        const a = deg(st.angle);
+        const radStr =
+          st.angle === 0
+            ? "0"
+            : st.angle === 30
+              ? "π/6"
+              : st.angle === 45
+                ? "π/4"
+                : st.angle === 60
+                  ? "π/3"
+                  : st.angle === 90
+                    ? "π/2"
+                    : st.angle === 120
+                      ? "2π/3"
+                      : st.angle === 135
+                        ? "3π/4"
+                        : st.angle === 150
+                          ? "5π/6"
+                          : st.angle === 180
+                            ? "π"
+                            : st.angle === 270
+                              ? "3π/2"
+                              : st.angle === 360
+                                ? "2π"
+                                : `${fmt(a)} rad`;
+
+        const cosA = Math.cos(a);
+        const sinA = Math.sin(a);
+        const tanA = Math.abs(cosA) < 0.001 ? "∞" : fmt(sinA / cosA);
+        const cotanA = Math.abs(sinA) < 0.001 ? "∞" : fmt(cosA / sinA);
+
+        panel.appendChild(
+          bigVal([
+            ["Degrés", `${st.angle}°`, "#ffd93d"],
+            ["Radians", radStr, "#a78bfa"],
+            ["cos θ", fmt(cosA), "#4ade80"],
+            ["sin θ", fmt(sinA), "#60a5fa"],
+            ["tan θ", tanA, "#ff6b6b"],
+            ["cotan θ", cotanA, "#a78bfa"],
+          ]),
+        );
+
+        // Quadrant info
+        let quad = "",
+          qcol = "#ffd93d";
+        const ag = st.angle % 360;
+        if (ag <= 90) {
+          quad = "1er quadrant (cos ≥ 0, sin ≥ 0)";
+          qcol = "#4ade80";
+        } else if (ag <= 180) {
+          quad = "2e quadrant (cos ≤ 0, sin ≥ 0)";
+          qcol = "#60a5fa";
+        } else if (ag <= 270) {
+          quad = "3e quadrant (cos ≤ 0, sin ≤ 0)";
+          qcol = "#ff6b6b";
+        } else {
+          quad = "4e quadrant (cos ≥ 0, sin ≤ 0)";
+          qcol = "#a78bfa";
+        }
+
+        panel.appendChild(
+          card(
+            "📍 QUADRANT",
+            `<p style="font-size:0.85rem;color:${qcol};font-weight:700">${quad}</p>`,
+          ),
+        );
+
+        panel.appendChild(
+          ruleCard(
+            "💡 RAPPELS DU CERCLE",
+            `<p class="hint">• Le rayon vaut <span>1</span> → le point = (cos θ, sin θ)<br>
+     • <span class="c-r">tan θ = sin θ / cos θ</span> — segment sur la droite x = 1<br>
+     • <span class="c-p">cotan θ = cos θ / sin θ</span> — segment sur la droite y = 1<br>
+     • <span>cos²θ + sin²θ = 1</span> toujours<br>
+     • <span>tan θ indéfinie</span> si θ = 90° ou 270°<br>
+     • <span>cotan θ indéfinie</span> si θ = 0° ou 180°</p>`,
+          ),
+        );
+
+        // Key points quick buttons
+        const qrow = document.createElement("div");
+        qrow.className = "type-row";
+        qrow.innerHTML = `<span style="font-size:0.7rem;color:var(--muted);align-self:center;margin-right:4px;">Raccourcis :</span>`;
+        for (const [d, lbl] of [
+          [0, "0°"],
+          [30, "30°"],
+          [45, "45°"],
+          [60, "60°"],
+          [90, "90°"],
+          [180, "180°"],
+          [270, "270°"],
+        ]) {
+          const b = document.createElement("button");
+          b.className = `type-btn${st.angle === d ? " active" : ""}`;
+          b.textContent = lbl;
+          b.onclick = () => {
+            st.angle = d;
+            draw();
+            renderPanel();
+          };
+          qrow.appendChild(b);
+        }
+        panel.appendChild(qrow);
+      }
+
+      // ─── IDENTITÉS ────────────────────────────────────────────
+      function renderIdentites(panel) {
+        const st = state.identites;
+
+        const modeRow = document.createElement("div");
+        modeRow.className = "mode-row";
+        modeRow.innerHTML = `
+    <button class="mode-btn ${st.mode === "demo" ? "active" : ""}" data-m="demo">📖 Démonstration</button>
+    <button class="mode-btn ${st.mode === "exercice" ? "active" : ""}" data-m="exercice">✏️ À toi !</button>`;
+        modeRow.querySelectorAll(".mode-btn").forEach(
+          (b) =>
+            (b.onclick = () => {
+              st.mode = b.dataset.m;
+              st.step = 0;
+              if (b.dataset.m === "exercice") genIdEx();
+              renderPanel();
+            }),
+        );
+        panel.appendChild(modeRow);
+
+        const typeRow = document.createElement("div");
+        typeRow.className = "type-row";
+        for (const [t, lbl] of [
+          ["pythagore", "cos²+sin²=1"],
+          ["tan", "tan = sin/cos"],
+          ["double", "Double angle"],
+          ["symetrie", "Symétries"],
+        ]) {
+          const b = document.createElement("button");
+          b.className = `type-btn${st.idType === t ? " active" : ""}`;
+          b.textContent = lbl;
+          b.onclick = () => {
+            st.idType = t;
+            st.step = 0;
+            renderPanel();
+          };
+          typeRow.appendChild(b);
+        }
+        panel.appendChild(typeRow);
+
+        if (st.mode === "demo") {
+          const ctrl = document.createElement("div");
+          ctrl.className = "card";
+          ctrl.innerHTML = `<div class="card-title">🎮 RÉGLAGES — angle de test</div>`;
+          ctrl.appendChild(
+            slider("id_a", "Angle θ (°)", st.angle, 0, 360, 1, (v) => {
+              st.angle = v;
+            }),
+          );
+          panel.appendChild(ctrl);
+
+          const a = deg(st.angle),
+            c = Math.cos(a),
+            s = Math.sin(a);
+
+          if (st.idType === "pythagore") {
+            panel.appendChild(
+              bigVal([
+                ["cos θ", fmt(c), "#4ade80"],
+                ["sin θ", fmt(s), "#60a5fa"],
+                ["cos²θ+sin²θ", fmt(c * c + s * s), "#ffd93d"],
+              ]),
+            );
+            const steps = [
+              {
+                title: "L'identité fondamentale",
+                body: `<strong>cos²θ + sin²θ = 1</strong><br>C'est <span class="hl">TOUJOURS vrai</span>, peu importe θ.`,
+              },
+              {
+                title: "Pourquoi ?",
+                body: `Sur le cercle unité, le point est à (cos θ, sin θ).<br>Distance à l'origine = rayon = 1<br>Donc : <span class="hg">cos²θ</span> + <span class="hb">sin²θ</span> = <span class="hl">1²</span> = <span class="hl">1</span>`,
+              },
+              {
+                title: "Vérification numérique",
+                body: `θ = ${st.angle}° :<br>cos²θ = ${fmt(c)}² = <span class="hg">${fmt(c * c)}</span><br>sin²θ = ${fmt(s)}² = <span class="hb">${fmt(s * s)}</span><br>Somme = <span class="hl">${fmt(c * c + s * s)}</span> ✓`,
+              },
+              {
+                title: "Déductions utiles",
+                body: `cos²θ = 1 − sin²θ<br>sin²θ = 1 − cos²θ<br>cos θ = <span class="hl">±√(1 − sin²θ)</span>`,
+              },
+            ];
+            panel.appendChild(
+              buildSteps(
+                steps,
+                st.step,
+                () => {
+                  st.step++;
+                  renderPanel();
+                },
+                () => {
+                  st.step = 0;
+                  renderPanel();
+                },
+              ),
+            );
+            panel.appendChild(
+              ruleCard(
+                "💡 IDENTITÉ FONDAMENTALE",
+                `<div class="formula">cos²θ + sin²θ = 1</div><p class="hint">Valable pour <span>tout</span> θ. C'est le théorème de Pythagore appliqué au cercle unité.</p>`,
+              ),
+            );
+          } else if (st.idType === "tan") {
+            const t_ = Math.abs(c) < 0.001 ? Infinity : s / c;
+            panel.appendChild(
+              bigVal([
+                ["sin θ", fmt(s), "#60a5fa"],
+                ["cos θ", fmt(c), "#4ade80"],
+                ["tan θ", Math.abs(c) < 0.001 ? "∞" : fmt(t_), "#ffd93d"],
+              ]),
+            );
+            const steps = [
+              {
+                title: "Définition de la tangente",
+                body: `<strong>tan θ = sin θ / cos θ</strong><br>(défini seulement quand cos θ ≠ 0, c.-à-d. θ ≠ 90°, 270°…)`,
+              },
+              {
+                title: "Vérification",
+                body: `θ = ${st.angle}° :<br>sin θ = <span class="hb">${fmt(s)}</span><br>cos θ = <span class="hg">${fmt(c)}</span><br>tan θ = ${fmt(s)} / ${fmt(c)} = <span class="hl">${Math.abs(c) < 0.001 ? "∞" : fmt(t_)}</span>`,
+              },
+              {
+                title: "Lien avec le triangle",
+                body: `tan θ = <span class="hr">Opposé / Adjacent</span><br>= (sin θ × Hyp) / (cos θ × Hyp)<br>= <span class="hb">sin θ</span> / <span class="hg">cos θ</span>`,
+              },
+            ];
+            panel.appendChild(
+              buildSteps(
+                steps,
+                st.step,
+                () => {
+                  st.step++;
+                  renderPanel();
+                },
+                () => {
+                  st.step = 0;
+                  renderPanel();
+                },
+              ),
+            );
+            panel.appendChild(
+              ruleCard(
+                "💡 TANGENTE",
+                `<div class="formula">tan θ = sin θ / cos θ</div>
+         <p class="hint">⚠️ <span>Indéfinie</span> quand cos θ = 0 (c.-à-d. θ = 90°, 270°…)</p>`,
+              ),
+            );
+          } else if (st.idType === "double") {
+            panel.appendChild(
+              bigVal([
+                ["cos(2θ)", fmt(Math.cos(2 * a)), "#4ade80"],
+                ["sin(2θ)", fmt(Math.sin(2 * a)), "#60a5fa"],
+                ["2cos²θ−1", fmt(2 * c * c - 1), "#ffd93d"],
+              ]),
+            );
+            const steps = [
+              {
+                title: "cos(2θ) — 3 formes équivalentes",
+                body: `<span class="hg">cos(2θ) = cos²θ − sin²θ</span><br>= <span class="hg">2cos²θ − 1</span><br>= <span class="hg">1 − 2sin²θ</span>`,
+              },
+              {
+                title: "sin(2θ)",
+                body: `<span class="hb">sin(2θ) = 2 sin θ cos θ</span>`,
+              },
+              {
+                title: "Vérification",
+                body: `θ = ${st.angle}° :<br>cos(2×${st.angle}°) = cos(${2 * st.angle}°) = <span class="hg">${fmt(Math.cos(2 * a))}</span><br>2cos²θ−1 = 2×${fmt(c * c)}−1 = <span class="hg">${fmt(2 * c * c - 1)}</span> ✓<br>sin(2×${st.angle}°) = <span class="hb">${fmt(Math.sin(2 * a))}</span><br>2sinθcosθ = 2×${fmt(s)}×${fmt(c)} = <span class="hb">${fmt(2 * s * c)}</span> ✓`,
+              },
+            ];
+            panel.appendChild(
+              buildSteps(
+                steps,
+                st.step,
+                () => {
+                  st.step++;
+                  renderPanel();
+                },
+                () => {
+                  st.step = 0;
+                  renderPanel();
+                },
+              ),
+            );
+            panel.appendChild(
+              ruleCard(
+                "💡 ANGLES DOUBLES",
+                `<div class="formula sm">cos(2θ) = 2cos²θ − 1 = 1 − 2sin²θ = cos²θ − sin²θ</div>
+         <div class="formula sm">sin(2θ) = 2 sin θ cos θ</div>`,
+              ),
+            );
+          } else {
+            // symetrie
+            panel.appendChild(
+              card(
+                "🔄 SYMÉTRIES ET SUPPLÉMENTS",
+                `
+        <table class="trig-table">
+          <tr><th>Formule</th><th>Valeur (θ=${st.angle}°)</th></tr>
+          <tr><td><span class="c-a">cos(−θ)</span> = cos θ</td><td class="hl">${fmt(Math.cos(-a))} = ${fmt(c)} ✓</td></tr>
+          <tr><td><span class="c-b">sin(−θ)</span> = −sin θ</td><td class="hl">${fmt(Math.sin(-a))} = ${fmt(-s)} ✓</td></tr>
+          <tr><td><span class="c-g">cos(π−θ)</span> = −cos θ</td><td class="hl">${fmt(Math.cos(Math.PI - a))} = ${fmt(-c)} ✓</td></tr>
+          <tr><td><span class="c-g">sin(π−θ)</span> = sin θ</td><td class="hl">${fmt(Math.sin(Math.PI - a))} = ${fmt(s)} ✓</td></tr>
+          <tr><td><span class="c-p">cos(θ+π)</span> = −cos θ</td><td class="hl">${fmt(Math.cos(a + Math.PI))} = ${fmt(-c)} ✓</td></tr>
+          <tr><td><span class="c-p">sin(θ+π)</span> = −sin θ</td><td class="hl">${fmt(Math.sin(a + Math.PI))} = ${fmt(-s)} ✓</td></tr>
+          <tr><td><span class="c-r">cos(π/2−θ)</span> = sin θ</td><td class="hl">${fmt(Math.cos(Math.PI / 2 - a))} = ${fmt(s)} ✓</td></tr>
+          <tr><td><span class="c-r">sin(π/2−θ)</span> = cos θ</td><td class="hl">${fmt(Math.sin(Math.PI / 2 - a))} = ${fmt(c)} ✓</td></tr>
+        </table>`,
+              ),
+            );
+          }
+        } else {
+          // Exercise mode
+          panel.appendChild(scoreBar(st.score));
+          if (!st.ex) genIdEx();
+          const ex = st.ex;
+          const exCard = document.createElement("div");
+          exCard.className = "card";
+          exCard.innerHTML = `<div class="card-title">✏️ EXERCICE</div>
+      <p style="font-size:0.85rem;margin-bottom:10px;">Calcule : <strong style="color:var(--accent)">${ex.question}</strong></p>`;
+          if (!st.answered) {
+            const choicesDiv = document.createElement("div");
+            ex.choices.forEach((ch, i) => {
+              const btn = document.createElement("button");
+              btn.className = "ex-choice";
+              btn.textContent = ch;
+              btn.onclick = () => {
+                const correct = i === ex.correctIdx;
+                if (correct) {
+                  st.score.ok++;
+                  st.score.streak++;
+                } else {
+                  st.score.streak = 0;
+                }
+                st.score.total++;
+                exCard.querySelectorAll(".ex-choice").forEach((b, j) => {
+                  b.disabled = true;
+                  if (j === ex.correctIdx) b.classList.add("correct");
+                  else if (j === i && !correct) b.classList.add("wrong");
+                });
+                st.answered = true;
+                setTimeout(() => {
+                  genIdEx();
+                  st.answered = false;
+                  renderPanel();
+                }, 1600);
+              };
+              choicesDiv.appendChild(btn);
+            });
+            exCard.appendChild(choicesDiv);
+          }
+          panel.appendChild(exCard);
+        }
+      }
+
+      const ID_BANK = [
+        { question: "cos(0°) = ?", answer: "1", wrong: ["0", "−1", "√2/2"] },
+        { question: "sin(90°) = ?", answer: "1", wrong: ["0", "−1", "1/2"] },
+        { question: "cos(180°) = ?", answer: "−1", wrong: ["0", "1", "−1/2"] },
+        {
+          question: "sin(30°) = ?",
+          answer: "1/2",
+          wrong: ["√3/2", "√2/2", "1"],
+        },
+        {
+          question: "cos(60°) = ?",
+          answer: "1/2",
+          wrong: ["√3/2", "√2/2", "0"],
+        },
+        {
+          question: "sin(45°) = ?",
+          answer: "√2/2",
+          wrong: ["1/2", "√3/2", "1"],
+        },
+        {
+          question: "cos(45°) = ?",
+          answer: "√2/2",
+          wrong: ["1/2", "√3/2", "0"],
+        },
+        { question: "tan(45°) = ?", answer: "1", wrong: ["0", "√3", "1/√3"] },
+        { question: "tan(60°) = ?", answer: "√3", wrong: ["1", "1/√3", "√2"] },
+        {
+          question: "cos²(37°) + sin²(37°) = ?",
+          answer: "1",
+          wrong: ["0", "2", "0.5"],
+        },
+        {
+          question: "sin(−60°) = ?",
+          answer: "−√3/2",
+          wrong: ["√3/2", "−1/2", "1/2"],
+        },
+        {
+          question: "cos(−45°) = ?",
+          answer: "√2/2",
+          wrong: ["−√2/2", "1/2", "0"],
+        },
+        {
+          question: "sin(180° − 30°) = ?",
+          answer: "1/2",
+          wrong: ["−1/2", "√3/2", "0"],
+        },
+      ];
+
+      function genIdEx() {
+        const st = state.identites;
+        const ex = ID_BANK[Math.floor(Math.random() * ID_BANK.length)];
+        const choices = [ex.answer, ...ex.wrong].sort(
+          () => Math.random() - 0.5,
+        );
+        const correctIdx = choices.indexOf(ex.answer);
+        st.ex = { question: ex.question, choices, correctIdx };
+      }
+
+      // ─── LOI DES SINUS ────────────────────────────────────────
+      function renderSinus(panel) {
+        const st = state.sinus;
+
+        const ctrl = document.createElement("div");
+        ctrl.className = "card";
+        ctrl.innerHTML = `<div class="card-title">🎮 RÉGLAGES</div>`;
+        ctrl.appendChild(
+          slider("si_a", "Côté a", st.a, 1, 12, 0.5, (v) => {
+            st.a = v;
+            st.step = 0;
+          }),
+        );
+        ctrl.appendChild(
+          slider("si_A", "Angle A (°)", st.A, 5, 170, 1, (v) => {
+            st.A = v;
+            if (st.A + st.B >= 175) st.B = 174 - st.A;
+            st.step = 0;
+          }),
+        );
+        ctrl.appendChild(
+          slider("si_B", "Angle B (°)", st.B, 5, 170, 1, (v) => {
+            st.B = v;
+            if (st.A + st.B >= 175) st.A = 174 - st.B;
+            st.step = 0;
+          }),
+        );
+        panel.appendChild(ctrl);
+
+        const { a, A, B } = st;
+        const Ar = deg(A),
+          Br = deg(B);
+        const C = 180 - A - B;
+        if (C <= 0) {
+          panel.appendChild(card("⚠️", "<p>A + B doit être < 180° !</p>"));
+          return;
+        }
+        const Cr = deg(C);
+        const b = round2((a * Math.sin(Br)) / Math.sin(Ar));
+        const c = round2((a * Math.sin(Cr)) / Math.sin(Ar));
+        const ratio = round2(a / Math.sin(Ar));
+
+        panel.appendChild(
+          bigVal([
+            ["C = 180−A−B", `${C}°`, "#60a5fa"],
+            ["b", `${fmt(b)}`, "#4ade80"],
+            ["c", `${fmt(c)}`, "#a78bfa"],
+            ["a/sinA", fmt(ratio), "#ffd93d"],
+          ]),
+        );
+
+        const steps = [
+          {
+            title: "Rappel de la loi des sinus",
+            body: `<span class="hl">a/sin A = b/sin B = c/sin C</span><br>Ce rapport est constant pour un même triangle.`,
+          },
+          {
+            title: "Calculer C",
+            body: `C = 180° − A − B<br>= 180° − ${A}° − ${B}°<br>= <span class="hb">${C}°</span>`,
+          },
+          {
+            title: "Calculer le rapport",
+            body: `a / sin A = ${fmt(a)} / sin(${A}°)<br>= ${fmt(a)} / ${fmt(Math.sin(Ar))}<br>= <span class="hl">${fmt(ratio)}</span>`,
+          },
+          {
+            title: "Calculer b",
+            body: `b = ratio × sin B<br>= <span class="hl">${fmt(ratio)}</span> × sin(${B}°)<br>= <span class="hl">${fmt(ratio)}</span> × ${fmt(Math.sin(Br))}<br>= <span class="hg">${fmt(b)}</span>`,
+          },
+          {
+            title: "Calculer c",
+            body: `c = ratio × sin C<br>= <span class="hl">${fmt(ratio)}</span> × sin(${C}°)<br>= <span class="hl">${fmt(ratio)}</span> × ${fmt(Math.sin(Cr))}<br>= <span class="hp">${fmt(c)}</span>`,
+          },
+        ];
+        panel.appendChild(
+          buildSteps(
+            steps,
+            st.step,
+            () => {
+              st.step++;
+              renderPanel();
+              draw();
+            },
+            () => {
+              st.step = 0;
+              renderPanel();
+              draw();
+            },
+          ),
+        );
+        panel.appendChild(
+          ruleCard(
+            "💡 LOI DES SINUS",
+            `<div class="formula">a / sin A = b / sin B = c / sin C</div>
+     <p class="hint">Utilise cette loi quand tu connais :<br>• 1 côté + l'angle <span>en face</span> + un autre angle<br>• ou 2 angles + 1 côté</p>`,
+          ),
+        );
+      }
+
+      // ─── LOI DES COSINUS ──────────────────────────────────────
+      function renderCosinus(panel) {
+        const st = state.cosinus;
+
+        const ctrl = document.createElement("div");
+        ctrl.className = "card";
+        ctrl.innerHTML = `<div class="card-title">🎮 RÉGLAGES</div>`;
+        ctrl.appendChild(
+          slider("co_a", "Côté a", st.a, 1, 12, 0.5, (v) => {
+            st.a = v;
+            st.step = 0;
+          }),
+        );
+        ctrl.appendChild(
+          slider("co_b", "Côté b", st.b, 1, 12, 0.5, (v) => {
+            st.b = v;
+            st.step = 0;
+          }),
+        );
+        ctrl.appendChild(
+          slider("co_C", "Angle C (°)", st.C, 5, 175, 1, (v) => {
+            st.C = v;
+            st.step = 0;
+          }),
+        );
+        panel.appendChild(ctrl);
+
+        const { a, b, C } = st;
+        const Cr = deg(C);
+        const c2 = a * a + b * b - 2 * a * b * Math.cos(Cr);
+        const c = round2(Math.sqrt(Math.max(0, c2)));
+
+        // Reverse: find angles A and B
+        const cosA = (b * b + c * c - a * a) / (2 * b * c);
+        const cosB = (a * a + c * c - b * b) / (2 * a * c);
+        const A = round2(
+          (Math.acos(Math.max(-1, Math.min(1, cosA))) * 180) / Math.PI,
+        );
+        const B = round2(
+          (Math.acos(Math.max(-1, Math.min(1, cosB))) * 180) / Math.PI,
+        );
+
+        panel.appendChild(
+          bigVal([
+            ["c²", `${fmt(c2)}`, "#a78bfa"],
+            ["c", `${fmt(c)}`, "#ffd93d"],
+            ["Angle A", `${A}°`, "#ff6b6b"],
+            ["Angle B", `${B}°`, "#4ade80"],
+          ]),
+        );
+
+        const steps = [
+          {
+            title: "Rappel de la loi des cosinus",
+            body: `<span class="hl">c² = a² + b² − 2ab·cos C</span>`,
+          },
+          {
+            title: "Calculer c²",
+            body: `c² = ${a}² + ${b}² − 2×${a}×${b}×cos(${C}°)<br>= ${a * a} + ${b * b} − ${2 * a * b}×${fmt(Math.cos(Cr))}<br>= ${a * a + b * b} − ${fmt(2 * a * b * Math.cos(Cr))}<br>= <span class="hl">${fmt(c2)}</span>`,
+          },
+          {
+            title: "Calculer c",
+            body: `c = √(${fmt(c2)}) = <span class="hl">${fmt(c)}</span>`,
+          },
+          {
+            title: "Trouver l'angle A (si besoin)",
+            body: `cos A = (b² + c² − a²) / (2bc)<br>= (${b * b} + ${fmt(c * c)} − ${a * a}) / (2×${b}×${fmt(c)})<br>= <span class="hg">${fmt(cosA)}</span><br>A = arccos(${fmt(cosA)}) = <span class="hr">${A}°</span>`,
+          },
+          {
+            title: "Vérification",
+            body: `A + B + C = ${A}° + ${B}° + ${C}° = <span class="hl">${round2(A + B + C)}°</span> ≈ 180° ✓`,
+          },
+        ];
+        panel.appendChild(
+          buildSteps(
+            steps,
+            st.step,
+            () => {
+              st.step++;
+              renderPanel();
+              draw();
+            },
+            () => {
+              st.step = 0;
+              renderPanel();
+              draw();
+            },
+          ),
+        );
+        panel.appendChild(
+          ruleCard(
+            "💡 LOI DES COSINUS",
+            `<div class="formula">c² = a² + b² − 2ab · cos C</div>
+     <p class="hint">Utilise quand tu connais :<br>• <span>2 côtés + l'angle inclus</span> entre eux → trouver le 3e côté<br>• <span>3 côtés</span> → trouver un angle</p>`,
+          ),
+        );
+      }
+
+      // ─── AIRE ─────────────────────────────────────────────────
+      function renderAire(panel) {
+        const st = state.aire;
+        const { a, b, C, mode, step, score } = st;
+
+        const modeRow = document.createElement("div");
+        modeRow.className = "mode-row";
+        modeRow.innerHTML = `
+    <button class="mode-btn ${mode === "demo" ? "active" : ""}" data-m="demo">📖 Démonstration</button>
+    <button class="mode-btn ${mode === "exercice" ? "active" : ""}" data-m="exercice">✏️ À toi !</button>`;
+        modeRow.querySelectorAll(".mode-btn").forEach(
+          (b) =>
+            (b.onclick = () => {
+              st.mode = b.dataset.m;
+              st.step = 0;
+              if (b.dataset.m === "exercice") genAireEx();
+              renderPanel();
+            }),
+        );
+        panel.appendChild(modeRow);
+
+        if (mode === "demo") {
+          const ctrl = document.createElement("div");
+          ctrl.className = "card";
+          ctrl.innerHTML = `<div class="card-title">🎮 RÉGLAGES</div>`;
+          ctrl.appendChild(
+            slider("ai_a", "Côté a", a, 1, 12, 0.5, (v) => {
+              st.a = v;
+              st.step = 0;
+            }),
+          );
+          ctrl.appendChild(
+            slider("ai_b", "Côté b", b, 1, 12, 0.5, (v) => {
+              st.b = v;
+              st.step = 0;
+            }),
+          );
+          ctrl.appendChild(
+            slider("ai_C", "Angle entre eux C (°)", C, 5, 175, 1, (v) => {
+              st.C = v;
+              st.step = 0;
+            }),
+          );
+          panel.appendChild(ctrl);
+
+          const Cr = deg(C);
+          const S = round2(0.5 * a * b * Math.sin(Cr));
+          const h = round2(b * Math.sin(Cr));
+
+          panel.appendChild(
+            bigVal([
+              ["Côté a", `${fmt(a)}`, "#4ade80"],
+              ["Côté b", `${fmt(b)}`, "#60a5fa"],
+              ["Angle C", `${C}°`, "#ffd93d"],
+              ["Aire S", `${fmt(S)}`, "#ff6b6b"],
+            ]),
+          );
+
+          const steps = [
+            {
+              title: "Rappel de la formule générale",
+              body: `<span class="hl">S = ½ × a × b × sin C</span><br>où C est l'angle <span class="hl">compris entre</span> a et b.`,
+            },
+            {
+              title: "Identifier les éléments",
+              body: `a = <span class="hg">${fmt(a)}</span>, b = <span class="hb">${fmt(b)}</span>, C = <span class="hl">${C}°</span>`,
+            },
+            {
+              title: "Calculer sin C",
+              body: `sin(${C}°) = <span class="hl">${fmt(Math.sin(Cr))}</span>`,
+            },
+            {
+              title: "Calculer l'aire",
+              body: `S = ½ × <span class="hg">${fmt(a)}</span> × <span class="hb">${fmt(b)}</span> × <span class="hl">${fmt(Math.sin(Cr))}</span><br>= 0.5 × ${fmt(a * b)} × ${fmt(Math.sin(Cr))}<br>= <span class="hr">${fmt(S)}</span>`,
+            },
+            {
+              title: "Vérification (base × hauteur / 2)",
+              body: `hauteur h = b × sin C = ${fmt(b)} × ${fmt(Math.sin(Cr))} = <span class="hb">${fmt(h)}</span><br>S = base × h / 2 = ${fmt(a)} × ${fmt(h)} / 2 = <span class="hr">${fmt((a * h) / 2)}</span> ✓`,
+            },
+          ];
+          panel.appendChild(
+            buildSteps(
+              steps,
+              step,
+              () => {
+                st.step++;
+                renderPanel();
+                draw();
+              },
+              () => {
+                st.step = 0;
+                renderPanel();
+                draw();
+              },
+            ),
+          );
+          panel.appendChild(
+            ruleCard(
+              "💡 AIRE D'UN TRIANGLE",
+              `<div class="formula">S = ½ × a × b × sin C</div>
+       <p class="hint">C est l'angle <span>compris entre</span> les deux côtés a et b.<br>Si C = 90° → sin C = 1 → on retrouve <span>S = ½ × a × b</span></p>`,
+            ),
+          );
+        } else {
+          panel.appendChild(scoreBar(score));
+          if (!st.ex) genAireEx();
+          const ex = st.ex;
+          const exCard = document.createElement("div");
+          exCard.className = "card";
+          exCard.innerHTML = `<div class="card-title">✏️ EXERCICE</div>
+      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:8px;">Triangle : a = <span style="color:var(--accent);font-weight:700">${ex.a}</span>, b = <span style="color:var(--accent);font-weight:700">${ex.b}</span>, angle C = <span style="color:var(--accent);font-weight:700">${ex.C}°</span></p>
+      <p style="font-size:0.85rem;margin-bottom:10px;">Calcule l'aire <strong style="color:var(--accent)">S</strong> (arrondi à 2 décimales) :</p>`;
+          if (!st.answered) {
+            const row = document.createElement("div");
+            row.className = "ex-input-row";
+            const inp = document.createElement("input");
+            inp.className = "ex-input";
+            inp.type = "number";
+            inp.step = "0.01";
+            inp.placeholder = "ta réponse…";
+            const btn = document.createElement("button");
+            btn.className = "ex-submit";
+            btn.textContent = "✓";
+            btn.onclick = () => {
+              const ans = parseFloat(inp.value);
+              const correct = Math.abs(ans - ex.answer) < 0.1;
+              if (correct) {
+                score.ok++;
+                score.streak++;
+              } else {
+                score.streak = 0;
+              }
+              score.total++;
+              st.answered = true;
+              st.lastCorrect = correct;
+              renderPanel();
+              draw();
+            };
+            row.appendChild(inp);
+            row.appendChild(btn);
+            exCard.appendChild(row);
+          } else {
+            const fb = document.createElement("div");
+            fb.className = `ex-feedback ${st.lastCorrect ? "ok" : "ko"}`;
+            fb.innerHTML = st.lastCorrect
+              ? `✅ Bravo ! S = <strong>${fmt(ex.answer)}</strong>`
+              : `❌ Raté. S = <strong>${fmt(ex.answer)}</strong> — ½ × ${ex.a} × ${ex.b} × sin(${ex.C}°)`;
+            exCard.appendChild(fb);
+            const nxt = document.createElement("button");
+            nxt.className = "step-btn";
+            nxt.textContent = "Prochain exercice →";
+            nxt.style.marginTop = "8px";
+            nxt.onclick = () => {
+              genAireEx();
+              st.answered = false;
+              renderPanel();
+              draw();
+            };
+            exCard.appendChild(nxt);
+          }
+          panel.appendChild(exCard);
+          panel.appendChild(
+            ruleCard(
+              "💡 FORMULE",
+              `<div class="formula sm">S = ½ × a × b × sin C</div>`,
+            ),
+          );
+        }
+      }
+
+      function genAireEx() {
+        const st = state.aire;
+        const angles = [30, 45, 60, 90, 120];
+        const C = angles[Math.floor(Math.random() * angles.length)];
+        const a = Math.round((2 + Math.random() * 8) * 10) / 10;
+        const b = Math.round((2 + Math.random() * 8) * 10) / 10;
+        const answer = round2(0.5 * a * b * Math.sin(deg(C)));
+        st.ex = { a, b, C, answer };
+      }
+
+      // ===================== PDF MAP =====================
+      const CORR_TRIG = {
+        label: "📝 Correction",
+        url: "correctif_exo/Correctif_exo.pdf",
+      };
+      const PDF_MAP_TRIG = {
+        rappels: [
+          { label: "📋 Synthèse", url: "pdfs/rappels/Synth%C3%A8se.pdf" },
+          CORR_TRIG,
+        ],
+        triangle: [
+          { label: "🎦 Slides", url: "pdfs/triangle%20rectangle/SLIDE.pdf" },
+          {
+            label: "📋 Synthèse",
+            url: "pdfs/triangle%20rectangle/Synth%C3%A8se.pdf",
+          },
+          CORR_TRIG,
+        ],
+        problemes: [
+          {
+            label: "🎦 Slides",
+            url: "pdfs/probl%C3%A8%C2%A7me%20r%C3%A9els/SLIDE.pdf",
+          },
+          {
+            label: "📋 Synthèse",
+            url: "pdfs/probl%C3%A8%C2%A7me%20r%C3%A9els/Synth%C3%A8se.pdf",
+          },
+          CORR_TRIG,
+        ],
+        cercle: [
+          {
+            label: "🖼️ Schéma",
+            url: "pdfs/cercle%20trigonom%C3%A9trique/cercletrigo.png",
+            type: "img",
+          },
+          {
+            label: "🎦 Slides",
+            url: "pdfs/cercle%20trigonom%C3%A9trique/SLIDE.pdf",
+          },
+          {
+            label: "📋 Synthèse",
+            url: "pdfs/cercle%20trigonom%C3%A9trique/Synth%C3%A8se.pdf",
+          },
+          CORR_TRIG,
+        ],
+        identites: [
+          {
+            label: "🎦 Slides",
+            url: "pdfs/identit%C3%A9s%20trigonom%C3%A9triques/SLIDE.pdf",
+          },
+          {
+            label: "📋 Synthèse",
+            url: "pdfs/identit%C3%A9s%20trigonom%C3%A9triques/Synth%C3%A8se.pdf",
+          },
+          CORR_TRIG,
+        ],
+        sinus: [
+          { label: "🎦 Slides", url: "pdfs/Loi%20des%20sinus/SLIDE.pdf" },
+          {
+            label: "📋 Synthèse",
+            url: "pdfs/Loi%20des%20sinus/Synth%C3%A8se.pdf",
+          },
+          CORR_TRIG,
+        ],
+        cosinus: [
+          { label: "🎦 Slides", url: "pdfs/loi%20des%20cosinus/SLIDE.pdf" },
+          {
+            label: "📋 Synthèse",
+            url: "pdfs/loi%20des%20cosinus/Synth%C3%A8se.pdf",
+          },
+          CORR_TRIG,
+        ],
+        aire: [
+          { label: "🎦 Slides", url: "pdfs/Aire%20triangle/SLIDE.pdf" },
+          {
+            label: "📋 Synthèse",
+            url: "pdfs/Aire%20triangle/Synth%C3%A8se.pdf",
+          },
+          CORR_TRIG,
+        ],
+      };
+
+      function renderPdfSection() {
+        const sec = document.getElementById("pdf-section");
+        const docs = PDF_MAP_TRIG[state.tab];
+        if (!docs || docs.length === 0) {
+          sec.innerHTML = "";
+          return;
+        }
+
+        const btns = docs
+          .map(
+            (d, i) =>
+              `<button class="pdf-toggle-btn${i === 0 ? " active" : ""}" onclick="pdfSwitch(this,'tpdf-${i}')">${d.label}</button>`,
+          )
+          .join("");
+        const panes = docs
+          .map((d, i) => {
+            const isImg = d.type === "img";
+            const content = isImg
+              ? `<img src="${d.url}" style="width:100%;border-radius:10px;display:block;" alt="${d.label}">`
+              : `<embed src="${d.url}" type="application/pdf" class="pdf-embed">
+       <a href="${d.url}" target="_blank" class="pdf-fallback">↗ Ouvrir en plein écran</a>`;
+            return `<div class="pdf-pane${i === 0 ? " active" : ""}" id="tpdf-${i}">${content}</div>`;
+          })
+          .join("");
+
+        sec.innerHTML = `<div class="pdf-outer-card">
+    <div class="pdf-header"><span class="pdf-header-title">📄 Documents du chapitre</span><div class="pdf-header-line"></div></div>
+    <div class="pdf-toggle-row">${btns}</div>${panes}</div>`;
+      }
+
+      function pdfSwitch(btn, paneId) {
+        const card_ = btn.closest(".pdf-outer-card");
+        card_
+          .querySelectorAll(".pdf-toggle-btn")
+          .forEach((b) => b.classList.remove("active"));
+        card_
+          .querySelectorAll(".pdf-pane")
+          .forEach((p) => p.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById(paneId).classList.add("active");
+      }
+
+      // ===================== TABS + INIT =====================
+      document.querySelectorAll(".tab").forEach((t) => {
+        t.addEventListener("click", () => {
+          document
+            .querySelectorAll(".tab")
+            .forEach((x) => x.classList.remove("active"));
+          t.classList.add("active");
+          state.tab = t.dataset.tab;
+          renderPanel();
+          renderPdfSection();
+          setTimeout(() => {
+            resize();
+            draw();
+          }, 20);
+        });
+      });
+
+      window.addEventListener("resize", resize);
+      resize();
+      renderPanel();
+      renderPdfSection();
+    </script>
+  </body>
+</html>

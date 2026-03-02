@@ -1,0 +1,3159 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎯 Les Vecteurs - Interactif</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Lexend:wght@300;500;700;900&display=swap");
+
+      :root {
+        --bg: #0a0a14;
+        --panel: #12121f;
+        --border: #1e1e3a;
+        --v1: #00f5c3;
+        --v2: #ff6b6b;
+        --v3: #ffd93d;
+        --accent: #7c5cbf;
+        --text: #e8e8ff;
+        --muted: #6060a0;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Lexend", sans-serif;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* HEADER */
+      header {
+        text-align: center;
+        padding: 28px 20px 16px;
+        background: linear-gradient(180deg, #0d0d20 0%, transparent 100%);
+        border-bottom: 1px solid var(--border);
+        position: relative;
+      }
+      header::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at 50% 0%,
+          rgba(124, 92, 191, 0.15) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+      header h1 {
+        font-size: clamp(1.6rem, 4vw, 2.4rem);
+        font-weight: 900;
+        letter-spacing: -1px;
+        background: linear-gradient(135deg, var(--v1), var(--v2), var(--v3));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      header p {
+        color: var(--muted);
+        font-size: 0.85rem;
+        margin-top: 4px;
+        font-weight: 300;
+      }
+
+      /* TABS */
+      .tabs {
+        display: flex;
+        gap: 6px;
+        padding: 14px 20px;
+        background: var(--panel);
+        border-bottom: 1px solid var(--border);
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .tabs::-webkit-scrollbar {
+        display: none;
+      }
+      .tab {
+        flex-shrink: 0;
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        font-family: "Lexend", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+      .tab:hover {
+        border-color: var(--accent);
+        color: var(--text);
+      }
+      .tab.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
+      }
+
+      /* LAYOUT */
+      .layout {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 0;
+        height: calc(100vh - 130px);
+        min-height: 500px;
+      }
+      @media (max-width: 768px) {
+        .layout {
+          grid-template-columns: 1fr;
+          height: auto;
+        }
+      }
+
+      /* CANVAS ZONE */
+      .canvas-zone {
+        position: relative;
+        background: #08080f;
+        overflow: hidden;
+        border-right: 1px solid var(--border);
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* PANEL */
+      .panel {
+        background: var(--panel);
+        padding: 20px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .panel::-webkit-scrollbar {
+        width: 4px;
+      }
+      .panel::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 4px;
+      }
+
+      .card {
+        background: #0d0d1a;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px;
+      }
+      .card-title {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+
+      /* VECTOR DISPLAY */
+      .vec-display {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.03);
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .vec-display:hover {
+        background: rgba(255, 255, 255, 0.07);
+      }
+      .vec-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .vec-name {
+        font-family: "Space Mono", monospace;
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+      .vec-coords {
+        font-family: "Space Mono", monospace;
+        font-size: 0.75rem;
+        color: var(--muted);
+        margin-left: auto;
+      }
+
+      /* SLIDERS */
+      .slider-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+      .slider-label {
+        font-family: "Space Mono", monospace;
+        font-size: 0.72rem;
+        width: 28px;
+        color: var(--muted);
+      }
+      input[type="range"] {
+        flex: 1;
+        -webkit-appearance: none;
+        appearance: none;
+        height: 6px;
+        border-radius: 3px;
+        background: var(--border);
+        outline: none;
+        cursor: pointer;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 3px solid var(--accent);
+        box-shadow: 0 0 8px rgba(124, 92, 191, 0.5);
+        cursor: grab;
+        transition:
+          transform 0.15s,
+          box-shadow 0.15s;
+      }
+      input[type="range"]::-webkit-slider-thumb:hover {
+        transform: scale(1.25);
+        box-shadow: 0 0 14px rgba(124, 92, 191, 0.8);
+      }
+      input[type="range"]::-webkit-slider-thumb:active {
+        cursor: grabbing;
+        transform: scale(1.15);
+        background: #e0e0ff;
+      }
+      /* Firefox */
+      input[type="range"]::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 3px solid var(--accent);
+        box-shadow: 0 0 8px rgba(124, 92, 191, 0.5);
+        cursor: grab;
+      }
+      input[type="range"]::-moz-range-track {
+        height: 6px;
+        border-radius: 3px;
+        background: var(--border);
+      }
+      .slider-val {
+        font-family: "Space Mono", monospace;
+        font-size: 0.72rem;
+        width: 28px;
+        text-align: right;
+        color: var(--text);
+      }
+
+      /* RESULT BOX */
+      .result-box {
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-family: "Space Mono", monospace;
+        font-size: 0.82rem;
+        text-align: center;
+        font-weight: 700;
+        margin-top: 4px;
+      }
+      .result-yes {
+        background: rgba(0, 245, 195, 0.1);
+        border: 1px solid var(--v1);
+        color: var(--v1);
+      }
+      .result-no {
+        background: rgba(255, 107, 107, 0.1);
+        border: 1px solid var(--v2);
+        color: var(--v2);
+      }
+
+      /* INFO FORMULA */
+      .formula {
+        font-family: "Space Mono", monospace;
+        font-size: 0.78rem;
+        background: rgba(124, 92, 191, 0.12);
+        border: 1px solid rgba(124, 92, 191, 0.3);
+        border-radius: 8px;
+        padding: 8px 12px;
+        color: #c4b0ff;
+        line-height: 1.7;
+      }
+
+      /* HINT */
+      .hint {
+        font-size: 0.75rem;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .hint span {
+        color: var(--v1);
+      }
+
+      /* NORM DISPLAY */
+      .norm-val {
+        font-family: "Space Mono", monospace;
+        font-size: 1.1rem;
+        font-weight: 700;
+        text-align: center;
+        padding: 6px;
+      }
+
+      /* ANGLE */
+      .angle-arc {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 6px;
+      }
+      .angle-val {
+        font-family: "Space Mono", monospace;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--v3);
+      }
+
+      /* BADGE */
+      .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 20px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
+      .badge-drag {
+        background: rgba(255, 217, 61, 0.15);
+        color: var(--v3);
+        border: 1px solid rgba(255, 217, 61, 0.3);
+      }
+
+      /* TABS content */
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      /* Equation step */
+      .step {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 8px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .step-num {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+      .step-text {
+        font-size: 0.78rem;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .step-text b {
+        color: var(--text);
+      }
+
+      /* ===== CALCUL FULL-WIDTH LAYOUT ===== */
+      .layout-full .canvas-zone {
+        display: none !important;
+      }
+      .layout-full {
+        grid-template-columns: 1fr !important;
+        height: auto !important;
+        min-height: unset !important;
+      }
+      .layout-full .panel {
+        max-width: 860px;
+        margin: 0 auto;
+        max-height: calc(100vh - 140px);
+        overflow-y: auto;
+        width: 100%;
+      }
+
+      /* ===== NUMBER INPUTS ===== */
+      .calc-inputs-row {
+        display: flex;
+        gap: 24px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 12px;
+      }
+      .calc-vec-box {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "Space Mono", monospace;
+        font-size: 1.3rem;
+        font-weight: 700;
+      }
+      .calc-letter {
+        font-size: 1.7rem;
+        font-weight: 900;
+      }
+      .calc-paren {
+        color: rgba(200, 200, 255, 0.4);
+      }
+      .calc-comma {
+        color: rgba(200, 200, 255, 0.4);
+      }
+      .calc-num-input {
+        width: 62px;
+        background: #090916;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-family: "Space Mono", monospace;
+        font-size: 1.1rem;
+        font-weight: 700;
+        text-align: center;
+        padding: 7px 4px;
+        outline: none;
+        transition: border-color 0.2s;
+        -moz-appearance: textfield;
+        appearance: textfield;
+      }
+      .calc-num-input:focus {
+        border-color: var(--accent);
+      }
+      .calc-num-input::-webkit-outer-spin-button,
+      .calc-num-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+
+      /* ===== OP BUTTONS ===== */
+      .calc-ops {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin: 6px 0 0;
+      }
+      .calc-op-btn {
+        padding: 12px 18px;
+        border-radius: 12px;
+        border: 2px solid var(--border);
+        background: transparent;
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+      }
+      .calc-op-btn.active {
+        border-color: var(--op-color, var(--accent));
+        background: var(--op-bg, rgba(124, 92, 191, 0.12));
+        color: var(--op-color, var(--accent));
+      }
+      .calc-op-btn:hover:not(.active) {
+        border-color: rgba(255, 255, 255, 0.2);
+        color: var(--text);
+      }
+      .calc-op-btn .btn-sub {
+        font-size: 0.62rem;
+        opacity: 0.65;
+        font-weight: 400;
+        display: block;
+        margin-top: 3px;
+      }
+
+      /* ===== SCHEMA ===== */
+      .schema-box {
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px;
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .schema-title {
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 20px;
+      }
+      .schema-body {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+      .schema-eq-label {
+        font-family: "Space Mono", monospace;
+        font-size: 1.1rem;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+      .schema-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .schema-stack-row {
+        font-family: "Space Mono", monospace;
+        font-size: 1.15rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 10px;
+      }
+      .schema-mid-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 0 10px;
+        font-family: "Space Mono", monospace;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #ffd93d;
+        min-height: 24px;
+      }
+      .schema-sep {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.08);
+        margin: 2px 0;
+      }
+      .schema-rhs {
+        margin-left: 20px;
+      }
+      .schema-formula-label {
+        font-family: "Space Mono", monospace;
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .schema-result-big {
+        font-family: "Space Mono", monospace;
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-top: 8px;
+      }
+      .schema-norm {
+        margin-top: 8px;
+        font-family: "Space Mono", monospace;
+        font-size: 0.82rem;
+        color: var(--muted);
+      }
+      .scalar-note {
+        margin-top: 16px;
+        padding: 12px 16px;
+        background: rgba(84, 160, 255, 0.07);
+        border: 1px solid rgba(84, 160, 255, 0.25);
+        border-radius: 10px;
+        font-size: 0.82rem;
+        color: #54a0ff;
+        line-height: 1.6;
+      }
+
+      /* ===== FIGURE TYPE BUTTONS ===== */
+      .fig-btns {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+      }
+      .fig-btn {
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .fig-btn.active {
+        background: rgba(255, 217, 61, 0.12);
+        border-color: #ffd93d;
+        color: #ffd93d;
+      }
+      .fig-btn:hover:not(.active) {
+        border-color: rgba(255, 255, 255, 0.2);
+        color: var(--text);
+      }
+
+      /* ===== PROPERTY CARDS ===== */
+      .prop-body {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .prop-side {
+        font-family: "Space Mono", monospace;
+        font-size: 0.82rem;
+        text-align: center;
+        padding: 10px 8px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.03);
+        line-height: 1.6;
+      }
+      .prop-eq {
+        font-family: "Space Mono", monospace;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #00f5c3;
+        text-align: center;
+      }
+
+      /* ===== MODE TOGGLE ===== */
+      .mode-toggle {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .mode-btn {
+        flex: 1;
+        padding: 9px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.85rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .mode-btn.active {
+        background: rgba(0, 245, 195, 0.1);
+        border-color: #00f5c3;
+        color: #00f5c3;
+      }
+      .mode-btn.active.sub {
+        background: rgba(255, 159, 67, 0.1);
+        border-color: #ff9f43;
+        color: #ff9f43;
+      }
+
+      /* === PDF SECTION === */
+      #pdf-section {
+        max-width: 900px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0 14px 48px;
+      }
+      .pdf-outer-card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 18px 20px;
+      }
+      .pdf-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .pdf-header-title {
+        font-family: "Lexend", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .pdf-header-line {
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+      .pdf-toggle-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+      }
+      .pdf-toggle-btn {
+        padding: 7px 20px;
+        border-radius: 30px;
+        border: 1.5px solid var(--border);
+        background: transparent;
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .pdf-toggle-btn:hover {
+        border-color: rgba(0, 245, 195, 0.4);
+        color: var(--text);
+      }
+      .pdf-toggle-btn.active {
+        background: rgba(0, 245, 195, 0.12);
+        border-color: rgba(0, 245, 195, 0.6);
+        color: #00f5c3;
+      }
+      .pdf-pane {
+        display: none;
+      }
+      .pdf-pane.active {
+        display: block;
+      }
+      .pdf-embed {
+        width: 100%;
+        height: 560px;
+        border: none;
+        border-radius: 10px;
+        display: block;
+      }
+      .pdf-fallback {
+        display: block;
+        margin-top: 10px;
+        text-align: center;
+        font-size: 0.78rem;
+        color: var(--muted);
+        text-decoration: none;
+      }
+      .pdf-fallback:hover {
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div
+        style="
+          position: absolute;
+          left: 16px;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 10;
+        "
+      >
+        <button
+          onclick="location.href = '../index.html'"
+          style="
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid #1e1e3a;
+            color: #6060a0;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-family: Lexend, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+          "
+          onmouseover="
+            this.style.color = '#e8e8ff';
+            this.style.borderColor = '#7c5cbf';
+          "
+          onmouseout="
+            this.style.color = '#6060a0';
+            this.style.borderColor = '#1e1e3a';
+          "
+        >
+          ← Accueil
+        </button>
+      </div>
+      <h1>🎯 Les Vecteurs — Visualisation Interactive</h1>
+      <p>Clique et glisse les vecteurs sur le graphique !</p>
+    </header>
+
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-tab="vecteur">📐 Vecteur de base</button>
+      <button class="tab" data-tab="colineaire">🔗 Colinéaires</button>
+      <button class="tab" data-tab="addition">➕ Addition</button>
+      <button class="tab" data-tab="norme">📏 Norme</button>
+      <button class="tab" data-tab="sandbox">🧪 Bac à sable</button>
+      <button class="tab" data-tab="calcul">🧮 Calcul de coords</button>
+      <button class="tab" data-tab="representants">👥 Représentants</button>
+      <button class="tab" data-tab="scalaire">✖️ × Scalaire</button>
+      <button class="tab" data-tab="figures">📐 Figures</button>
+      <button class="tab" data-tab="proprietes">⚖️ Propriétés</button>
+    </div>
+
+    <div class="layout">
+      <div class="canvas-zone">
+        <canvas id="canvas"></canvas>
+      </div>
+
+      <div class="panel" id="panel">
+        <!-- content injected by JS -->
+      </div>
+    </div>
+
+    <div id="pdf-section"></div>
+
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+
+      const SANDBOX_COLORS = [
+        "#00f5c3",
+        "#ff6b6b",
+        "#ffd93d",
+        "#a78bfa",
+        "#ff9f43",
+        "#54a0ff",
+        "#ff6b9d",
+        "#5f27cd",
+      ];
+      const SANDBOX_NAMES = ["u⃗", "v⃗", "w⃗", "t⃗", "a⃗", "b⃗", "c⃗", "d⃗"];
+
+      // State
+      let state = {
+        tab: "vecteur",
+        // ox/oy = origine libre, x/y = composantes
+        v1: { ox: 0, oy: 0, x: 4, y: 3 },
+        u: { ox: -1, oy: 0, x: 3, y: 2 },
+        v: { ox: -1, oy: 0, x: 6, y: 4 },
+        a: { ox: 0, oy: 0, x: 3, y: 1 },
+        b: { ox: 0, oy: 0, x: 1, y: 3 },
+        n: { ox: 0, oy: 0, x: 3, y: 4 },
+        // bac à sable — chaque vecteur a une origine libre (ox,oy) + composantes (x,y)
+        sandbox: [
+          { ox: 0, oy: 0, x: 4, y: 2, name: "u⃗", color: "#00f5c3" },
+          { ox: 2, oy: -1, x: -3, y: 3, name: "v⃗", color: "#ff6b6b" },
+        ],
+        // calcul de coordonnées
+        calcul: {
+          A: { x: 1, y: 2 },
+          B: { x: 4, y: 5 },
+          op: "AB",
+        },
+        // mode addition/soustraction
+        addMode: "add",
+        // représentants
+        representants: { x: 3, y: 2 },
+        // multiplication scalaire
+        scalaire: { ox: 0, oy: 0, x: 3, y: 2, k: 2 },
+        // figures géométriques
+        figures: {
+          type: "triangle",
+          tri: {
+            A: { x: -3, y: -2 },
+            B: { x: 3, y: -2 },
+            C: { x: 0, y: 3 },
+          },
+          para: {
+            A: { x: -3, y: -1 },
+            B: { x: 1, y: -1 },
+            D: { x: -2, y: 2 },
+          },
+        },
+        // propriétés algébriques
+        proprietes: {
+          a: { x: 2, y: 1 },
+          b: { x: 1, y: 3 },
+          c: { x: -1, y: 2 },
+          k: 2,
+        },
+      };
+
+      let drag = null;
+      let origin, scale;
+
+      // ===================== RESIZE =====================
+      function resize() {
+        const zone = canvas.parentElement;
+        canvas.width = zone.clientWidth;
+        canvas.height = zone.clientHeight;
+        computeTransform();
+        draw();
+      }
+
+      function computeTransform() {
+        const W = canvas.width,
+          H = canvas.height;
+        scale = Math.min(W, H) / 16;
+        origin = { x: W / 2, y: H / 2 };
+      }
+
+      // ===================== COORD TRANSFORMS =====================
+      function toCanvas(mx, my) {
+        return { x: origin.x + mx * scale, y: origin.y - my * scale };
+      }
+      function toMath(cx, cy) {
+        return { x: (cx - origin.x) / scale, y: -(cy - origin.y) / scale };
+      }
+
+      // ===================== DRAW HELPERS =====================
+      function drawGrid() {
+        const W = canvas.width,
+          H = canvas.height;
+        const step = scale;
+        ctx.strokeStyle = "rgba(30,30,60,0.8)";
+        ctx.lineWidth = 1;
+        // verticals
+        for (let x = origin.x % step; x < W; x += step) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, H);
+          ctx.stroke();
+        }
+        // horizontals
+        for (let y = origin.y % step; y < H; y += step) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(W, y);
+          ctx.stroke();
+        }
+        // axes
+        ctx.strokeStyle = "rgba(100,100,180,0.5)";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(0, origin.y);
+        ctx.lineTo(W, origin.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(origin.x, 0);
+        ctx.lineTo(origin.x, H);
+        ctx.stroke();
+
+        // labels
+        ctx.fillStyle = "rgba(100,100,160,0.6)";
+        ctx.font = `${scale * 0.3}px Space Mono`;
+        ctx.textAlign = "center";
+        const range = Math.floor(W / scale / 2) + 1;
+        for (let i = -range; i <= range; i++) {
+          if (i === 0) continue;
+          const p = toCanvas(i, 0);
+          ctx.fillText(i, p.x, origin.y + scale * 0.4);
+          const q = toCanvas(0, i);
+          ctx.textAlign = "right";
+          ctx.fillText(i, origin.x - scale * 0.15, q.y + scale * 0.12);
+          ctx.textAlign = "center";
+        }
+        ctx.fillStyle = "rgba(150,150,200,0.5)";
+        ctx.fillText("x", W - 15, origin.y - 8);
+        ctx.textAlign = "left";
+        ctx.fillText("y", origin.x + 8, 15);
+      }
+
+      function drawArrow(
+        ox,
+        oy,
+        vx,
+        vy,
+        color,
+        label,
+        width = 3,
+        dashed = false,
+      ) {
+        const from = toCanvas(ox, oy);
+        const to = toCanvas(ox + vx, oy + vy);
+        const dx = to.x - from.x,
+          dy = to.y - from.y;
+        const len = Math.sqrt(dx * dx + dy * dy);
+        if (len < 2) return;
+        const ux = dx / len,
+          uy = dy / len;
+        const arrowSize = Math.max(10, scale * 0.4);
+
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        ctx.lineCap = "round";
+        if (dashed) ctx.setLineDash([6, 4]);
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 12;
+
+        ctx.beginPath();
+        ctx.moveTo(from.x, from.y);
+        ctx.lineTo(to.x - ux * arrowSize * 0.6, to.y - uy * arrowSize * 0.6);
+        ctx.stroke();
+
+        ctx.setLineDash([]);
+        ctx.fillStyle = color;
+        ctx.shadowBlur = 0;
+        ctx.beginPath();
+        ctx.moveTo(to.x, to.y);
+        ctx.lineTo(
+          to.x - ux * arrowSize - uy * arrowSize * 0.4,
+          to.y - uy * arrowSize + ux * arrowSize * 0.4,
+        );
+        ctx.lineTo(
+          to.x - ux * arrowSize + uy * arrowSize * 0.4,
+          to.y - uy * arrowSize - ux * arrowSize * 0.4,
+        );
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        // label
+        if (label) {
+          const mx = (from.x + to.x) / 2,
+            my = (from.y + to.y) / 2;
+          const off = 18;
+          ctx.save();
+          ctx.fillStyle = color;
+          ctx.font = `bold ${Math.max(13, scale * 0.35)}px Lexend`;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          // offset perpendicular
+          const px = -uy * off,
+            py = ux * off;
+          ctx.shadowColor = "rgba(0,0,0,0.8)";
+          ctx.shadowBlur = 6;
+          ctx.fillText(label, mx + px, my + py);
+          ctx.restore();
+        }
+      }
+
+      function drawPoint(mx, my, color, r = 10) {
+        const p = toCanvas(mx, my);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 14;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function drawPointHollow(mx, my, color, r = 10) {
+        const p = toCanvas(mx, my);
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.5;
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function distPointToSegment(px, py, ax, ay, bx, by) {
+        const dx = bx - ax,
+          dy = by - ay;
+        const len2 = dx * dx + dy * dy;
+        if (len2 === 0) return Math.sqrt((px - ax) ** 2 + (py - ay) ** 2);
+        let t = ((px - ax) * dx + (py - ay) * dy) / len2;
+        t = Math.max(0, Math.min(1, t));
+        return Math.sqrt((px - (ax + t * dx)) ** 2 + (py - (ay + t * dy)) ** 2);
+      }
+
+      function drawAngleArc(ox, oy, vx, vy, color) {
+        const o = toCanvas(ox, oy);
+        const angle = Math.atan2(-vy, vx); // canvas coords
+        const r = scale * 0.6;
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath();
+        ctx.arc(o.x, o.y, r, 0, -angle, angle > 0);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // ===================== DRAW TABS =====================
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // bg gradient
+        const grad = ctx.createRadialGradient(
+          canvas.width / 2,
+          canvas.height / 2,
+          0,
+          canvas.width / 2,
+          canvas.height / 2,
+          canvas.width * 0.7,
+        );
+        grad.addColorStop(0, "#0c0c18");
+        grad.addColorStop(1, "#080810");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        drawGrid();
+
+        if (state.tab === "vecteur") drawTabVecteur();
+        else if (state.tab === "colineaire") drawTabColineaire();
+        else if (state.tab === "addition") drawTabAddition();
+        else if (state.tab === "norme") drawTabNorme();
+        else if (state.tab === "sandbox") drawTabSandbox();
+        else if (state.tab === "calcul") drawTabCalcul();
+        else if (state.tab === "representants") drawTabRepresentants();
+        else if (state.tab === "scalaire") drawTabScalaire();
+        else if (state.tab === "figures") drawTabFigures();
+        else if (state.tab === "proprietes") drawTabProprietes();
+      }
+
+      function drawTabVecteur() {
+        const v1 = state.v1;
+        const ox = v1.ox,
+          oy = v1.oy,
+          x = v1.x,
+          y = v1.y;
+        // dashed projection lines from free origin
+        drawArrow(ox, oy, x, 0, "rgba(0,245,195,0.25)", null, 1.5, true);
+        drawArrow(ox + x, oy, 0, y, "rgba(0,245,195,0.25)", null, 1.5, true);
+        // main vector
+        drawArrow(
+          ox,
+          oy,
+          x,
+          y,
+          "#00f5c3",
+          `v⃗(${x.toFixed(1)}, ${y.toFixed(1)})`,
+          3.5,
+        );
+        // hollow at origin, filled at tip
+        drawPointHollow(ox, oy, "#00f5c3", 7);
+        drawPoint(ox + x, oy + y, "#00f5c3", 9);
+        // coord labels
+        const tipC = toCanvas(ox + x, oy + y);
+        const px = toCanvas(ox + x, oy);
+        const origC = toCanvas(ox, oy);
+        ctx.save();
+        ctx.fillStyle = "rgba(0,245,195,0.7)";
+        ctx.font = `${Math.max(11, scale * 0.28)}px Space Mono`;
+        ctx.textAlign = "center";
+        ctx.fillText(
+          `x=${x.toFixed(1)}`,
+          (origC.x + px.x) / 2,
+          origC.y + scale * 0.5,
+        );
+        ctx.textAlign = "right";
+        ctx.fillText(`y=${y.toFixed(1)}`, px.x - 6, (px.y + tipC.y) / 2);
+        ctx.restore();
+        ctx.save();
+        ctx.fillStyle = "rgba(96,96,160,0.5)";
+        ctx.font = `${Math.max(10, scale * 0.23)}px Lexend`;
+        ctx.textAlign = "center";
+        ctx.fillText(
+          "● pointe  ○ origine  — corps",
+          canvas.width / 2,
+          canvas.height - 12,
+        );
+        ctx.restore();
+      }
+
+      function drawTabColineaire() {
+        const u = state.u,
+          v = state.v;
+        const cross = u.x * v.y - u.y * v.x;
+        const colin = Math.abs(cross) < 0.25;
+
+        drawArrow(u.ox, u.oy, u.x, u.y, "#00f5c3", "u⃗", 3.5);
+        drawArrow(v.ox, v.oy, v.x, v.y, "#ff6b6b", "v⃗", 3.5);
+        drawPointHollow(u.ox, u.oy, "#00f5c3", 7);
+        drawPointHollow(v.ox, v.oy, "#ff6b6b", 7);
+        drawPoint(u.ox + u.x, u.oy + u.y, "#00f5c3", 9);
+        drawPoint(v.ox + v.x, v.oy + v.y, "#ff6b6b", 9);
+
+        // result text on canvas
+        const col = colin ? "#00f5c3" : "#ff6b6b";
+        const msg = colin ? "✓ COLINÉAIRES !" : "✗ Pas colinéaires";
+        ctx.save();
+        ctx.fillStyle = col;
+        ctx.shadowColor = col;
+        ctx.shadowBlur = 20;
+        ctx.font = `bold ${Math.max(14, scale * 0.38)}px Lexend`;
+        ctx.textAlign = "center";
+        ctx.fillText(msg, canvas.width / 2, 36);
+        ctx.font = `${Math.max(11, scale * 0.28)}px Space Mono`;
+        ctx.fillText(`a×d - b×c = ${cross.toFixed(2)}`, canvas.width / 2, 60);
+        ctx.restore();
+        ctx.save();
+        ctx.fillStyle = "rgba(96,96,160,0.5)";
+        ctx.font = `${Math.max(10, scale * 0.23)}px Lexend`;
+        ctx.textAlign = "center";
+        ctx.fillText(
+          "● pointe  ○ origine  — corps",
+          canvas.width / 2,
+          canvas.height - 12,
+        );
+        ctx.restore();
+      }
+
+      function drawTabAddition() {
+        const { a, b, addMode } = state;
+        const sum =
+          addMode === "sub"
+            ? { x: a.x - b.x, y: a.y - b.y }
+            : { x: a.x + b.x, y: a.y + b.y };
+        const sumColor = addMode === "sub" ? "#ff9f43" : "#ffd93d";
+        const label = addMode === "sub" ? "a⃗−b⃗" : "a⃗+b⃗";
+
+        // dashed parallelogram helpers
+        if (addMode === "add") {
+          drawArrow(
+            a.ox + a.x,
+            a.oy + a.y,
+            b.x,
+            b.y,
+            "rgba(255,107,107,0.3)",
+            null,
+            1.5,
+            true,
+          );
+          drawArrow(
+            b.ox + b.x,
+            b.oy + b.y,
+            a.x,
+            a.y,
+            "rgba(0,245,195,0.3)",
+            null,
+            1.5,
+            true,
+          );
+        } else {
+          // for subtraction, show b reversed from tip of a
+          drawArrow(
+            a.ox + a.x,
+            a.oy + a.y,
+            -b.x,
+            -b.y,
+            "rgba(255,107,107,0.3)",
+            null,
+            1.5,
+            true,
+          );
+        }
+
+        drawArrow(a.ox, a.oy, a.x, a.y, "#00f5c3", "a⃗", 3.5);
+        drawArrow(b.ox, b.oy, b.x, b.y, "#ff6b6b", "b⃗", 3.5);
+        drawArrow(a.ox, a.oy, sum.x, sum.y, sumColor, label, 4);
+        drawPointHollow(a.ox, a.oy, "#00f5c3", 7);
+        drawPointHollow(b.ox, b.oy, "#ff6b6b", 7);
+        drawPoint(a.ox + a.x, a.oy + a.y, "#00f5c3", 7);
+        drawPoint(b.ox + b.x, b.oy + b.y, "#ff6b6b", 7);
+        drawPoint(a.ox + sum.x, a.oy + sum.y, sumColor, 9);
+
+        const sp = toCanvas(a.ox + sum.x + 0.3, a.oy + sum.y + 0.3);
+        ctx.save();
+        ctx.fillStyle = sumColor;
+        ctx.font = `bold ${Math.max(11, scale * 0.3)}px Space Mono`;
+        ctx.fillText(`(${sum.x.toFixed(1)}, ${sum.y.toFixed(1)})`, sp.x, sp.y);
+        ctx.restore();
+        ctx.save();
+        ctx.fillStyle = "rgba(96,96,160,0.5)";
+        ctx.font = `${Math.max(10, scale * 0.23)}px Lexend`;
+        ctx.textAlign = "center";
+        ctx.fillText(
+          "● pointe  ○ origine  — corps",
+          canvas.width / 2,
+          canvas.height - 12,
+        );
+        ctx.restore();
+      }
+
+      function drawTabNorme() {
+        const n = state.n;
+        const ox = n.ox,
+          oy = n.oy,
+          x = n.x,
+          y = n.y;
+        const norm = Math.sqrt(x * x + y * y);
+        drawArrow(ox, oy, x, y, "#7c5cbf", "v⃗", 4);
+        // projection dashes
+        drawArrow(ox, oy, x, 0, "rgba(124,92,191,0.3)", null, 1.5, true);
+        drawArrow(ox + x, oy, 0, y, "rgba(124,92,191,0.3)", null, 1.5, true);
+        drawPointHollow(ox, oy, "#7c5cbf", 7);
+        drawPoint(ox + x, oy + y, "#c4b0ff", 9);
+        // arc for angle
+        drawAngleArc(ox, oy, x, y, "rgba(255,217,61,0.6)");
+        // norm label on canvas
+        ctx.save();
+        ctx.fillStyle = "#c4b0ff";
+        ctx.shadowColor = "#7c5cbf";
+        ctx.shadowBlur = 10;
+        ctx.font = `bold ${Math.max(13, scale * 0.35)}px Space Mono`;
+        ctx.textAlign = "center";
+        ctx.fillText(`‖v‖ = ${norm.toFixed(2)}`, canvas.width / 2, 38);
+        ctx.restore();
+        ctx.save();
+        ctx.fillStyle = "rgba(96,96,160,0.5)";
+        ctx.font = `${Math.max(10, scale * 0.23)}px Lexend`;
+        ctx.textAlign = "center";
+        ctx.fillText(
+          "● pointe  ○ origine  — corps",
+          canvas.width / 2,
+          canvas.height - 12,
+        );
+        ctx.restore();
+      }
+
+      function drawTabSandbox() {
+        const vecs = state.sandbox;
+        vecs.forEach((v) => {
+          // draw faint dashed line from origin to show position
+          const tipX = v.ox + v.x,
+            tipY = v.oy + v.y;
+          // draw the vector arrow from its free origin
+          drawArrow(v.ox, v.oy, v.x, v.y, v.color, v.name, 3.5);
+          // hollow circle at origin (draggable)
+          drawPointHollow(v.ox, v.oy, v.color, 7);
+          // filled circle at tip (draggable)
+          drawPoint(tipX, tipY, v.color, 9);
+        });
+        // hint
+        ctx.save();
+        ctx.fillStyle = "rgba(96,96,160,0.6)";
+        ctx.font = `${Math.max(10, scale * 0.25)}px Lexend`;
+        ctx.textAlign = "center";
+        ctx.fillText(
+          "● pointe = change les composantes  ○ origine = déplace le point de départ  — corps = déplace tout",
+          canvas.width / 2,
+          canvas.height - 12,
+        );
+        ctx.restore();
+      }
+
+      function drawTabCalcul() {
+        // Canvas is hidden for this tab — rendering is done in the full-width panel
+      }
+
+      // --------- REPRÉSENTANTS ---------
+      function drawTabRepresentants() {
+        const { x, y } = state.representants;
+        const ORIGINS = [
+          { ox: -4, oy: -2 },
+          { ox: 0, oy: 0 },
+          { ox: 2, oy: 1 },
+        ];
+
+        // dashed connectors between midpoints (show they're "linked")
+        for (let i = 0; i < ORIGINS.length - 1; i++) {
+          const a = ORIGINS[i],
+            b = ORIGINS[i + 1];
+          const from = toCanvas(a.ox + x / 2, a.oy + y / 2);
+          const to = toCanvas(b.ox + x / 2, b.oy + y / 2);
+          ctx.save();
+          ctx.strokeStyle = "rgba(100,100,180,0.18)";
+          ctx.lineWidth = 1;
+          ctx.setLineDash([4, 8]);
+          ctx.beginPath();
+          ctx.moveTo(from.x, from.y);
+          ctx.lineTo(to.x, to.y);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        ORIGINS.forEach((o) => {
+          drawArrow(o.ox, o.oy, x, y, "#00f5c3", "v⃗", 3.5);
+          drawPointHollow(o.ox, o.oy, "rgba(96,96,180,0.7)", 6);
+          drawPoint(o.ox + x, o.oy + y, "#00f5c3", 8);
+        });
+
+        ctx.save();
+        ctx.fillStyle = "#ffd93d";
+        ctx.shadowColor = "#ffd93d";
+        ctx.shadowBlur = 14;
+        ctx.font = `bold ${Math.max(12, scale * 0.3)}px Lexend`;
+        ctx.textAlign = "center";
+        ctx.fillText(
+          `v⃗ = (${x.toFixed(1)}, ${y.toFixed(1)}) — 3 représentants, même vecteur`,
+          canvas.width / 2,
+          34,
+        );
+        ctx.restore();
+      }
+
+      // --------- MULTIPLICATION SCALAIRE ---------
+      function drawTabScalaire() {
+        const sc_s = state.scalaire;
+        const ox = sc_s.ox,
+          oy = sc_s.oy,
+          x = sc_s.x,
+          y = sc_s.y,
+          k = sc_s.k;
+        const kx = k * x,
+          ky = k * y;
+
+        // original vector
+        drawArrow(ox, oy, x, y, "#00f5c3", "v⃗", 3);
+        drawPointHollow(ox, oy, "#00f5c3", 7);
+        drawPoint(ox + x, oy + y, "#00f5c3", 9);
+
+        // scaled vector
+        let sc = "#ffd93d";
+        if (k < 0) sc = "#ff6b6b";
+        else if (Math.abs(k) < 0.05) sc = "rgba(150,150,200,0.5)";
+        else if (Math.abs(k) < 1) sc = "#ff9f43";
+
+        if (Math.abs(kx) > 0.05 || Math.abs(ky) > 0.05) {
+          drawArrow(ox, oy, kx, ky, sc, `${k.toFixed(1)}v⃗`, 4);
+          drawPoint(ox + kx, oy + ky, sc, 9);
+        }
+
+        const kk = parseFloat(k.toFixed(2));
+        const msg =
+          kk === 0
+            ? "→ Vecteur nul 0⃗ (longueur = 0)"
+            : kk < 0
+              ? "→ Direction inversée (k < 0)"
+              : kk > 1
+                ? "→ Vecteur allongé (k > 1)"
+                : "→ Vecteur réduit (0 < k < 1)";
+        ctx.save();
+        ctx.fillStyle = sc;
+        ctx.font = `bold ${Math.max(11, scale * 0.28)}px Lexend`;
+        ctx.textAlign = "center";
+        ctx.fillText(msg, canvas.width / 2, 36);
+        ctx.restore();
+        ctx.save();
+        ctx.fillStyle = "rgba(96,96,160,0.5)";
+        ctx.font = `${Math.max(10, scale * 0.23)}px Lexend`;
+        ctx.textAlign = "center";
+        ctx.fillText(
+          "● pointe  ○ origine  — corps",
+          canvas.width / 2,
+          canvas.height - 12,
+        );
+        ctx.restore();
+      }
+
+      // --------- FIGURES GÉOMÉTRIQUES ---------
+      function drawTabFigures() {
+        const { type, tri, para } = state.figures;
+
+        if (type === "triangle") {
+          const { A, B, C } = tri;
+          drawArrow(A.x, A.y, B.x - A.x, B.y - A.y, "#00f5c3", "AB⃗", 3);
+          drawArrow(B.x, B.y, C.x - B.x, C.y - B.y, "#ff6b6b", "BC⃗", 3);
+          drawArrow(C.x, C.y, A.x - C.x, A.y - C.y, "#ffd93d", "CA⃗", 3);
+
+          [
+            ["A", A, "#00f5c3"],
+            ["B", B, "#ff6b6b"],
+            ["C", C, "#ffd93d"],
+          ].forEach(([l, p, col]) => {
+            drawPoint(p.x, p.y, col === "#00f5c3" ? "#fff" : col, 8);
+            const off = toCanvas(p.x - 0.55, p.y + 0.55);
+            ctx.save();
+            ctx.fillStyle = col;
+            ctx.shadowColor = col;
+            ctx.shadowBlur = 8;
+            ctx.font = `bold ${Math.max(13, scale * 0.38)}px Space Mono`;
+            ctx.textAlign = "center";
+            ctx.fillText(l, off.x, off.y);
+            ctx.restore();
+          });
+
+          ctx.save();
+          ctx.fillStyle = "rgba(0,245,195,0.6)";
+          ctx.font = `bold ${Math.max(10, scale * 0.26)}px Space Mono`;
+          ctx.textAlign = "center";
+          ctx.fillText(
+            "Chasles : AB⃗ + BC⃗ + CA⃗ = 0⃗",
+            canvas.width / 2,
+            canvas.height - 18,
+          );
+          ctx.restore();
+        }
+
+        if (type === "parallelogramme") {
+          const { A, B, D } = para;
+          const C = { x: B.x + D.x - A.x, y: B.y + D.y - A.y };
+
+          drawArrow(A.x, A.y, B.x - A.x, B.y - A.y, "#00f5c3", "AB⃗", 3.5);
+          drawArrow(
+            D.x,
+            D.y,
+            C.x - D.x,
+            C.y - D.y,
+            "rgba(0,245,195,0.35)",
+            "DC⃗",
+            2,
+            true,
+          );
+          drawArrow(A.x, A.y, D.x - A.x, D.y - A.y, "#ff6b6b", "AD⃗", 3.5);
+          drawArrow(
+            B.x,
+            B.y,
+            C.x - B.x,
+            C.y - B.y,
+            "rgba(255,107,107,0.35)",
+            "BC⃗",
+            2,
+            true,
+          );
+          drawArrow(
+            A.x,
+            A.y,
+            C.x - A.x,
+            C.y - A.y,
+            "#ffd93d",
+            "AC⃗",
+            2.5,
+            true,
+          );
+
+          [
+            ["A", A, "#fff"],
+            ["B", B, "#00f5c3"],
+            ["D", D, "#ff6b6b"],
+            ["C", C, "#ffd93d"],
+          ].forEach(([l, p, col]) => {
+            drawPoint(p.x, p.y, col, 8);
+            const off = toCanvas(p.x + 0.35, p.y + 0.45);
+            ctx.save();
+            ctx.fillStyle = col;
+            ctx.font = `bold ${Math.max(13, scale * 0.38)}px Space Mono`;
+            ctx.fillText(l, off.x, off.y);
+            ctx.restore();
+          });
+
+          ctx.save();
+          ctx.fillStyle = "rgba(255,217,61,0.6)";
+          ctx.font = `bold ${Math.max(10, scale * 0.25)}px Space Mono`;
+          ctx.textAlign = "center";
+          ctx.fillText(
+            "AB⃗ = DC⃗   ·   AD⃗ = BC⃗   ·   AC⃗ = AB⃗ + AD⃗",
+            canvas.width / 2,
+            canvas.height - 18,
+          );
+          ctx.restore();
+        }
+      }
+
+      // --------- PROPRIÉTÉS (canvas caché — layout-full) ---------
+      function drawTabProprietes() {
+        // Canvas caché — full-width panel
+      }
+
+      // ===================== PANEL RENDERING =====================
+      function renderPanel() {
+        const panel = document.getElementById("panel");
+        panel.innerHTML = "";
+        // toggle full-width layout pour calcul et propriétés
+        const layout = document.querySelector(".layout");
+        if (state.tab === "calcul" || state.tab === "proprietes")
+          layout.classList.add("layout-full");
+        else layout.classList.remove("layout-full");
+
+        if (state.tab === "vecteur") renderPanelVecteur(panel);
+        else if (state.tab === "colineaire") renderPanelColineaire(panel);
+        else if (state.tab === "addition") renderPanelAddition(panel);
+        else if (state.tab === "norme") renderPanelNorme(panel);
+        else if (state.tab === "sandbox") renderPanelSandbox(panel);
+        else if (state.tab === "calcul") renderPanelCalcul(panel);
+        else if (state.tab === "representants") renderPanelRepresentants(panel);
+        else if (state.tab === "scalaire") renderPanelScalaire(panel);
+        else if (state.tab === "figures") renderPanelFigures(panel);
+        else if (state.tab === "proprietes") renderPanelProprietes(panel);
+      }
+
+      function slider(id, label, val, min, max, step, color, onChange) {
+        const row = document.createElement("div");
+        row.className = "slider-row";
+        row.innerHTML = `
+    <span class="slider-label">${label}</span>
+    <input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}"
+      style="accent-color:${color}">
+    <span class="slider-val" id="${id}_val">${val}</span>
+  `;
+        const input = row.querySelector("input");
+        const valEl = row.querySelector(`#${id}_val`);
+        input.addEventListener("input", () => {
+          valEl.textContent = parseFloat(input.value).toFixed(1);
+          onChange(parseFloat(input.value));
+          draw();
+          renderPanel();
+        });
+        return row;
+      }
+
+      function card(title, ...content) {
+        const c = document.createElement("div");
+        c.className = "card";
+        c.innerHTML = `<div class="card-title">${title}</div>`;
+        content.forEach((el) => {
+          if (typeof el === "string") {
+            const d = document.createElement("div");
+            d.innerHTML = el;
+            c.appendChild(d);
+          } else {
+            c.appendChild(el);
+          }
+        });
+        return c;
+      }
+
+      function renderPanelVecteur(panel) {
+        const { v1 } = state;
+
+        const c1 = document.createElement("div");
+        c1.className = "card";
+        c1.innerHTML = `<div class="card-title">🎮 CONTRÔLE DU VECTEUR v⃗</div>`;
+        c1.appendChild(
+          slider(
+            "v1x",
+            "x",
+            v1.x,
+            -7,
+            7,
+            0.5,
+            "#00f5c3",
+            (v) => (state.v1.x = v),
+          ),
+        );
+        c1.appendChild(
+          slider(
+            "v1y",
+            "y",
+            v1.y,
+            -7,
+            7,
+            0.5,
+            "#00f5c3",
+            (v) => (state.v1.y = v),
+          ),
+        );
+        panel.appendChild(c1);
+
+        const norm = Math.sqrt(v1.x ** 2 + v1.y ** 2).toFixed(2);
+        const angle = ((Math.atan2(v1.y, v1.x) * 180) / Math.PI).toFixed(1);
+
+        panel.appendChild(
+          card(
+            "📊 INFOS",
+            `<div class="vec-display">
+      <div class="vec-dot" style="background:#00f5c3"></div>
+      <span class="vec-name" style="color:#00f5c3">v⃗</span>
+      <span class="vec-coords">(${v1.x.toFixed(1)}, ${v1.y.toFixed(1)})</span>
+    </div>
+    <div style="margin-top:10px; display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+      <div style="background:rgba(0,245,195,0.07); border:1px solid rgba(0,245,195,0.2); border-radius:8px; padding:10px; text-align:center;">
+        <div style="font-size:0.65rem; color:var(--muted); margin-bottom:4px;">LONGUEUR ‖v⃗‖</div>
+        <div style="font-family:Space Mono; font-size:1.1rem; color:#00f5c3; font-weight:700;">${norm}</div>
+      </div>
+      <div style="background:rgba(255,217,61,0.07); border:1px solid rgba(255,217,61,0.2); border-radius:8px; padding:10px; text-align:center;">
+        <div style="font-size:0.65rem; color:var(--muted); margin-bottom:4px;">ANGLE</div>
+        <div style="font-family:Space Mono; font-size:1.1rem; color:#ffd93d; font-weight:700;">${angle}°</div>
+      </div>
+    </div>`,
+          ),
+        );
+
+        panel.appendChild(
+          card(
+            "💡 C'EST QUOI ?",
+            `<p class="hint">Un vecteur = une <span>flèche</span> qui part de l'origine (0,0).<br><br>
+    Les deux nombres <span>(x, y)</span> disent :<br>
+    ➡️ avance de <b style="color:#fff">${v1.x.toFixed(1)}</b> sur l'axe horizontal<br>
+    ⬆️ monte de <b style="color:#fff">${v1.y.toFixed(1)}</b> sur l'axe vertical</p>`,
+          ),
+        );
+
+        panel.appendChild(
+          card(
+            "📐 FORMULE",
+            `<div class="formula">‖v⃗‖ = √(x² + y²)<br>‖v⃗‖ = √(${v1.x.toFixed(1)}² + ${v1.y.toFixed(1)}²)<br>‖v⃗‖ = ${norm}</div>`,
+          ),
+        );
+      }
+
+      function renderPanelColineaire(panel) {
+        const { u, v } = state;
+        const cross = u.x * v.y - u.y * v.x;
+        const colin = Math.abs(cross) < 0.25;
+
+        const c1 = document.createElement("div");
+        c1.className = "card";
+        c1.innerHTML = `<div class="card-title">🎮 VECTEUR u⃗ <span style="color:#00f5c3">(vert)</span></div>`;
+        c1.appendChild(
+          slider("ux", "x", u.x, -7, 7, 0.5, "#00f5c3", (v) => (state.u.x = v)),
+        );
+        c1.appendChild(
+          slider("uy", "y", u.y, -7, 7, 0.5, "#00f5c3", (v) => (state.u.y = v)),
+        );
+        panel.appendChild(c1);
+
+        const c2 = document.createElement("div");
+        c2.className = "card";
+        c2.innerHTML = `<div class="card-title">🎮 VECTEUR v⃗ <span style="color:#ff6b6b">(rouge)</span></div>`;
+        c2.appendChild(
+          slider(
+            "vx",
+            "x",
+            v.x,
+            -7,
+            7,
+            0.5,
+            "#ff6b6b",
+            (vv) => (state.v.x = vv),
+          ),
+        );
+        c2.appendChild(
+          slider(
+            "vy",
+            "y",
+            v.y,
+            -7,
+            7,
+            0.5,
+            "#ff6b6b",
+            (vv) => (state.v.y = vv),
+          ),
+        );
+        panel.appendChild(c2);
+
+        const res = document.createElement("div");
+        res.className = "card";
+        res.innerHTML = `<div class="card-title">🔬 TEST COLINÉARITÉ</div>
+    <div class="formula">a×d - b×c = 0 ?<br>
+    ${u.x.toFixed(1)}×${v.y.toFixed(1)} - ${u.y.toFixed(1)}×${v.x.toFixed(1)}<br>
+    = <b>${cross.toFixed(2)}</b></div>
+    <div class="result-box ${colin ? "result-yes" : "result-no"}" style="margin-top:10px;">
+      ${colin ? "✅ COLINÉAIRES !" : "❌ Pas colinéaires"}
+    </div>`;
+        panel.appendChild(res);
+
+        panel.appendChild(
+          card(
+            "💡 RAPPEL",
+            `<p class="hint">Deux vecteurs sont <span>colinéaires</span> s'ils pointent dans la même direction (ou direction opposée) — comme deux flèches sur la même ligne droite. 🛣️</p>`,
+          ),
+        );
+      }
+
+      function renderPanelAddition(panel) {
+        const { a, b, addMode } = state;
+        const isAdd = addMode === "add";
+        const sum = isAdd
+          ? { x: a.x + b.x, y: a.y + b.y }
+          : { x: a.x - b.x, y: a.y - b.y };
+        const sumColor = isAdd ? "#ffd93d" : "#ff9f43";
+        const sumLabel = isAdd ? "a⃗ + b⃗" : "a⃗ − b⃗";
+        const sign = isAdd ? "+" : "−";
+
+        // Mode toggle
+        const tog = document.createElement("div");
+        tog.className = "mode-toggle";
+        tog.innerHTML = `
+          <button class="mode-btn${isAdd ? " active" : ""}" onclick="state.addMode='add';draw();renderPanel();">➕ Addition</button>
+          <button class="mode-btn${!isAdd ? " active sub" : ""}" onclick="state.addMode='sub';draw();renderPanel();">➖ Soustraction</button>`;
+        panel.appendChild(tog);
+
+        const c1 = document.createElement("div");
+        c1.className = "card";
+        c1.innerHTML = `<div class="card-title">🎮 VECTEUR a⃗ <span style="color:#00f5c3">(vert)</span></div>`;
+        c1.appendChild(
+          slider("ax", "x", a.x, -5, 5, 0.5, "#00f5c3", (v) => (state.a.x = v)),
+        );
+        c1.appendChild(
+          slider("ay", "y", a.y, -5, 5, 0.5, "#00f5c3", (v) => (state.a.y = v)),
+        );
+        panel.appendChild(c1);
+
+        const c2 = document.createElement("div");
+        c2.className = "card";
+        c2.innerHTML = `<div class="card-title">🎮 VECTEUR b⃗ <span style="color:#ff6b6b">(rouge)</span></div>`;
+        c2.appendChild(
+          slider("bx", "x", b.x, -5, 5, 0.5, "#ff6b6b", (v) => (state.b.x = v)),
+        );
+        c2.appendChild(
+          slider("by", "y", b.y, -5, 5, 0.5, "#ff6b6b", (v) => (state.b.y = v)),
+        );
+        panel.appendChild(c2);
+
+        panel.appendChild(
+          card(
+            `${isAdd ? "🟡" : "🟠"} RÉSULTAT ${sumLabel}`,
+            `<div class="vec-display" style="margin-bottom:6px;">
+      <div class="vec-dot" style="background:#00f5c3"></div>
+      <span class="vec-name" style="color:#00f5c3">a⃗</span>
+      <span class="vec-coords">(${a.x.toFixed(1)}, ${a.y.toFixed(1)})</span>
+    </div>
+    <div class="vec-display" style="margin-bottom:6px;">
+      <div class="vec-dot" style="background:#ff6b6b"></div>
+      <span class="vec-name" style="color:#ff6b6b">b⃗</span>
+      <span class="vec-coords">(${b.x.toFixed(1)}, ${b.y.toFixed(1)})</span>
+    </div>
+    <div class="vec-display" style="border:1px solid ${sumColor}44; background:rgba(255,255,255,0.03);">
+      <div class="vec-dot" style="background:${sumColor}"></div>
+      <span class="vec-name" style="color:${sumColor}">${sumLabel}</span>
+      <span class="vec-coords">(${sum.x.toFixed(1)}, ${sum.y.toFixed(1)})</span>
+    </div>
+    <div class="formula" style="margin-top:10px;">
+    (${a.x.toFixed(1)}, ${a.y.toFixed(1)}) ${sign} (${b.x.toFixed(1)}, ${b.y.toFixed(1)})<br>
+    = (${sum.x.toFixed(1)}, ${sum.y.toFixed(1)})
+    </div>`,
+          ),
+        );
+
+        panel.appendChild(
+          card(
+            "💡 RÈGLE",
+            isAdd
+              ? `<p class="hint">On additionne <span>x avec x</span> et <span>y avec y</span> :<br><br>(a, b) + (c, d) = (a+c, b+d)<br><br>La flèche jaune = la diagonale du parallélogramme. 📐</p>`
+              : `<p class="hint">On soustrait <span>x avec x</span> et <span>y avec y</span> :<br><br>(a, b) − (c, d) = (a−c, b−d)<br><br>💡 Soustraire = additionner l'<span>opposé</span> :<br>a⃗ − b⃗ = a⃗ + (−b⃗)</p>`,
+          ),
+        );
+      }
+
+      function renderPanelNorme(panel) {
+        const { n } = state;
+        const norm = Math.sqrt(n.x ** 2 + n.y ** 2);
+        const angle = ((Math.atan2(n.y, n.x) * 180) / Math.PI).toFixed(1);
+
+        const c1 = document.createElement("div");
+        c1.className = "card";
+        c1.innerHTML = `<div class="card-title">🎮 VECTEUR v⃗</div>`;
+        c1.appendChild(
+          slider("nx", "x", n.x, -7, 7, 0.5, "#7c5cbf", (v) => (state.n.x = v)),
+        );
+        c1.appendChild(
+          slider("ny", "y", n.y, -7, 7, 0.5, "#7c5cbf", (v) => (state.n.y = v)),
+        );
+        panel.appendChild(c1);
+
+        panel.appendChild(
+          card(
+            "📏 NORME (= LONGUEUR)",
+            `<div style="text-align:center; padding:14px 0;">
+      <div style="font-size:0.65rem; color:var(--muted); margin-bottom:8px;">‖v⃗‖ = longueur de la flèche</div>
+      <div style="font-family:Space Mono; font-size:2rem; font-weight:700; color:#c4b0ff; text-shadow: 0 0 20px #7c5cbf;">
+        ${norm.toFixed(3)}
+      </div>
+    </div>
+    <div class="formula">‖v⃗‖ = √(${n.x.toFixed(1)}² + ${n.y.toFixed(1)}²)<br>
+    = √(${(n.x ** 2).toFixed(1)} + ${(n.y ** 2).toFixed(1)})<br>
+    = ${norm.toFixed(3)}</div>`,
+          ),
+        );
+
+        panel.appendChild(
+          card(
+            "📐 ANGLE avec l'axe X",
+            `<div style="text-align:center; padding:8px 0;">
+      <span class="angle-val">${angle}°</span>
+    </div>
+    <div class="formula">angle = arctan(y/x)<br>= arctan(${n.y.toFixed(1)}/${n.x.toFixed(1)})<br>= ${angle}°</div>`,
+          ),
+        );
+
+        panel.appendChild(
+          card(
+            "💡 PYTHAGORE !",
+            `<p class="hint">La norme, c'est juste <span>Pythagore</span> ! 🏛️<br><br>
+    Le vecteur forme un triangle rectangle avec ses projections x et y.<br><br>
+    La flèche = l'hypoténuse = √(x² + y²)</p>`,
+          ),
+        );
+      }
+
+      function renderPanelSandbox(panel) {
+        const vecs = state.sandbox;
+
+        vecs.forEach((v, i) => {
+          const norm = Math.sqrt(v.x ** 2 + v.y ** 2);
+          const angle = ((Math.atan2(v.y, v.x) * 180) / Math.PI).toFixed(1);
+          const tipX = v.ox + v.x,
+            tipY = v.oy + v.y;
+
+          const c = document.createElement("div");
+          c.className = "card";
+          c.style.borderLeft = `3px solid ${v.color}`;
+          c.innerHTML = `
+            <div class="card-title" style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="color:${v.color}; font-size:1rem;">${v.name}</span>
+              <button onclick="deleteSandboxVec(${i})" style="background:rgba(255,107,107,0.12); border:1px solid rgba(255,107,107,0.3); color:#ff6b6b; border-radius:6px; padding:2px 8px; font-size:0.68rem; cursor:pointer; font-family:Lexend,sans-serif;">✕ Retirer</button>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:5px; margin-bottom:10px;">
+              <div style="background:rgba(255,255,255,0.03); border-radius:6px; padding:6px; text-align:center;">
+                <div style="font-size:0.58rem; color:var(--muted); margin-bottom:2px;">ORIGINE</div>
+                <div style="font-family:Space Mono; font-size:0.78rem; color:rgba(200,200,255,0.6); font-weight:700;">(${v.ox.toFixed(1)},${v.oy.toFixed(1)})</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.03); border-radius:6px; padding:6px; text-align:center;">
+                <div style="font-size:0.58rem; color:var(--muted); margin-bottom:2px;">COMPOSANTES</div>
+                <div style="font-family:Space Mono; font-size:0.78rem; color:${v.color}; font-weight:700;">(${v.x.toFixed(1)},${v.y.toFixed(1)})</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.03); border-radius:6px; padding:6px; text-align:center;">
+                <div style="font-size:0.58rem; color:var(--muted); margin-bottom:2px;">NORME</div>
+                <div style="font-family:Space Mono; font-size:0.78rem; color:${v.color}; font-weight:700;">${norm.toFixed(2)}</div>
+              </div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:8px;">
+              <div style="background:rgba(255,255,255,0.03); border-radius:6px; padding:6px; text-align:center;">
+                <div style="font-size:0.58rem; color:var(--muted); margin-bottom:2px;">POINTE</div>
+                <div style="font-family:Space Mono; font-size:0.75rem; color:${v.color}; font-weight:700;">(${tipX.toFixed(1)},${tipY.toFixed(1)})</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.03); border-radius:6px; padding:6px; text-align:center;">
+                <div style="font-size:0.58rem; color:var(--muted); margin-bottom:2px;">ANGLE</div>
+                <div style="font-family:Space Mono; font-size:0.78rem; color:#ffd93d; font-weight:700;">${angle}°</div>
+              </div>
+            </div>`;
+
+          const secOrigin = document.createElement("div");
+          secOrigin.innerHTML = `<div style="font-size:0.62rem; font-weight:700; letter-spacing:1px; color:rgba(200,200,255,0.4); margin:8px 0 4px;">○ ORIGINE</div>`;
+          c.appendChild(secOrigin);
+          c.appendChild(
+            slider(
+              "sb_ox_" + i,
+              "ox",
+              v.ox,
+              -7,
+              7,
+              0.5,
+              "rgba(200,200,255,0.5)",
+              (val) => {
+                state.sandbox[i].ox = val;
+              },
+            ),
+          );
+          c.appendChild(
+            slider(
+              "sb_oy_" + i,
+              "oy",
+              v.oy,
+              -7,
+              7,
+              0.5,
+              "rgba(200,200,255,0.5)",
+              (val) => {
+                state.sandbox[i].oy = val;
+              },
+            ),
+          );
+
+          const secComp = document.createElement("div");
+          secComp.innerHTML = `<div style="font-size:0.62rem; font-weight:700; letter-spacing:1px; color:${v.color}; opacity:0.7; margin:8px 0 4px;">→ COMPOSANTES</div>`;
+          c.appendChild(secComp);
+          c.appendChild(
+            slider("sb_x_" + i, "Δx", v.x, -8, 8, 0.5, v.color, (val) => {
+              state.sandbox[i].x = val;
+            }),
+          );
+          c.appendChild(
+            slider("sb_y_" + i, "Δy", v.y, -8, 8, 0.5, v.color, (val) => {
+              state.sandbox[i].y = val;
+            }),
+          );
+
+          panel.appendChild(c);
+        });
+
+        if (vecs.length < 8) {
+          const addBtn = document.createElement("button");
+          addBtn.innerHTML = "＋ Ajouter un vecteur";
+          addBtn.style.cssText = `width:100%; padding:11px; border-radius:10px; border:1px dashed rgba(167,139,250,0.4); background:rgba(167,139,250,0.07); color:#a78bfa; font-family:Lexend,sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer; transition:all 0.2s;`;
+          addBtn.onmouseover = () =>
+            (addBtn.style.background = "rgba(167,139,250,0.15)");
+          addBtn.onmouseout = () =>
+            (addBtn.style.background = "rgba(167,139,250,0.07)");
+          addBtn.onclick = () => {
+            const idx = state.sandbox.length;
+            state.sandbox.push({
+              ox: Math.round((Math.random() * 6 - 3) * 2) / 2,
+              oy: Math.round((Math.random() * 4 - 2) * 2) / 2,
+              x: Math.round((Math.random() * 6 - 3) * 2) / 2,
+              y: Math.round((Math.random() * 6 - 3) * 2) / 2,
+              name: SANDBOX_NAMES[idx % SANDBOX_NAMES.length],
+              color: SANDBOX_COLORS[idx % SANDBOX_COLORS.length],
+            });
+            draw();
+            renderPanel();
+          };
+          panel.appendChild(addBtn);
+        }
+
+        const hint = document.createElement("div");
+        hint.className = "card";
+        hint.innerHTML = `<p class="hint">Sur le canvas :<br>● <span>Pointe</span> → change les composantes (Δx, Δy)<br>○ <span>Origine</span> → déplace le point de départ<br>— <span>Corps</span> → déplace tout le vecteur<br><br>💡 Jusqu'à 8 vecteurs simultanés.</p>`;
+        panel.appendChild(hint);
+      }
+
+      window.deleteSandboxVec = function (i) {
+        state.sandbox.splice(i, 1);
+        draw();
+        renderPanel();
+      };
+
+      // ===================== NOUVEAUX PANELS =====================
+
+      function renderPanelRepresentants(panel) {
+        const { x, y } = state.representants;
+        const ORIGINS = [
+          { ox: -4, oy: -2 },
+          { ox: 0, oy: 0 },
+          { ox: 2, oy: 1 },
+        ];
+
+        const ctrl = document.createElement("div");
+        ctrl.className = "card";
+        ctrl.innerHTML = `<div class="card-title">🎮 COMPOSANTES DU VECTEUR v⃗</div>`;
+        ctrl.appendChild(
+          slider("rep_x", "x", x, -6, 6, 0.5, "#00f5c3", (v) => {
+            state.representants.x = v;
+          }),
+        );
+        ctrl.appendChild(
+          slider("rep_y", "y", y, -6, 6, 0.5, "#00f5c3", (v) => {
+            state.representants.y = v;
+          }),
+        );
+        panel.appendChild(ctrl);
+
+        panel.appendChild(
+          card(
+            "📍 LES 3 REPRÉSENTANTS",
+            ORIGINS.map(
+              (o, i) => `
+              <div class="vec-display" style="margin-bottom:6px;">
+                <div class="vec-dot" style="background:#00f5c3"></div>
+                <span class="vec-name" style="color:#00f5c3">v⃗ <span style="font-size:0.62rem;color:var(--muted)">depuis (${o.ox},${o.oy})</span></span>
+                <span class="vec-coords">(${x.toFixed(1)}, ${y.toFixed(1)})</span>
+              </div>`,
+            ).join("") +
+              `<div class="formula" style="margin-top:8px;">
+              Pointe n°1 : (${(-4 + x).toFixed(1)}, ${(-2 + y).toFixed(1)})<br>
+              Pointe n°2 : (${x.toFixed(1)}, ${y.toFixed(1)})<br>
+              Pointe n°3 : (${(2 + x).toFixed(1)}, ${(1 + y).toFixed(1)})
+            </div>`,
+          ),
+        );
+
+        panel.appendChild(
+          card(
+            "💡 C'EST QUOI UN REPRÉSENTANT ?",
+            `<p class="hint">Un vecteur n'est <strong>pas attaché</strong> à un point de départ.<br><br>
+            Ces 3 flèches ont la <span>même direction</span>, le <span>même sens</span> et la <span>même longueur</span> → c'est le <span>même vecteur v⃗</span> !<br><br>
+            On appelle chaque flèche un <span>représentant</span> du vecteur.</p>`,
+          ),
+        );
+
+        panel.appendChild(
+          card(
+            "📐 FORMULE",
+            `<div class="formula">‖v⃗‖ = √(${x.toFixed(1)}² + ${y.toFixed(1)}²) = ${Math.sqrt(x ** 2 + y ** 2).toFixed(2)}<br><br>
+            Cette longueur est la même pour<br>les 3 représentants ✓</div>`,
+          ),
+        );
+      }
+
+      function renderPanelScalaire(panel) {
+        const { x, y, k } = state.scalaire;
+        const kx = k * x,
+          ky = k * y;
+        const norm = Math.sqrt(x ** 2 + y ** 2);
+        const normk = Math.abs(k) * norm;
+
+        let sc = "#ffd93d";
+        if (k < 0) sc = "#ff6b6b";
+        else if (Math.abs(k) < 0.05) sc = "rgba(150,150,200,0.6)";
+        else if (Math.abs(k) < 1) sc = "#ff9f43";
+
+        const cV = document.createElement("div");
+        cV.className = "card";
+        cV.innerHTML = `<div class="card-title">🎮 VECTEUR v⃗ <span style="color:#00f5c3">(vert)</span></div>`;
+        cV.appendChild(
+          slider("sc_x", "x", x, -6, 6, 0.5, "#00f5c3", (v) => {
+            state.scalaire.x = v;
+          }),
+        );
+        cV.appendChild(
+          slider("sc_y", "y", y, -6, 6, 0.5, "#00f5c3", (v) => {
+            state.scalaire.y = v;
+          }),
+        );
+        panel.appendChild(cV);
+
+        const cK = document.createElement("div");
+        cK.className = "card";
+        cK.innerHTML = `<div class="card-title">✖️ FACTEUR k = <span style="color:${sc}; font-family:Space Mono;">${k.toFixed(2)}</span></div>`;
+        cK.appendChild(
+          slider("sc_k", "k", k, -3, 3, 0.25, sc, (v) => {
+            state.scalaire.k = v;
+          }),
+        );
+        panel.appendChild(cK);
+
+        const kk = parseFloat(k.toFixed(2));
+        let badge = "";
+        if (kk === 0)
+          badge = `<div style="margin-top:8px;padding:8px;border-radius:8px;background:rgba(150,150,200,0.1);border:1px solid rgba(150,150,200,0.3);color:rgba(180,180,220,0.9);font-size:0.8rem;">⃗0 — Vecteur nul : longueur = 0, pas de direction.</div>`;
+        else if (kk < 0)
+          badge = `<div style="margin-top:8px;padding:8px;border-radius:8px;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);color:#ff6b6b;font-size:0.8rem;">↩️ k < 0 : la direction est <strong>inversée</strong> !</div>`;
+        else if (kk < 1)
+          badge = `<div style="margin-top:8px;padding:8px;border-radius:8px;background:rgba(255,159,67,0.1);border:1px solid rgba(255,159,67,0.3);color:#ff9f43;font-size:0.8rem;">🔽 0 < k < 1 : le vecteur est <strong>réduit</strong></div>`;
+        else if (kk > 1)
+          badge = `<div style="margin-top:8px;padding:8px;border-radius:8px;background:rgba(255,217,61,0.1);border:1px solid rgba(255,217,61,0.3);color:#ffd93d;font-size:0.8rem;">🔼 k > 1 : le vecteur est <strong>allongé</strong></div>`;
+
+        panel.appendChild(
+          card(
+            "📊 RÉSULTAT k × v⃗",
+            `<div class="vec-display" style="margin-bottom:6px;">
+              <div class="vec-dot" style="background:#00f5c3"></div>
+              <span class="vec-name" style="color:#00f5c3">v⃗</span>
+              <span class="vec-coords">(${x.toFixed(1)}, ${y.toFixed(1)})</span>
+            </div>
+            <div class="vec-display" style="border:1px solid ${sc}44; background:rgba(255,255,255,0.03);">
+              <div class="vec-dot" style="background:${sc}"></div>
+              <span class="vec-name" style="color:${sc}">${k.toFixed(1)}×v⃗</span>
+              <span class="vec-coords">(${kx.toFixed(1)}, ${ky.toFixed(1)})</span>
+            </div>
+            <div class="formula" style="margin-top:10px;">
+              ${k.toFixed(2)} × (${x.toFixed(1)}, ${y.toFixed(1)})<br>
+              = (${k.toFixed(2)}×${x.toFixed(1)}, ${k.toFixed(2)}×${y.toFixed(1)})<br>
+              = (${kx.toFixed(1)}, ${ky.toFixed(1)})
+            </div>
+            <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <div style="background:rgba(0,245,195,0.07);border:1px solid rgba(0,245,195,0.2);border-radius:6px;padding:8px;text-align:center;">
+                <div style="font-size:0.6rem;color:var(--muted);margin-bottom:2px;">‖v⃗‖</div>
+                <div style="font-family:Space Mono;color:#00f5c3;font-weight:700;">${norm.toFixed(2)}</div>
+              </div>
+              <div style="background:${sc}12;border:1px solid ${sc}44;border-radius:6px;padding:8px;text-align:center;">
+                <div style="font-size:0.6rem;color:var(--muted);margin-bottom:2px;">‖k×v⃗‖ = |k|×‖v⃗‖</div>
+                <div style="font-family:Space Mono;color:${sc};font-weight:700;">${normk.toFixed(2)}</div>
+              </div>
+            </div>${badge}`,
+          ),
+        );
+
+        panel.appendChild(
+          card(
+            "💡 RÈGLES",
+            `<p class="hint">k×(x, y) = <span>(k·x, k·y)</span><br><br>
+            ‖k×v⃗‖ = <span>|k| × ‖v⃗‖</span><br><br>
+            Si k < 0 → vecteur <span>opposé</span> (retourné)<br>
+            Si k = 0 → <span>vecteur nul</span> 0⃗</p>`,
+          ),
+        );
+      }
+
+      function renderPanelFigures(panel) {
+        const { type, tri, para } = state.figures;
+
+        const btns = document.createElement("div");
+        btns.className = "fig-btns";
+        [
+          ["triangle", "🔺 Triangle"],
+          ["parallelogramme", "▱ Parallélogramme"],
+        ].forEach(([t, l]) => {
+          const b = document.createElement("button");
+          b.className = "fig-btn" + (type === t ? " active" : "");
+          b.textContent = l;
+          b.onclick = () => {
+            state.figures.type = t;
+            draw();
+            renderPanel();
+          };
+          btns.appendChild(b);
+        });
+        panel.appendChild(btns);
+
+        if (type === "triangle") {
+          const { A, B, C } = tri;
+          const AB = { x: B.x - A.x, y: B.y - A.y };
+          const BC = { x: C.x - B.x, y: C.y - B.y };
+          const CA = { x: A.x - C.x, y: A.y - C.y };
+          const sum = {
+            x: Math.abs(AB.x + BC.x + CA.x),
+            y: Math.abs(AB.y + BC.y + CA.y),
+          };
+
+          [
+            ["A", "#00f5c3", tri.A],
+            ["B", "#ff6b6b", tri.B],
+            ["C", "#ffd93d", tri.C],
+          ].forEach(([l, col, pt]) => {
+            const cc = document.createElement("div");
+            cc.className = "card";
+            cc.innerHTML = `<div class="card-title" style="color:${col}">📍 POINT ${l}</div>`;
+            cc.appendChild(
+              slider(`fig_${l}x`, "x", pt.x, -6, 6, 0.5, col, (v) => {
+                state.figures.tri[l].x = v;
+              }),
+            );
+            cc.appendChild(
+              slider(`fig_${l}y`, "y", pt.y, -6, 6, 0.5, col, (v) => {
+                state.figures.tri[l].y = v;
+              }),
+            );
+            panel.appendChild(cc);
+          });
+
+          panel.appendChild(
+            card(
+              "🔗 VECTEURS DU TRIANGLE",
+              `<div class="vec-display" style="margin-bottom:6px;">
+                <div class="vec-dot" style="background:#00f5c3"></div>
+                <span class="vec-name" style="color:#00f5c3">AB⃗</span>
+                <span class="vec-coords">(${AB.x.toFixed(1)}, ${AB.y.toFixed(1)})</span>
+              </div>
+              <div class="vec-display" style="margin-bottom:6px;">
+                <div class="vec-dot" style="background:#ff6b6b"></div>
+                <span class="vec-name" style="color:#ff6b6b">BC⃗</span>
+                <span class="vec-coords">(${BC.x.toFixed(1)}, ${BC.y.toFixed(1)})</span>
+              </div>
+              <div class="vec-display" style="margin-bottom:10px;">
+                <div class="vec-dot" style="background:#ffd93d"></div>
+                <span class="vec-name" style="color:#ffd93d">CA⃗</span>
+                <span class="vec-coords">(${CA.x.toFixed(1)}, ${CA.y.toFixed(1)})</span>
+              </div>
+              <div class="formula">AB⃗ + BC⃗ + CA⃗ = 0⃗<br>
+              Vérif : (${(AB.x + BC.x + CA.x).toFixed(1)}, ${(AB.y + BC.y + CA.y).toFixed(1)}) ✓</div>`,
+            ),
+          );
+
+          panel.appendChild(
+            card(
+              "💡 RELATION DE CHASLES",
+              `<p class="hint">Dans tout triangle, le tour complet donne <span>0⃗</span> :<br><br>
+              <span>AB⃗ + BC⃗ + CA⃗ = 0⃗</span><br><br>
+              Et aussi : <span>AB⃗ + BC⃗ = AC⃗</span><br><br>
+              On "concatene" les flèches bout à bout 🔄</p>`,
+            ),
+          );
+        }
+
+        if (type === "parallelogramme") {
+          const { A, B, D } = para;
+          const C = { x: B.x + D.x - A.x, y: B.y + D.y - A.y };
+          const AB = { x: B.x - A.x, y: B.y - A.y };
+          const AD = { x: D.x - A.x, y: D.y - A.y };
+          const DC = { x: C.x - D.x, y: C.y - D.y };
+          const BC = { x: C.x - B.x, y: C.y - B.y };
+          const AC = { x: C.x - A.x, y: C.y - A.y };
+
+          [
+            ["A", "#ffffff", para.A, "A"],
+            ["B", "#00f5c3", para.B, "B"],
+            ["D", "#ff6b6b", para.D, "D"],
+          ].forEach(([l, col, pt, key]) => {
+            const cc = document.createElement("div");
+            cc.className = "card";
+            cc.innerHTML = `<div class="card-title" style="color:${col}">📍 POINT ${l}</div>`;
+            cc.appendChild(
+              slider(`fig_p${l}x`, "x", pt.x, -6, 6, 0.5, col, (v) => {
+                state.figures.para[key].x = v;
+              }),
+            );
+            cc.appendChild(
+              slider(`fig_p${l}y`, "y", pt.y, -6, 6, 0.5, col, (v) => {
+                state.figures.para[key].y = v;
+              }),
+            );
+            panel.appendChild(cc);
+          });
+
+          panel.appendChild(
+            card(
+              "🔗 PROPRIÉTÉS",
+              `<div class="formula">
+              C = B + D − A = (${C.x.toFixed(1)}, ${C.y.toFixed(1)})<br><br>
+              AB⃗ = (${AB.x.toFixed(1)},${AB.y.toFixed(1)}) = DC⃗ = (${DC.x.toFixed(1)},${DC.y.toFixed(1)}) ✓<br>
+              AD⃗ = (${AD.x.toFixed(1)},${AD.y.toFixed(1)}) = BC⃗ = (${BC.x.toFixed(1)},${BC.y.toFixed(1)}) ✓<br><br>
+              AC⃗ = AB⃗ + AD⃗<br>
+              = (${AB.x.toFixed(1)}+${AD.x.toFixed(1)}, ${AB.y.toFixed(1)}+${AD.y.toFixed(1)})<br>
+              = (${AC.x.toFixed(1)}, ${AC.y.toFixed(1)}) ✓</div>`,
+            ),
+          );
+
+          panel.appendChild(
+            card(
+              "💡 À RETENIR",
+              `<p class="hint">Dans un parallélogramme ABCD :<br><br>
+              <span>AB⃗ = DC⃗</span> (côtés opposés et égaux)<br>
+              <span>AD⃗ = BC⃗</span><br><br>
+              Diagonale : <span>AC⃗ = AB⃗ + AD⃗</span><br><br>
+              Point C : <span>C = B + D − A</span></p>`,
+            ),
+          );
+        }
+      }
+
+      function renderPanelProprietes(panel) {
+        const { a, b, c, k } = state.proprietes;
+        const fmt = (v) => parseFloat(v.toFixed(1));
+        const fv = (v) => `(${fmt(v.x)}, ${fmt(v.y)})`;
+
+        // --- Header ---
+        const hdr = document.createElement("div");
+        hdr.style.cssText =
+          "text-align:center;font-size:0.7rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding-top:4px;";
+        hdr.textContent = "⚖️ Propriétés Algébriques des Vecteurs";
+        panel.appendChild(hdr);
+
+        // --- Affichage des vecteurs (texte stylé) ---
+        const vecDisplay = document.createElement("div");
+        vecDisplay.className = "card";
+        vecDisplay.innerHTML = `
+          <div class="card-title">📍 VOS VECTEURS</div>
+          <div style="display:flex;gap:24px;justify-content:center;align-items:center;padding:12px 0;flex-wrap:wrap;">
+            <div style="text-align:center;">
+              <div style="font-family:Space Mono;font-size:1.3rem;font-weight:900;color:#00f5c3;">a⃗</div>
+              <div style="font-family:Space Mono;font-size:1rem;color:#00f5c3;margin-top:4px;">${fv(a)}</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-family:Space Mono;font-size:1.3rem;font-weight:900;color:#ff6b6b;">b⃗</div>
+              <div style="font-family:Space Mono;font-size:1rem;color:#ff6b6b;margin-top:4px;">${fv(b)}</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-family:Space Mono;font-size:1.3rem;font-weight:900;color:#ffd93d;">c⃗</div>
+              <div style="font-family:Space Mono;font-size:1rem;color:#ffd93d;margin-top:4px;">${fv(c)}</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-family:Space Mono;font-size:1.3rem;font-weight:900;color:#a78bfa;">k</div>
+              <div style="font-family:Space Mono;font-size:1rem;color:#a78bfa;margin-top:4px;">${fmt(k)}</div>
+            </div>
+          </div>`;
+        panel.appendChild(vecDisplay);
+
+        // --- Sliders compacts 2 colonnes ---
+        const ctrl = document.createElement("div");
+        ctrl.className = "card";
+        ctrl.innerHTML = `<div class="card-title">🎮 RÉGLER LES VECTEURS</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;">
+            <div id="_sl_ax"></div><div id="_sl_ay"></div>
+            <div id="_sl_bx"></div><div id="_sl_by"></div>
+            <div id="_sl_cx"></div><div id="_sl_cy"></div>
+            <div id="_sl_k" style="grid-column:1/-1;"></div>
+          </div>`;
+        panel.appendChild(ctrl);
+        const sliders = [
+          [
+            "pr_ax",
+            "_sl_ax",
+            "ax",
+            a.x,
+            "#00f5c3",
+            (v) => (state.proprietes.a.x = v),
+          ],
+          [
+            "pr_ay",
+            "_sl_ay",
+            "ay",
+            a.y,
+            "#00f5c3",
+            (v) => (state.proprietes.a.y = v),
+          ],
+          [
+            "pr_bx",
+            "_sl_bx",
+            "bx",
+            b.x,
+            "#ff6b6b",
+            (v) => (state.proprietes.b.x = v),
+          ],
+          [
+            "pr_by",
+            "_sl_by",
+            "by",
+            b.y,
+            "#ff6b6b",
+            (v) => (state.proprietes.b.y = v),
+          ],
+          [
+            "pr_cx",
+            "_sl_cx",
+            "cx",
+            c.x,
+            "#ffd93d",
+            (v) => (state.proprietes.c.x = v),
+          ],
+          [
+            "pr_cy",
+            "_sl_cy",
+            "cy",
+            c.y,
+            "#ffd93d",
+            (v) => (state.proprietes.c.y = v),
+          ],
+          ["pr_k", "_sl_k", "k", k, "#a78bfa", (v) => (state.proprietes.k = v)],
+        ];
+        sliders.forEach(([id, slotId, lbl, val, col, fn]) => {
+          const slot = ctrl.querySelector(`#${slotId}`);
+          slot.appendChild(
+            slider(
+              id,
+              lbl,
+              val,
+              id === "pr_k" ? -3 : -4,
+              id === "pr_k" ? 3 : 4,
+              0.5,
+              col,
+              (v) => {
+                fn(v);
+              },
+            ),
+          );
+        });
+
+        // --- Propriétés en grille 2 colonnes ---
+        const grid = document.createElement("div");
+        grid.style.cssText =
+          "display:grid;grid-template-columns:1fr 1fr;gap:10px;";
+        panel.appendChild(grid);
+
+        // ① Commutativité
+        const apb = { x: a.x + b.x, y: a.y + b.y };
+        const c1 = document.createElement("div");
+        c1.className = "card";
+        c1.innerHTML = `
+          <div class="card-title" style="font-size:0.62rem;">① COMMUTATIVITÉ</div>
+          <div style="font-family:Space Mono;font-size:0.75rem;text-align:center;color:#a78bfa;margin-bottom:6px;">a⃗ + b⃗ = b⃗ + a⃗</div>
+          <div style="display:flex;gap:6px;justify-content:center;align-items:center;font-size:0.8rem;">
+            <span style="color:#00f5c3;">${fv(apb)}</span>
+            <span style="color:var(--muted);">=</span>
+            <span style="color:#ff6b6b;">${fv(apb)}</span>
+          </div>
+          <div style="text-align:center;font-size:0.72rem;color:#00f5c3;padding-top:6px;">✅ Vérifié !</div>`;
+        grid.appendChild(c1);
+
+        // ② Associativité
+        const abc = { x: a.x + b.x + c.x, y: a.y + b.y + c.y };
+        const c2 = document.createElement("div");
+        c2.className = "card";
+        c2.innerHTML = `
+          <div class="card-title" style="font-size:0.62rem;">② ASSOCIATIVITÉ</div>
+          <div style="font-family:Space Mono;font-size:0.75rem;text-align:center;color:#a78bfa;margin-bottom:6px;">(a⃗+b⃗)+c⃗ = a⃗+(b⃗+c⃗)</div>
+          <div style="text-align:center;font-size:0.8rem;">
+            <span style="color:#00f5c3;">${fv(abc)}</span>
+            <span style="color:var(--muted);"> = </span>
+            <span style="color:#ffd93d;">${fv(abc)}</span>
+          </div>
+          <div style="text-align:center;font-size:0.72rem;color:#00f5c3;padding-top:6px;">✅ Vérifié !</div>`;
+        grid.appendChild(c2);
+
+        // ③ Distributivité
+        const k_ab = { x: k * (a.x + b.x), y: k * (a.y + b.y) };
+        const ka_kb = { x: k * a.x + k * b.x, y: k * a.y + k * b.y };
+        const c3 = document.createElement("div");
+        c3.className = "card";
+        c3.innerHTML = `
+          <div class="card-title" style="font-size:0.62rem;">③ DISTRIBUTIVITÉ</div>
+          <div style="font-family:Space Mono;font-size:0.75rem;text-align:center;color:#a78bfa;margin-bottom:6px;">k(a⃗+b⃗) = k·a⃗ + k·b⃗</div>
+          <div style="text-align:center;font-size:0.8rem;">
+            <span style="color:#ffd93d;">${fmt(k)}×${fv(apb)}</span>
+            <span style="color:var(--muted);"> = </span>
+            <span style="color:#ffd93d;">${fv(k_ab)}</span>
+          </div>
+          <div style="text-align:center;font-size:0.72rem;color:#00f5c3;padding-top:6px;">✅ k = ${fmt(k)}</div>`;
+        grid.appendChild(c3);
+
+        // ④ Vecteur nul
+        const c4 = document.createElement("div");
+        c4.className = "card";
+        c4.innerHTML = `
+          <div class="card-title" style="font-size:0.62rem;">④ VECTEUR NUL 0⃗</div>
+          <div style="font-family:Space Mono;font-size:0.75rem;text-align:center;color:#a78bfa;margin-bottom:6px;">a⃗ + 0⃗ = a⃗</div>
+          <div style="text-align:center;font-size:0.8rem;">
+            <span style="color:#00f5c3;">${fv(a)}</span>
+            <span style="color:var(--muted);"> + (0, 0) = </span>
+            <span style="color:#00f5c3;">${fv(a)}</span>
+          </div>
+          <div style="font-size:0.68rem;color:rgba(180,180,230,0.8);padding-top:6px;text-align:center;">Élément neutre de l'addition vectorielle.</div>`;
+        grid.appendChild(c4);
+
+        // ⑤ Vecteur opposé
+        const c5 = document.createElement("div");
+        c5.className = "card";
+        c5.innerHTML = `
+          <div class="card-title" style="font-size:0.62rem;">⑤ VECTEUR OPPOSÉ −a⃗</div>
+          <div style="font-family:Space Mono;font-size:0.75rem;text-align:center;color:#a78bfa;margin-bottom:6px;">a⃗ + (−a⃗) = 0⃗</div>
+          <div style="text-align:center;font-size:0.8rem;">
+            <span style="color:#00f5c3;">${fv(a)}</span>
+            <span style="color:var(--muted);"> + </span>
+            <span style="color:#ff6b6b;">(${fmt(-a.x)}, ${fmt(-a.y)})</span>
+            <span style="color:var(--muted);"> = </span>
+            <span style="color:#a78bfa;">(0, 0)</span>
+          </div>
+          <div style="font-size:0.68rem;color:rgba(180,180,230,0.8);padding-top:6px;text-align:center;">Même longueur, direction inversée (×−1).</div>`;
+        grid.appendChild(c5);
+      }
+
+      function renderPanelCalcul(panel) {
+        const { A, B, op } = state.calcul;
+
+        // ---- helper: styled number input ----
+        function numBox(val, color, onChange) {
+          const inp = document.createElement("input");
+          inp.type = "number";
+          inp.className = "calc-num-input";
+          inp.value = val;
+          inp.step = 1;
+          inp.min = -20;
+          inp.max = 20;
+          inp.style.color = color;
+          inp.style.borderColor = color + "88";
+          const update = () => {
+            const v = parseFloat(inp.value);
+            if (!isNaN(v)) {
+              onChange(v);
+              renderPanel();
+            }
+          };
+          inp.addEventListener("change", update);
+          inp.addEventListener("input", update);
+          return inp;
+        }
+
+        // ---- header ----
+        const hdr = document.createElement("div");
+        hdr.style.cssText =
+          "text-align:center; font-size:0.7rem; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:16px; padding-top:4px;";
+        hdr.textContent = "🧮 Calcul de Vecteurs";
+        panel.appendChild(hdr);
+
+        // ---- inputs card ----
+        const inputsCard = document.createElement("div");
+        inputsCard.className = "card";
+        inputsCard.innerHTML =
+          '<div class="card-title">📍 Entrer les vecteurs</div>';
+        const row = document.createElement("div");
+        row.className = "calc-inputs-row";
+
+        // helper to build one vector input box
+        function vecInputBox(label, color, vx, vy, onXChange, onYChange) {
+          const box = document.createElement("div");
+          box.className = "calc-vec-box";
+          const l = document.createElement("span");
+          l.className = "calc-letter";
+          l.style.color = color;
+          l.textContent = label;
+          box.appendChild(l);
+          box.appendChild(
+            Object.assign(document.createElement("span"), {
+              className: "calc-paren",
+              textContent: "(",
+            }),
+          );
+          box.appendChild(numBox(vx, color, onXChange));
+          box.appendChild(
+            Object.assign(document.createElement("span"), {
+              className: "calc-comma",
+              textContent: ",",
+            }),
+          );
+          box.appendChild(numBox(vy, color, onYChange));
+          box.appendChild(
+            Object.assign(document.createElement("span"), {
+              className: "calc-paren",
+              textContent: ")",
+            }),
+          );
+          return box;
+        }
+
+        row.appendChild(
+          vecInputBox(
+            "A⃗",
+            "#00f5c3",
+            A.x,
+            A.y,
+            (v) => (state.calcul.A.x = v),
+            (v) => (state.calcul.A.y = v),
+          ),
+        );
+        const sep = document.createElement("div");
+        sep.style.cssText =
+          "font-size:1.4rem; color:rgba(200,200,255,0.25); font-family:Space Mono; align-self:center;";
+        sep.textContent = "|";
+        row.appendChild(sep);
+        row.appendChild(
+          vecInputBox(
+            "B⃗",
+            "#ff6b6b",
+            B.x,
+            B.y,
+            (v) => (state.calcul.B.x = v),
+            (v) => (state.calcul.B.y = v),
+          ),
+        );
+        inputsCard.appendChild(row);
+        panel.appendChild(inputsCard);
+
+        // ---- operation buttons ----
+        const opsCard = document.createElement("div");
+        opsCard.className = "card";
+        opsCard.innerHTML =
+          '<div class="card-title">🔧 Choisir l\'opération</div>';
+        const opsRow = document.createElement("div");
+        opsRow.className = "calc-ops";
+        const OPS = [
+          {
+            key: "AB",
+            label: "AB⃗",
+            sub: "Vecteur A → B",
+            color: "#ffd93d",
+            rgb: "255,217,61",
+          },
+          {
+            key: "ApB",
+            label: "A⃗ + B⃗",
+            sub: "Addition",
+            color: "#a78bfa",
+            rgb: "167,139,250",
+          },
+          {
+            key: "AmB",
+            label: "A⃗ − B⃗",
+            sub: "Soustraction",
+            color: "#ff9f43",
+            rgb: "255,159,67",
+          },
+          {
+            key: "dot",
+            label: "A⃗ · B⃗",
+            sub: "Produit scalaire",
+            color: "#54a0ff",
+            rgb: "84,160,255",
+          },
+        ];
+        OPS.forEach((o) => {
+          const btn = document.createElement("button");
+          btn.className = "calc-op-btn" + (op === o.key ? " active" : "");
+          if (op === o.key) {
+            btn.style.setProperty("--op-color", o.color);
+            btn.style.borderColor = o.color;
+            btn.style.background = `rgba(${o.rgb},0.12)`;
+            btn.style.color = o.color;
+          }
+          btn.innerHTML = `${o.label}<span class="btn-sub">${o.sub}</span>`;
+          btn.onclick = () => {
+            state.calcul.op = o.key;
+            renderPanel();
+          };
+          opsRow.appendChild(btn);
+        });
+        opsCard.appendChild(opsRow);
+        panel.appendChild(opsCard);
+
+        // ---- schema ----
+        panel.appendChild(buildSchema(A, B, op));
+      }
+
+      function buildSchema(A, B, op) {
+        const box = document.createElement("div");
+        box.className = "schema-box";
+
+        const fmt = (n) => {
+          const v = parseFloat(n.toFixed(1));
+          return v === Math.trunc(v) ? Math.trunc(v).toString() : v.toString();
+        };
+        const Axs = fmt(A.x),
+          Ays = fmt(A.y),
+          Bxs = fmt(B.x),
+          Bys = fmt(B.y);
+
+        const OPS_META = {
+          AB: {
+            color: "#ffd93d",
+            label: "AB⃗",
+            arrow: "↑",
+            sign: "−",
+            formula:
+              "( x<sub>B</sub> − x<sub>A</sub> , &nbsp;y<sub>B</sub> − y<sub>A</sub> )",
+          },
+          ApB: {
+            color: "#a78bfa",
+            label: "A⃗ + B⃗",
+            arrow: "↓",
+            sign: "+",
+            formula:
+              "( x<sub>A</sub> + x<sub>B</sub> , &nbsp;y<sub>A</sub> + y<sub>B</sub> )",
+          },
+          AmB: {
+            color: "#ff9f43",
+            label: "A⃗ − B⃗",
+            arrow: "↓",
+            sign: "−",
+            formula:
+              "( x<sub>A</sub> − x<sub>B</sub> , &nbsp;y<sub>A</sub> − y<sub>B</sub> )",
+          },
+        };
+
+        if (op === "dot") {
+          const dot = A.x * B.x + A.y * B.y;
+          const na = Math.sqrt(A.x ** 2 + A.y ** 2),
+            nb = Math.sqrt(B.x ** 2 + B.y ** 2);
+          const cosA = na * nb > 0 ? dot / (na * nb) : 0;
+          const ang = (
+            (Math.acos(Math.max(-1, Math.min(1, cosA))) * 180) /
+            Math.PI
+          ).toFixed(1);
+          const interp =
+            Math.abs(dot) < 0.01
+              ? "⊥ Perpendiculaires !"
+              : dot > 0
+                ? "↗ Même sens général"
+                : "↙ Sens opposé";
+          const term1 = A.x * B.x,
+            term2 = A.y * B.y;
+          box.innerHTML = `
+            <div class="schema-title">Opération : <span style="color:#54a0ff">A⃗ · B⃗ — Produit Scalaire</span></div>
+            <div class="schema-body">
+              <div class="schema-eq-label" style="color:#54a0ff">A⃗ · B⃗ =</div>
+              <div class="schema-stack">
+                <div class="schema-stack-row" style="color:#00f5c3">A⃗ &nbsp;( ${Axs} &nbsp;, &nbsp;${Ays} )</div>
+                <div class="schema-mid-row"><span>×</span><span class="schema-arrow-sym">↓</span><span class="schema-arrow-sym">↓</span><span style="color:#ffd93d">+</span></div>
+                <div class="schema-sep"></div>
+                <div class="schema-stack-row" style="color:#ff6b6b">B⃗ &nbsp;( ${Bxs} &nbsp;, &nbsp;${Bys} )</div>
+              </div>
+              <div class="schema-rhs">
+                <div class="schema-formula-label">Ax×Bx &nbsp; + &nbsp; Ay×By</div>
+                <div class="schema-formula-label">${fmt(A.x)}×${fmt(B.x)} &nbsp; + &nbsp; ${fmt(A.y)}×${fmt(B.y)}</div>
+                <div class="schema-formula-label">${fmt(term1)} &nbsp; + &nbsp; ${fmt(term2)}</div>
+                <div class="schema-result-big" style="color:#54a0ff">${fmt(dot)}</div>
+              </div>
+            </div>
+            <div class="scalar-note">
+              ⚠️ <strong>Le produit scalaire donne un NOMBRE (scalaire), pas un vecteur.</strong><br>
+              θ = ${ang}° entre A⃗ et B⃗ &nbsp;·&nbsp; <span style="font-weight:700">${interp}</span>
+            </div>`;
+          return box;
+        }
+
+        const m = OPS_META[op];
+        let rx, ry;
+        if (op === "AB") {
+          rx = B.x - A.x;
+          ry = B.y - A.y;
+        } else if (op === "ApB") {
+          rx = A.x + B.x;
+          ry = A.y + B.y;
+        } else {
+          rx = A.x - B.x;
+          ry = A.y - B.y;
+        }
+        const norm = Math.sqrt(rx ** 2 + ry ** 2).toFixed(2);
+
+        box.innerHTML = `
+          <div class="schema-title">Opération : <span style="color:${m.color}">${m.label}</span></div>
+          <div class="schema-body">
+            <div class="schema-eq-label" style="color:${m.color}">${m.label} =</div>
+            <div class="schema-stack">
+              <div class="schema-stack-row" style="color:#00f5c3">A⃗ &nbsp;( ${Axs} &nbsp;, &nbsp;${Ays} )</div>
+              <div class="schema-mid-row"><span style="color:${m.color}">${m.sign}</span><span class="schema-arrow-sym">${m.arrow}</span>&nbsp;&nbsp;<span class="schema-arrow-sym">${m.arrow}</span><span style="color:${m.color}">${m.sign}</span></div>
+              <div class="schema-sep"></div>
+              <div class="schema-stack-row" style="color:#ff6b6b">B⃗ &nbsp;( ${Bxs} &nbsp;, &nbsp;${Bys} )</div>
+            </div>
+            <div class="schema-rhs">
+              <div class="schema-formula-label">${m.formula}</div>
+              <div class="schema-result-big" style="color:${m.color}">( ${fmt(rx)} , ${fmt(ry)} )</div>
+              ${op === "AB" ? `<div class="schema-norm">‖AB⃗‖ = ${norm}</div>` : ""}
+            </div>
+          </div>`;
+        return box;
+      }
+
+      // ===================== DRAG =====================
+      function stdDrag3(obj, mx, my, eps) {
+        // eps est en coordonnées mathématiques (unités)
+        const tipX = obj.ox + obj.x,
+          tipY = obj.oy + obj.y;
+        if (Math.sqrt((mx - tipX) ** 2 + (my - tipY) ** 2) < eps)
+          return { mode: "tip", obj };
+        if (Math.sqrt((mx - obj.ox) ** 2 + (my - obj.oy) ** 2) < eps)
+          return { mode: "origin", obj };
+        const d = distPointToSegment(mx, my, obj.ox, obj.oy, tipX, tipY);
+        if (d < eps * 0.7)
+          return { mode: "body", obj, offX: mx - obj.ox, offY: my - obj.oy };
+        return null;
+      }
+
+      function getVectorForTab(mx, my) {
+        const t = state.tab;
+        const eps = 2.0; // zone de clic généreuse (~50px à scale normal)
+        if (t === "vecteur") {
+          return stdDrag3(state.v1, mx, my, eps);
+        } else if (t === "colineaire") {
+          return (
+            stdDrag3(state.u, mx, my, eps) || stdDrag3(state.v, mx, my, eps)
+          );
+        } else if (t === "addition") {
+          return (
+            stdDrag3(state.a, mx, my, eps) || stdDrag3(state.b, mx, my, eps)
+          );
+        } else if (t === "norme") {
+          return stdDrag3(state.n, mx, my, eps);
+        } else if (t === "sandbox") {
+          // 1) check tip first
+          for (const v of state.sandbox) {
+            const tx = v.ox + v.x,
+              ty = v.oy + v.y;
+            if (Math.sqrt((mx - tx) ** 2 + (my - ty) ** 2) < eps)
+              return { mode: "tip", obj: v };
+          }
+          // 2) check origin
+          for (const v of state.sandbox) {
+            if (Math.sqrt((mx - v.ox) ** 2 + (my - v.oy) ** 2) < eps)
+              return { mode: "origin", obj: v };
+          }
+          // 3) check body (click on the shaft)
+          for (const v of state.sandbox) {
+            const d = distPointToSegment(
+              mx,
+              my,
+              v.ox,
+              v.oy,
+              v.ox + v.x,
+              v.oy + v.y,
+            );
+            if (d < eps * 0.7)
+              return { mode: "body", obj: v, offX: mx - v.ox, offY: my - v.oy };
+          }
+        } else if (t === "representants") {
+          const { x, y } = state.representants;
+          const ORIGINS = [
+            { ox: -4, oy: -2 },
+            { ox: 0, oy: 0 },
+            { ox: 2, oy: 1 },
+          ];
+          for (const o of ORIGINS) {
+            if (
+              Math.sqrt((mx - (o.ox + x)) ** 2 + (my - (o.oy + y)) ** 2) < eps
+            )
+              return { mode: "rep", ox: o.ox, oy: o.oy };
+          }
+        } else if (t === "scalaire") {
+          return stdDrag3(state.scalaire, mx, my, eps);
+        } else if (t === "figures") {
+          const { type, tri, para } = state.figures;
+          if (type === "triangle") {
+            for (const key of ["A", "B", "C"]) {
+              const pt = tri[key];
+              if (Math.sqrt((mx - pt.x) ** 2 + (my - pt.y) ** 2) < eps)
+                return { mode: "fig_vertex", obj: pt };
+            }
+          } else if (type === "parallelogramme") {
+            for (const key of ["A", "B", "D"]) {
+              const pt = para[key];
+              if (Math.sqrt((mx - pt.x) ** 2 + (my - pt.y) ** 2) < eps)
+                return { mode: "fig_vertex", obj: pt };
+            }
+          }
+        }
+        // calcul tab — canvas is hidden, no drag needed
+        return null;
+      }
+
+      function applyDrag(drag, mx, my) {
+        const snap = (v) => Math.round(v * 4) / 4; // pas de 0.25 (plus fluide)
+        if (drag.mode === "rep") {
+          state.representants.x = snap(mx - drag.ox);
+          state.representants.y = snap(my - drag.oy);
+        } else if (drag.mode === "fig_vertex") {
+          drag.obj.x = snap(mx);
+          drag.obj.y = snap(my);
+        } else if (drag.mode === "tip") {
+          drag.obj.x = snap(mx - drag.obj.ox);
+          drag.obj.y = snap(my - drag.obj.oy);
+        } else if (drag.mode === "origin") {
+          drag.obj.ox = snap(mx);
+          drag.obj.oy = snap(my);
+        } else if (drag.mode === "body") {
+          drag.obj.ox = snap(mx - drag.offX);
+          drag.obj.oy = snap(my - drag.offY);
+        }
+      }
+
+      // ============ FAST PANEL UPDATE (pendant le drag, pas de reconstruction DOM) ============
+      function updatePanelValues() {
+        // Met à jour les sliders et valeurs affichées sans recréer le panel
+        const panel = document.getElementById("panel");
+        panel.querySelectorAll("input[type=range]").forEach((inp) => {
+          const id = inp.id;
+          let val = null;
+          // --- vecteur ---
+          if (id === "v1x") val = state.v1.x;
+          else if (id === "v1y") val = state.v1.y;
+          // --- colineaire ---
+          else if (id === "ux") val = state.u.x;
+          else if (id === "uy") val = state.u.y;
+          else if (id === "vx") val = state.v.x;
+          else if (id === "vy") val = state.v.y;
+          // --- addition ---
+          else if (id === "ax") val = state.a.x;
+          else if (id === "ay") val = state.a.y;
+          else if (id === "bx") val = state.b.x;
+          else if (id === "by") val = state.b.y;
+          // --- norme ---
+          else if (id === "nx") val = state.n.x;
+          else if (id === "ny") val = state.n.y;
+          // --- scalaire ---
+          else if (id === "sc_x") val = state.scalaire.x;
+          else if (id === "sc_y") val = state.scalaire.y;
+          else if (id === "sc_k") val = state.scalaire.k;
+          // --- representants ---
+          else if (id === "rep_x") val = state.representants.x;
+          else if (id === "rep_y") val = state.representants.y;
+          // --- sandbox (dynamic IDs: sb_ox_0, sb_oy_0, sb_x_0, sb_y_0, ...) ---
+          else if (id.startsWith("sb_")) {
+            const m = id.match(/^sb_(ox|oy|x|y)_(\d+)$/);
+            if (m) {
+              const prop = m[1],
+                idx = parseInt(m[2]);
+              if (state.sandbox[idx]) val = state.sandbox[idx][prop];
+            }
+          }
+          // --- figures (dynamic IDs: fig_Ax, fig_Ay, fig_pAx, fig_pAy, ...) ---
+          else if (id.startsWith("fig_p")) {
+            const m = id.match(/^fig_p([ABD])(x|y)$/);
+            if (m && state.figures.para[m[1]])
+              val = state.figures.para[m[1]][m[2]];
+          } else if (id.startsWith("fig_")) {
+            const m = id.match(/^fig_([ABC])(x|y)$/);
+            if (m && state.figures.tri[m[1]])
+              val = state.figures.tri[m[1]][m[2]];
+          }
+          if (val !== null) {
+            inp.value = val;
+            const valEl = document.getElementById(id + "_val");
+            if (valEl) valEl.textContent = parseFloat(val).toFixed(1);
+          }
+        });
+      }
+
+      canvas.addEventListener("mousedown", (e) => {
+        const r = canvas.getBoundingClientRect();
+        const cx = (e.clientX - r.left) * (canvas.width / r.width);
+        const cy = (e.clientY - r.top) * (canvas.height / r.height);
+        drag = getVectorForTab(toMath(cx, cy).x, toMath(cx, cy).y);
+        if (drag) canvas.style.cursor = "grabbing";
+      });
+
+      canvas.addEventListener("mousemove", (e) => {
+        const r = canvas.getBoundingClientRect();
+        const cx = (e.clientX - r.left) * (canvas.width / r.width);
+        const cy = (e.clientY - r.top) * (canvas.height / r.height);
+        const m = toMath(cx, cy);
+        if (!drag) {
+          // survol : indiquer les zones cliquables
+          const hit = getVectorForTab(m.x, m.y);
+          canvas.style.cursor = hit ? "grab" : "default";
+          return;
+        }
+        applyDrag(drag, m.x, m.y);
+        draw();
+        // On met à jour les valeurs affichées sans reconstruire le panel
+        updatePanelValues();
+      });
+
+      canvas.addEventListener("mouseup", () => {
+        if (drag) renderPanel(); // reconstruction finale
+        drag = null;
+        canvas.style.cursor = "default";
+      });
+      canvas.addEventListener("mouseleave", () => {
+        if (drag) renderPanel();
+        drag = null;
+        canvas.style.cursor = "default";
+      });
+
+      canvas.addEventListener(
+        "touchstart",
+        (e) => {
+          e.preventDefault();
+          const t = e.touches[0];
+          const r = canvas.getBoundingClientRect();
+          const cx = (t.clientX - r.left) * (canvas.width / r.width);
+          const cy = (t.clientY - r.top) * (canvas.height / r.height);
+          drag = getVectorForTab(toMath(cx, cy).x, toMath(cx, cy).y);
+        },
+        { passive: false },
+      );
+
+      canvas.addEventListener(
+        "touchmove",
+        (e) => {
+          e.preventDefault();
+          if (!drag) return;
+          const t = e.touches[0];
+          const r = canvas.getBoundingClientRect();
+          const cx = (t.clientX - r.left) * (canvas.width / r.width);
+          const cy = (t.clientY - r.top) * (canvas.height / r.height);
+          const m = toMath(cx, cy);
+          applyDrag(drag, m.x, m.y);
+          draw();
+          renderPanel();
+        },
+        { passive: false },
+      );
+
+      canvas.addEventListener("touchend", () => (drag = null));
+
+      // ===================== PDF MAP =====================
+      const PDF_MAP_VEC = {
+        vecteur: [
+          {
+            label: "🎦 Slides",
+            url: "pdfs/les%20bases/c%27est%20quoi%20un%20vecteur/SLIDE.pdf",
+          },
+          {
+            label: "📋 Synth\u00e8se",
+            url: "pdfs/les%20bases/c%27est%20quoi%20un%20vecteur/Synth%C3%A8se.pdf",
+          },
+        ],
+        representants: [
+          {
+            label: "🎦 Slides",
+            url: "pdfs/les%20bases/repr%C3%A9sentation%20vecteur/SLIDE.pdf",
+          },
+          {
+            label: "📋 Synth\u00e8se",
+            url: "pdfs/les%20bases/repr%C3%A9sentation%20vecteur/Synth%C3%A8se.pdf",
+          },
+        ],
+        scalaire: [
+          {
+            label: "🎦 Slides",
+            url: "pdfs/multiplication%20scalaire/SLIDE.pdf",
+          },
+          {
+            label: "📋 Synth\u00e8se vect. nul",
+            url: "pdfs/les%20bases/vecteur%20nul/Synth%C3%A8se.pdf",
+          },
+        ],
+        addition: [
+          {
+            label: "🎦 Slides",
+            url: "pdfs/addition%20soustraction%20vecteurs/SLIDE.pdf",
+          },
+          {
+            label: "📋 Synth\u00e8se 1",
+            url: "pdfs/addition%20soustraction%20vecteurs/Synth%C3%A8se%201.pdf",
+          },
+          {
+            label: "📋 Synth\u00e8se 2",
+            url: "pdfs/addition%20soustraction%20vecteurs/Synth%C3%A8se%202.pdf",
+          },
+        ],
+        colineaire: [
+          {
+            label: "📋 Synth\u00e8se",
+            url: "pdfs/colin%C3%A9aires/Synth%C3%A8se.pdf",
+          },
+        ],
+        calcul: [
+          {
+            label: "📋 Synth\u00e8se calcul",
+            url: "pdfs/calcul/Synth%C3%A8se.pdf",
+          },
+          {
+            label: "📋 Synth\u00e8se coords",
+            url: "pdfs/coordon%C3%A9es/Synth%C3%A8se.pdf",
+          },
+        ],
+        figures: [
+          {
+            label: "📋 Parall\u00e9logramme",
+            url: "pdfs/vecteurs%20figure/parall%C3%A9logramme/Synth%C3%A8se.pdf",
+          },
+          {
+            label: "📋 Triangle",
+            url: "pdfs/vecteurs%20figure/triangle/Synth%C3%A8se.pdf",
+          },
+        ],
+        proprietes: [
+          { label: "🎦 Slides", url: "pdfs/propri%C3%A9t%C3%A9s/SLIDE.pdf" },
+          {
+            label: "📋 Synth\u00e8se",
+            url: "pdfs/propri%C3%A9t%C3%A9s/Synth%C3%A8se.pdf",
+          },
+        ],
+        // norme + sandbox : pas de PDFs
+      };
+
+      function renderPdfSection() {
+        const sec = document.getElementById("pdf-section");
+        const docs = PDF_MAP_VEC[state.tab];
+        if (!docs || docs.length === 0) {
+          sec.innerHTML = "";
+          return;
+        }
+
+        const btns = docs
+          .map(
+            (d, i) =>
+              `<button class="pdf-toggle-btn${i === 0 ? " active" : ""}" onclick="pdfSwitch(this,'pdf-pane-${i}')">${d.label}</button>`,
+          )
+          .join("");
+
+        const panes = docs
+          .map(
+            (d, i) =>
+              `<div class="pdf-pane${i === 0 ? " active" : ""}" id="pdf-pane-${i}">
+             <embed src="${d.url}" type="application/pdf" class="pdf-embed">
+             <a href="${d.url}" target="_blank" class="pdf-fallback">&#128279; Ouvrir en plein &eacute;cran</a>
+           </div>`,
+          )
+          .join("");
+
+        sec.innerHTML = `
+          <div class="pdf-outer-card">
+            <div class="pdf-header">
+              <span class="pdf-header-title">📄 Documents du chapitre</span>
+              <div class="pdf-header-line"></div>
+            </div>
+            <div class="pdf-toggle-row">${btns}</div>
+            ${panes}
+          </div>`;
+      }
+
+      function pdfSwitch(btn, paneId) {
+        const card = btn.closest(".pdf-outer-card");
+        card
+          .querySelectorAll(".pdf-toggle-btn")
+          .forEach((b) => b.classList.remove("active"));
+        card
+          .querySelectorAll(".pdf-pane")
+          .forEach((p) => p.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById(paneId).classList.add("active");
+      }
+
+      // ===================== TABS =====================
+      document.querySelectorAll(".tab").forEach((t) => {
+        t.addEventListener("click", () => {
+          document
+            .querySelectorAll(".tab")
+            .forEach((x) => x.classList.remove("active"));
+          t.classList.add("active");
+          state.tab = t.dataset.tab;
+          // toggle canvas visibility
+          const layout = document.querySelector(".layout");
+          if (state.tab === "calcul" || state.tab === "proprietes")
+            layout.classList.add("layout-full");
+          else layout.classList.remove("layout-full");
+          draw();
+          renderPanel();
+          renderPdfSection();
+        });
+      });
+
+      // ===================== INIT =====================
+      window.addEventListener("resize", resize);
+      resize();
+      renderPanel();
+      renderPdfSection();
+    </script>
+  </body>
+</html>
