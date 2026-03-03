@@ -1,0 +1,3643 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Néerlandais — SIS SANAA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;700;900&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0a0a14;
+        --panel: #12121f;
+        --card: #161628;
+        --border: #1e1e3a;
+        --text: #eeeeff;
+        --muted: #6b6b9a;
+        --accent: #ff914d;
+        --accent2: #ffd93d;
+        --green: #4ade80;
+        --red: #ff6b6b;
+        --blue: #60a5fa;
+        --purple: #a78bfa;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Lexend", sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ─── HEADER ─────────────────────────────────── */
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 20px;
+        background: var(--panel);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        gap: 12px;
+      }
+      .back-btn {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        padding: 6px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: "Lexend", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .back-btn:hover {
+        color: var(--text);
+        border-color: var(--accent);
+      }
+      .header-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .header-title .dot {
+        width: 18px;
+        height: 18px;
+        background: var(--accent);
+        border-radius: 4px;
+        box-shadow: 0 0 10px rgba(255, 145, 77, 0.5);
+      }
+      .header-title h1 {
+        font-size: 1.05rem;
+        font-weight: 800;
+      }
+      .header-title p {
+        font-size: 0.75rem;
+        color: var(--muted);
+        display: none;
+      }
+      @media (min-width: 500px) {
+        .header-title p {
+          display: block;
+        }
+      }
+      .flag {
+        font-size: 1.4rem;
+      }
+
+      /* ─── TABS ───────────────────────────────────── */
+      .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 14px 20px;
+        justify-content: center;
+        background: var(--panel);
+        border-bottom: 1px solid var(--border);
+      }
+      .tab {
+        flex-shrink: 0;
+        padding: 9px 16px;
+        border-radius: 30px;
+        border: 1.5px solid transparent;
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .tab:hover {
+        color: var(--text);
+        border-color: rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .tab.active {
+        background: rgba(255, 145, 77, 0.15);
+        border-color: rgba(255, 145, 77, 0.5);
+        color: var(--accent);
+        box-shadow: 0 0 12px rgba(255, 145, 77, 0.18);
+      }
+
+      /* ─── MAIN ───────────────────────────────────── */
+      main {
+        flex: 1;
+        padding: 24px 20px 60px;
+        max-width: 1000px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+
+      /* ─── SECTION TITLE ──────────────────────────── */
+      .section-title {
+        font-size: 1.4rem;
+        font-weight: 900;
+        letter-spacing: -0.5px;
+        margin-bottom: 6px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .section-sub {
+        color: var(--muted);
+        font-size: 0.88rem;
+        margin-bottom: 24px;
+      }
+
+      /* ─── THEME FILTER ───────────────────────────── */
+      .filter-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 24px;
+      }
+      .filter-btn {
+        padding: 6px 14px;
+        border-radius: 999px;
+        border: 1.5px solid var(--border);
+        background: transparent;
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .filter-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .filter-btn.active {
+        background: rgba(255, 145, 77, 0.15);
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      /* ─── VOCAB GRID ─────────────────────────────── */
+      .vocab-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 14px;
+      }
+
+      /* ─── FLIP CARD ──────────────────────────────── */
+      .flip-wrap {
+        perspective: 800px;
+        height: 150px;
+        cursor: pointer;
+      }
+      .flip-inner {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1);
+        border-radius: 16px;
+      }
+      .flip-wrap.flipped .flip-inner {
+        transform: rotateY(180deg);
+      }
+      .flip-front,
+      .flip-back {
+        position: absolute;
+        inset: 0;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        border-radius: 16px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        border: 1.5px solid var(--border);
+        gap: 6px;
+        /* failsafe: hide the back face at the mid-point of the flip */
+        transition: opacity 0s 0.25s;
+      }
+      /* before flip: back invisible */
+      .flip-back {
+        opacity: 0;
+      }
+      /* during/after flip: swap visibility at the exact midpoint */
+      .flip-wrap.flipped .flip-front {
+        opacity: 0;
+      }
+      .flip-wrap.flipped .flip-back {
+        opacity: 1;
+      }
+      .flip-front {
+        background: var(--card);
+        border-color: rgba(255, 145, 77, 0.25);
+      }
+      .flip-back {
+        background: rgba(255, 145, 77, 0.08);
+        border-color: rgba(255, 145, 77, 0.4);
+        transform: rotateY(180deg);
+      }
+      .flip-article {
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        background: rgba(255, 145, 77, 0.15);
+        padding: 2px 8px;
+        border-radius: 999px;
+      }
+      .flip-nl {
+        font-size: 1.2rem;
+        font-weight: 900;
+        color: var(--text);
+      }
+      .flip-phonetic {
+        font-size: 0.72rem;
+        color: var(--muted);
+        font-family: "Space Mono", monospace;
+      }
+      .flip-hint {
+        font-size: 0.65rem;
+        color: var(--muted);
+        opacity: 0.5;
+        margin-top: 4px;
+      }
+      .flip-fr {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: var(--accent);
+      }
+      .flip-example {
+        font-size: 0.72rem;
+        color: var(--muted);
+        font-style: italic;
+        line-height: 1.4;
+      }
+      .flip-icon {
+        font-size: 1.6rem;
+      }
+
+      /* ─── QUIZ ───────────────────────────────────── */
+      .quiz-modes {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+      }
+      .mode-btn {
+        flex: 1;
+        min-width: 120px;
+        padding: 12px 10px;
+        border-radius: 12px;
+        border: 1.5px solid var(--border);
+        background: var(--card);
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+      }
+      .mode-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .mode-btn.active {
+        background: rgba(255, 145, 77, 0.12);
+        border-color: var(--accent);
+        color: var(--accent);
+        box-shadow: 0 0 14px rgba(255, 145, 77, 0.15);
+      }
+
+      .quiz-box {
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: 20px;
+        padding: 28px 24px;
+      }
+      .quiz-progress {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .progress-bar {
+        flex: 1;
+        height: 6px;
+        background: var(--border);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+        border-radius: 999px;
+        transition: width 0.4s ease;
+      }
+      .progress-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+      .score-badge {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(74, 222, 128, 0.1);
+        border: 1px solid rgba(74, 222, 128, 0.3);
+        color: var(--green);
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+
+      .quiz-question {
+        font-size: 1.5rem;
+        font-weight: 900;
+        text-align: center;
+        margin-bottom: 8px;
+        padding: 20px;
+        background: rgba(255, 145, 77, 0.06);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 145, 77, 0.15);
+        letter-spacing: -0.5px;
+        min-height: 90px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+      .quiz-question .q-label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--accent);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      .choices {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      @media (max-width: 480px) {
+        .choices {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .choice-btn {
+        padding: 14px 16px;
+        border-radius: 12px;
+        border: 1.5px solid var(--border);
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--text);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.18s;
+        text-align: left;
+      }
+      .choice-btn:hover:not(:disabled) {
+        border-color: var(--accent);
+        background: rgba(255, 145, 77, 0.08);
+      }
+      .choice-btn.correct {
+        background: rgba(74, 222, 128, 0.15);
+        border-color: var(--green);
+        color: var(--green);
+      }
+      .choice-btn.wrong {
+        background: rgba(255, 107, 107, 0.15);
+        border-color: var(--red);
+        color: var(--red);
+      }
+      .choice-btn:disabled {
+        cursor: default;
+      }
+
+      .free-input-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .free-input {
+        flex: 1;
+        padding: 14px 16px;
+        border-radius: 12px;
+        border: 1.5px solid var(--border);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+        font-family: "Lexend", sans-serif;
+        font-size: 1rem;
+        font-weight: 600;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .free-input:focus {
+        border-color: var(--accent);
+      }
+      .free-input.correct {
+        border-color: var(--green);
+        background: rgba(74, 222, 128, 0.08);
+      }
+      .free-input.wrong {
+        border-color: var(--red);
+        background: rgba(255, 107, 107, 0.08);
+      }
+      .submit-btn {
+        padding: 14px 20px;
+        border-radius: 12px;
+        border: none;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #000;
+        font-family: "Lexend", sans-serif;
+        font-size: 0.9rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: filter 0.18s;
+      }
+      .submit-btn:hover {
+        filter: brightness(1.1);
+      }
+      .submit-btn:disabled {
+        filter: brightness(0.5);
+        cursor: default;
+      }
+
+      .quiz-feedback {
+        margin-top: 16px;
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        display: none;
+        line-height: 1.5;
+      }
+      .quiz-feedback.show {
+        display: block;
+      }
+      .quiz-feedback.correct {
+        background: rgba(74, 222, 128, 0.12);
+        border: 1px solid rgba(74, 222, 128, 0.3);
+        color: var(--green);
+      }
+      .quiz-feedback.wrong {
+        background: rgba(255, 107, 107, 0.1);
+        border: 1px solid rgba(255, 107, 107, 0.25);
+        color: var(--red);
+      }
+
+      .next-btn {
+        display: none;
+        margin-top: 14px;
+        width: 100%;
+        padding: 13px;
+        border-radius: 12px;
+        border: none;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #000;
+        font-family: "Lexend", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: filter 0.18s;
+      }
+      .next-btn.show {
+        display: block;
+      }
+      .next-btn:hover {
+        filter: brightness(1.1);
+      }
+
+      .quiz-results {
+        display: none;
+        text-align: center;
+        padding: 32px 20px;
+      }
+      .quiz-results.show {
+        display: block;
+      }
+      .results-emoji {
+        font-size: 3.5rem;
+        margin-bottom: 12px;
+      }
+      .results-score {
+        font-size: 3rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 8px;
+      }
+      .results-msg {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin-bottom: 24px;
+      }
+      .restart-btn {
+        padding: 13px 32px;
+        border-radius: 12px;
+        border: none;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #000;
+        font-size: 1rem;
+        font-weight: 800;
+        font-family: "Lexend", sans-serif;
+        cursor: pointer;
+        transition: filter 0.18s;
+      }
+      .restart-btn:hover {
+        filter: brightness(1.1);
+      }
+
+      /* ─── TEMPS ──────────────────────────────────── */
+      .tense-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+      .tense-card {
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: 20px;
+        overflow: hidden;
+      }
+      .tense-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 18px 20px;
+        background: rgba(255, 145, 77, 0.07);
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+        user-select: none;
+      }
+      .tense-header:hover {
+        background: rgba(255, 145, 77, 0.12);
+      }
+      .tense-icon {
+        font-size: 1.8rem;
+      }
+      .tense-name {
+        font-size: 1.05rem;
+        font-weight: 900;
+      }
+      .tense-subtitle {
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .tense-chevron {
+        margin-left: auto;
+        font-size: 1rem;
+        color: var(--muted);
+        transition: transform 0.3s;
+      }
+      .tense-card.open .tense-chevron {
+        transform: rotate(90deg);
+      }
+      .tense-body {
+        display: none;
+        padding: 20px;
+      }
+      .tense-card.open .tense-body {
+        display: block;
+      }
+
+      .rule-box {
+        background: rgba(255, 145, 77, 0.06);
+        border-left: 3px solid var(--accent);
+        border-radius: 0 12px 12px 0;
+        padding: 14px 16px;
+        margin-bottom: 18px;
+        font-size: 0.88rem;
+        line-height: 1.7;
+      }
+      .rule-box strong {
+        color: var(--accent);
+      }
+      .rule-box .formula {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 8px 14px;
+        margin-top: 10px;
+        font-family: "Space Mono", monospace;
+        font-size: 0.85rem;
+        color: var(--accent2);
+        display: inline-block;
+      }
+
+      .tip-box {
+        display: flex;
+        gap: 10px;
+        background: rgba(255, 217, 61, 0.07);
+        border: 1px solid rgba(255, 217, 61, 0.2);
+        border-radius: 12px;
+        padding: 12px 14px;
+        margin-bottom: 18px;
+        font-size: 0.84rem;
+        line-height: 1.6;
+        color: #e8d8b0;
+      }
+      .tip-box .tip-icon {
+        font-size: 1.2rem;
+        flex-shrink: 0;
+      }
+
+      .conj-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+        margin-bottom: 18px;
+      }
+      .conj-table th {
+        text-align: left;
+        padding: 8px 12px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--muted);
+        border-bottom: 1px solid var(--border);
+      }
+      .conj-table td {
+        padding: 10px 12px;
+        border-bottom: 1px solid rgba(30, 30, 58, 0.5);
+        vertical-align: top;
+        line-height: 1.5;
+      }
+      .conj-table tr:last-child td {
+        border-bottom: none;
+      }
+      .conj-table .pron {
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+      .conj-table .nl-form {
+        color: var(--text);
+        font-weight: 700;
+      }
+      .conj-table .fr-form {
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+      .conj-table .highlight td {
+        background: rgba(255, 145, 77, 0.06);
+      }
+
+      .example-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 18px;
+      }
+      .example-item {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 10px;
+        padding: 10px 14px;
+        border-left: 3px solid rgba(96, 165, 250, 0.4);
+      }
+      .example-item .nl {
+        font-weight: 700;
+        color: var(--blue);
+        font-size: 0.9rem;
+      }
+      .example-item .fr {
+        color: var(--muted);
+        font-size: 0.82rem;
+        margin-top: 2px;
+      }
+
+      .mini-quiz-btn {
+        width: 100%;
+        padding: 12px;
+        border-radius: 12px;
+        border: 1.5px solid var(--accent);
+        background: rgba(255, 145, 77, 0.08);
+        color: var(--accent);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.88rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: 8px;
+      }
+      .mini-quiz-btn:hover {
+        background: rgba(255, 145, 77, 0.15);
+      }
+
+      /* ─── MNEMOS ─────────────────────────────────── */
+      .mnemo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 14px;
+      }
+      .mnemo-card {
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: 16px;
+        padding: 16px;
+        transition: border-color 0.2s;
+      }
+      .mnemo-card:hover {
+        border-color: rgba(255, 145, 77, 0.4);
+      }
+      .mnemo-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+      .mnemo-nl {
+        font-size: 1.1rem;
+        font-weight: 900;
+        color: var(--text);
+      }
+      .mnemo-fr {
+        font-size: 0.85rem;
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .mnemo-story {
+        background: rgba(255, 217, 61, 0.06);
+        border: 1px solid rgba(255, 217, 61, 0.15);
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 0.82rem;
+        color: #ddd090;
+        line-height: 1.6;
+        margin-bottom: 8px;
+      }
+      .mnemo-story::before {
+        content: "💡 ";
+      }
+      .mnemo-visual {
+        font-size: 0.78rem;
+        color: var(--muted);
+        font-style: italic;
+        line-height: 1.5;
+      }
+
+      /* ─── VERB FLIP CARD ─────────────────────────── */
+      .verb-flip-card {
+        height: 220px !important;
+      }
+      .verb-flip-card .flip-back {
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        overflow: hidden;
+      }
+
+      /* ─── JEUX ───────────────────────────────────── */
+      .game-selector {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        margin-bottom: 28px;
+      }
+      .game-card {
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: 16px;
+        padding: 20px 16px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .game-card:hover {
+        border-color: var(--accent);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      }
+      .game-card.selected {
+        border-color: var(--accent);
+        background: rgba(255, 145, 77, 0.08);
+      }
+      .game-card .g-icon {
+        font-size: 2.4rem;
+        margin-bottom: 10px;
+      }
+      .game-card .g-name {
+        font-size: 0.95rem;
+        font-weight: 800;
+        margin-bottom: 6px;
+      }
+      .game-card .g-desc {
+        font-size: 0.78rem;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      /* MEMORY */
+      #game-memory,
+      #game-rain {
+        display: none;
+      }
+      #game-memory.active,
+      #game-rain.active {
+        display: block;
+      }
+
+      .memory-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      @media (max-width: 480px) {
+        .memory-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      .mem-card {
+        aspect-ratio: 1;
+        min-height: 80px;
+        border-radius: 12px;
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+        transition: transform 0.2s;
+      }
+      .mem-card:hover {
+        transform: scale(1.04);
+      }
+      .mem-card-inner {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.45s cubic-bezier(0.4, 0.2, 0.2, 1);
+        border-radius: 12px;
+      }
+      .mem-card.revealed .mem-card-inner {
+        transform: rotateY(180deg);
+      }
+      .mem-card.matched .mem-card-inner {
+        transform: rotateY(180deg);
+      }
+      .mem-card.matched .mem-back {
+        background: rgba(74, 222, 128, 0.18);
+        border-color: var(--green);
+      }
+      .mem-front,
+      .mem-back {
+        position: absolute;
+        inset: 0;
+        border-radius: 12px;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 8px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        border: 1.5px solid var(--border);
+      }
+      .mem-front {
+        background: rgba(255, 145, 77, 0.1);
+        border-color: rgba(255, 145, 77, 0.2);
+        font-size: 1.6rem;
+      }
+      .mem-back {
+        background: var(--card);
+        transform: rotateY(180deg);
+        color: var(--text);
+        font-size: 0.78rem;
+        line-height: 1.3;
+      }
+
+      .game-stats {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+      }
+      .stat-chip {
+        padding: 6px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--muted);
+        background: var(--card);
+      }
+      .stat-chip span {
+        color: var(--accent);
+      }
+      .game-start-btn,
+      .game-restart-btn {
+        padding: 12px 28px;
+        border-radius: 12px;
+        border: none;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #000;
+        font-family: "Lexend", sans-serif;
+        font-size: 0.92rem;
+        font-weight: 800;
+        cursor: pointer;
+        margin-bottom: 18px;
+        transition: filter 0.18s;
+      }
+      .game-start-btn:hover,
+      .game-restart-btn:hover {
+        filter: brightness(1.1);
+      }
+
+      /* WORD RAIN */
+      .rain-arena {
+        position: relative;
+        width: 100%;
+        height: 360px;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1.5px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        margin-bottom: 14px;
+      }
+      .rain-word {
+        position: absolute;
+        background: rgba(255, 145, 77, 0.12);
+        border: 1px solid rgba(255, 145, 77, 0.3);
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text);
+        white-space: nowrap;
+        pointer-events: none;
+        top: -50px;
+        transition: none;
+      }
+      .rain-word.dying {
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .rain-word.correct-flash {
+        background: rgba(74, 222, 128, 0.25);
+        border-color: var(--green);
+        color: var(--green);
+      }
+      .rain-input-row {
+        display: flex;
+        gap: 10px;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+      .rain-input {
+        flex: 1;
+        padding: 13px 16px;
+        border-radius: 12px;
+        border: 1.5px solid var(--border);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+        font-family: "Lexend", sans-serif;
+        font-size: 1rem;
+        font-weight: 600;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .rain-input:focus {
+        border-color: var(--accent);
+      }
+      .lives-row {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+      .life {
+        font-size: 1.2rem;
+      }
+      .life.lost {
+        filter: grayscale(1);
+        opacity: 0.3;
+      }
+
+      /* ─── CONFETTI ───────────────────────────────── */
+      .confetti-piece {
+        position: fixed;
+        width: 10px;
+        height: 14px;
+        top: -20px;
+        border-radius: 2px;
+        animation: confettiFall 1.2s ease-in forwards;
+        pointer-events: none;
+        z-index: 9999;
+      }
+      @keyframes confettiFall {
+        0% {
+          transform: translateY(0) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(100vh) rotate(720deg);
+          opacity: 0;
+        }
+      }
+
+      /* ─── FOOTER ─────────────────────────────────── */
+      footer {
+        text-align: center;
+        padding: 20px;
+        color: var(--muted);
+        font-size: 0.78rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <button class="back-btn" onclick="history.back()">← Retour</button>
+      <div class="header-title">
+        <div class="dot"></div>
+        <div>
+          <h1>Néerlandais</h1>
+          <p>Vocabulaire · Quiz · Temps · Jeux</p>
+        </div>
+      </div>
+      <span class="flag">🇳🇱</span>
+    </header>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('vocabulaire', this)">
+        📚 Vocabulaire
+      </button>
+      <button class="tab" onclick="switchTab('quiz', this)">❓ Quiz</button>
+      <button class="tab" onclick="switchTab('temps', this)">
+        ⏰ Les Temps
+      </button>
+      <button class="tab" onclick="switchTab('verbes', this)">🔀 Verbes</button>
+      <button class="tab" onclick="switchTab('mnemos', this)">
+        🧠 Mnémotechniques
+      </button>
+      <button class="tab" onclick="switchTab('jeux', this)">🎮 Jeux</button>
+    </div>
+
+    <main>
+      <!-- ═══════════════ VOCABULAIRE ═══════════════ -->
+      <div id="tab-vocabulaire" class="tab-content active">
+        <div class="section-title">📚 Vocabulaire</div>
+        <p class="section-sub">
+          Clique sur une carte pour voir la traduction — les cartes sont
+          mélangées à chaque fois !
+        </p>
+        <div class="filter-row" id="theme-filters"></div>
+        <div class="vocab-grid" id="vocab-grid"></div>
+      </div>
+
+      <!-- ═══════════════ QUIZ ═══════════════════════ -->
+      <div id="tab-quiz" class="tab-content">
+        <div class="section-title">❓ Quiz</div>
+        <p class="section-sub">
+          Teste tes connaissances — questions aléatoires à chaque partie
+        </p>
+        <div class="quiz-modes">
+          <button class="mode-btn active" onclick="setQuizMode('qcm', this)">
+            🎯 Choix multiple
+          </button>
+          <button class="mode-btn" onclick="setQuizMode('free', this)">
+            ✏️ Traduction libre
+          </button>
+          <button class="mode-btn" onclick="setQuizMode('conj', this)">
+            🔀 Conjugaison
+          </button>
+        </div>
+        <div class="quiz-box" id="quiz-box">
+          <div id="quiz-main">
+            <div class="quiz-progress">
+              <div class="progress-bar">
+                <div
+                  class="progress-fill"
+                  id="q-progress"
+                  style="width: 0%"
+                ></div>
+              </div>
+              <div class="progress-label" id="q-counter">0 / 10</div>
+              <div class="score-badge">✓ <span id="q-score">0</span></div>
+            </div>
+            <div class="quiz-question" id="q-question">
+              <span class="q-label">Prêt ?</span>
+              <span>Clique sur "Commencer" !</span>
+            </div>
+            <div id="q-choices-area"></div>
+            <div class="quiz-feedback" id="q-feedback"></div>
+            <button class="next-btn" id="q-next" onclick="nextQuestion()">
+              Suivant →
+            </button>
+          </div>
+          <div class="quiz-results" id="quiz-results">
+            <div class="results-emoji" id="res-emoji">🎉</div>
+            <div class="results-score" id="res-score">0 / 10</div>
+            <div class="results-msg" id="res-msg">Bravo !</div>
+            <button class="restart-btn" onclick="startQuiz()">
+              Rejouer 🔁
+            </button>
+          </div>
+        </div>
+        <button
+          class="game-start-btn"
+          id="start-quiz-btn"
+          onclick="startQuiz()"
+          style="margin-top: 16px; display: block"
+        >
+          ▶ Commencer le Quiz
+        </button>
+      </div>
+
+      <!-- ═══════════════ TEMPS ══════════════════════ -->
+      <div id="tab-temps" class="tab-content">
+        <div class="section-title">⏰ Les Temps en Néerlandais</div>
+        <p class="section-sub">
+          Apprends chaque temps étape par étape avec des règles visuelles, des
+          astuces et des exemples concrets
+        </p>
+        <div class="tense-grid" id="tense-grid"></div>
+      </div>
+
+      <!-- ═══════════════ VERBES ════════════════════ -->
+      <div id="tab-verbes" class="tab-content">
+        <div class="section-title">🔀 Conjugaison des Verbes</div>
+        <p class="section-sub">
+          Les 17 verbes — infinitif · présent · imparfait sg/pl · participe
+          passé — mélangés à chaque fois, clique pour voir les formes !
+        </p>
+        <div class="vocab-grid verb-grid" id="verb-grid"></div>
+      </div>
+
+      <!-- ═══════════════ MNÉMOS ════════════════════ -->
+      <div id="tab-mnemos" class="tab-content">
+        <div class="section-title">🧠 Mnémotechniques</div>
+        <p class="section-sub">
+          Des histoires absurdes et visuelles pour ne plus jamais oublier un mot
+        </p>
+        <div class="mnemo-grid" id="mnemo-grid"></div>
+      </div>
+
+      <!-- ═══════════════ JEUX ═══════════════════════ -->
+      <div id="tab-jeux" class="tab-content">
+        <div class="section-title">🎮 Jeux</div>
+        <p class="section-sub">Apprends en t'amusant !</p>
+        <div class="game-selector">
+          <div
+            class="game-card selected"
+            id="gc-memory"
+            onclick="selectGame('memory')"
+          >
+            <div class="g-icon">🃏</div>
+            <div class="g-name">Memory</div>
+            <div class="g-desc">
+              Retourne les cartes pour associer le mot néerlandais à sa
+              traduction
+            </div>
+          </div>
+          <div class="game-card" id="gc-rain" onclick="selectGame('rain')">
+            <div class="g-icon">🌧️</div>
+            <div class="g-name">Pluie de mots</div>
+            <div class="g-desc">
+              Des mots tombent, tape leur traduction avant qu'ils disparaissent
+              !
+            </div>
+          </div>
+        </div>
+
+        <!-- MEMORY GAME -->
+        <div id="game-memory" class="active">
+          <div class="game-stats">
+            <div class="stat-chip">
+              Paires trouvées : <span id="mem-found">0</span>/<span
+                id="mem-total"
+                >8</span
+              >
+            </div>
+            <div class="stat-chip">
+              Tentatives : <span id="mem-tries">0</span>
+            </div>
+            <div class="stat-chip">Temps : <span id="mem-time">0s</span></div>
+          </div>
+          <button class="game-start-btn" onclick="startMemory()">
+            ▶ Nouvelle partie
+          </button>
+          <div class="memory-grid" id="memory-grid"></div>
+        </div>
+
+        <!-- WORD RAIN GAME -->
+        <div id="game-rain">
+          <div class="game-stats">
+            <div class="stat-chip">Score : <span id="rain-score">0</span></div>
+            <div class="stat-chip">Niveau : <span id="rain-level">1</span></div>
+          </div>
+          <div class="lives-row" id="rain-lives"></div>
+          <button class="game-start-btn" onclick="startRain()">
+            ▶ Commencer
+          </button>
+          <div class="rain-arena" id="rain-arena"></div>
+          <div class="rain-input-row">
+            <input
+              class="rain-input"
+              id="rain-input"
+              type="text"
+              placeholder="Tape la traduction en français..."
+              autocomplete="off"
+            />
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>Fait avec 💛 pour apprendre plus facilement</footer>
+
+    <script>
+      /* ══════════════════════════════════════════════════
+         DATA
+      ══════════════════════════════════════════════════ */
+
+      const VOCAB = [
+        // ── Mouvement ──
+        {
+          nl: "lopen",
+          fr: "courir",
+          ph: "[LO-pun]",
+          theme: "Mouvement",
+          icon: "🏃",
+          ex_nl: "Ik loop elke dag.",
+          ex_fr: "Je cours chaque jour.",
+          article: "",
+        },
+        {
+          nl: "gaan",
+          fr: "aller",
+          ph: "[khaan]",
+          theme: "Mouvement",
+          icon: "🚶",
+          ex_nl: "Ik ga naar school.",
+          ex_fr: "Je vais à l'école.",
+          article: "",
+        },
+        {
+          nl: "komen",
+          fr: "venir",
+          ph: "[KO-mun]",
+          theme: "Mouvement",
+          icon: "🚀",
+          ex_nl: "Ze komt morgen.",
+          ex_fr: "Elle vient demain.",
+          article: "",
+        },
+        {
+          nl: "wandelen",
+          fr: "se promener",
+          ph: "[WAN-duh-lun]",
+          theme: "Mouvement",
+          icon: "🌳",
+          ex_nl: "We wandelen in het park.",
+          ex_fr: "Nous nous promenons dans le parc.",
+          article: "",
+        },
+        {
+          nl: "reizen",
+          fr: "voyager",
+          ph: "[RAY-zun]",
+          theme: "Mouvement",
+          icon: "✈️",
+          ex_nl: "Ik reis naar Parijs.",
+          ex_fr: "Je voyage à Paris.",
+          article: "",
+        },
+        {
+          nl: "staan",
+          fr: "être debout",
+          ph: "[staan]",
+          theme: "Mouvement",
+          icon: "🧍",
+          ex_nl: "Hij staat voor de deur.",
+          ex_fr: "Il est debout devant la porte.",
+          article: "",
+        },
+        {
+          nl: "liggen",
+          fr: "être couché",
+          ph: "[LI-khun]",
+          theme: "Mouvement",
+          icon: "🛏️",
+          ex_nl: "De kat ligt op de bank.",
+          ex_fr: "Le chat est couché sur le canapé.",
+          article: "",
+        },
+
+        {
+          nl: "zitten",
+          fr: "s'asseoir",
+          ph: "[ZI-tun]",
+          theme: "Mouvement",
+          icon: "🪑",
+          ex_nl: "Ik zit op mijn stoel.",
+          ex_fr: "Je suis assis sur ma chaise.",
+          article: "",
+        },
+        {
+          nl: "blijven",
+          fr: "rester",
+          ph: "[BLAY-vun]",
+          theme: "Mouvement",
+          icon: "🏠",
+          ex_nl: "Ze blijft thuis.",
+          ex_fr: "Elle reste à la maison.",
+          article: "",
+        },
+        {
+          nl: "stoppen",
+          fr: "arrêter",
+          ph: "[STO-pun]",
+          theme: "Mouvement",
+          icon: "🛑",
+          ex_nl: "Stop! Je moet stoppen!",
+          ex_fr: "Stop ! Tu dois t'arrêter !",
+          article: "",
+        },
+        {
+          nl: "roeien",
+          fr: "ramer",
+          ph: "[ROO-yun]",
+          theme: "Mouvement",
+          icon: "🚣",
+          ex_nl: "We roeien op de rivier.",
+          ex_fr: "Nous ramons sur la rivière.",
+          article: "",
+        },
+        {
+          nl: "verhuizen",
+          fr: "déménager",
+          ph: "[fur-HŒY-zun]",
+          theme: "Mouvement",
+          icon: "📦",
+          ex_nl: "Ik verhuis volgende week.",
+          ex_fr: "Je déménage la semaine prochaine.",
+          article: "",
+        },
+
+        // ── Communication ──
+        {
+          nl: "spreken",
+          fr: "parler",
+          ph: "[SPRAY-kun]",
+          theme: "Communication",
+          icon: "💬",
+          ex_nl: "Spreek je Nederlands?",
+          ex_fr: "Tu parles néerlandais ?",
+          article: "",
+        },
+        {
+          nl: "praten",
+          fr: "parler (informel)",
+          ph: "[PRA-tun]",
+          theme: "Communication",
+          icon: "🗨️",
+          ex_nl: "We praten over school.",
+          ex_fr: "Nous parlons de l'école.",
+          article: "",
+        },
+        {
+          nl: "zeggen",
+          fr: "dire",
+          ph: "[ZEK-hun]",
+          theme: "Communication",
+          icon: "🗣️",
+          ex_nl: "Wat zeg je?",
+          ex_fr: "Qu'est-ce que tu dis ?",
+          article: "",
+        },
+        {
+          nl: "vertellen",
+          fr: "raconter",
+          ph: "[fur-TEL-un]",
+          theme: "Communication",
+          icon: "📖",
+          ex_nl: "Hij vertelt een verhaal.",
+          ex_fr: "Il raconte une histoire.",
+          article: "",
+        },
+        {
+          nl: "horen",
+          fr: "entendre",
+          ph: "[HO-run]",
+          theme: "Communication",
+          icon: "👂",
+          ex_nl: "Ik hoor muziek.",
+          ex_fr: "J'entends de la musique.",
+          article: "",
+        },
+        {
+          nl: "herhalen",
+          fr: "répéter",
+          ph: "[hur-HA-lun]",
+          theme: "Communication",
+          icon: "🔁",
+          ex_nl: "Herhaal dat, alsjeblieft.",
+          ex_fr: "Répète s'il te plaît.",
+          article: "",
+        },
+        {
+          nl: "spellen",
+          fr: "épeler",
+          ph: "[SPEL-un]",
+          theme: "Communication",
+          icon: "🔤",
+          ex_nl: "Kun je je naam spellen?",
+          ex_fr: "Tu peux épeler ton nom ?",
+          article: "",
+        },
+        {
+          nl: "heten",
+          fr: "s'appeler",
+          ph: "[HAY-tun]",
+          theme: "Communication",
+          icon: "🏷️",
+          ex_nl: "Ik heet Thomas.",
+          ex_fr: "Je m'appelle Thomas.",
+          article: "",
+        },
+
+        {
+          nl: "begrijpen",
+          fr: "comprendre",
+          ph: "[buh-KHRAY-pun]",
+          theme: "Communication",
+          icon: "🧠",
+          ex_nl: "Ik begrijp het niet.",
+          ex_fr: "Je ne comprends pas.",
+          article: "",
+        },
+        {
+          nl: "zingen",
+          fr: "chanter",
+          ph: "[ZING-un]",
+          theme: "Communication",
+          icon: "🎤",
+          ex_nl: "Ze zingt goed.",
+          ex_fr: "Elle chante bien.",
+          article: "",
+        },
+        {
+          nl: "fluiten",
+          fr: "siffler",
+          ph: "[FLŒY-tun]",
+          theme: "Communication",
+          icon: "🎵",
+          ex_nl: "Hij fluit een lied.",
+          ex_fr: "Il siffle une chanson.",
+          article: "",
+        },
+
+        // ── Sport ──
+        {
+          nl: "boksen",
+          fr: "boxer",
+          ph: "[BOK-sun]",
+          theme: "Sport",
+          icon: "🥊",
+          ex_nl: "Ik boks elke avond.",
+          ex_fr: "Je boxe chaque soir.",
+          article: "",
+        },
+        {
+          nl: "schaatsen",
+          fr: "patiner",
+          ph: "[SKHATS-un]",
+          theme: "Sport",
+          icon: "⛸️",
+          ex_nl: "We schaatsen in de winter.",
+          ex_fr: "Nous patinons en hiver.",
+          article: "",
+        },
+        {
+          nl: "joggen",
+          fr: "faire du jogging",
+          ph: "[JO-khun]",
+          theme: "Sport",
+          icon: "🏅",
+          ex_nl: "Ik jog 's ochtends.",
+          ex_fr: "Je fais du jogging le matin.",
+          article: "",
+        },
+        {
+          nl: "voetballen",
+          fr: "jouer au football",
+          ph: "[FOOT-bal-un]",
+          theme: "Sport",
+          icon: "⚽",
+          ex_nl: "We voetballen met vrienden.",
+          ex_fr: "Nous jouons au foot avec des amis.",
+          article: "",
+        },
+        {
+          nl: "spelen",
+          fr: "jouer",
+          ph: "[SPRAY-lun]",
+          theme: "Sport",
+          icon: "🎮",
+          ex_nl: "De kinderen spelen buiten.",
+          ex_fr: "Les enfants jouent dehors.",
+          article: "",
+        },
+        {
+          nl: "dansen",
+          fr: "danser",
+          ph: "[DAN-sun]",
+          theme: "Sport",
+          icon: "💃",
+          ex_nl: "We dansen op muziek.",
+          ex_fr: "Nous dansons sur de la musique.",
+          article: "",
+        },
+        {
+          nl: "blaffen",
+          fr: "aboyer",
+          ph: "[BLA-fun]",
+          theme: "Sport",
+          icon: "🐕",
+          ex_nl: "De hond blaft hard.",
+          ex_fr: "Le chien aboie fort.",
+          article: "",
+        },
+
+        // ── Quotidien ──
+        {
+          nl: "bakken",
+          fr: "cuire",
+          ph: "[BA-kun]",
+          theme: "Quotidien",
+          icon: "🍳",
+          ex_nl: "Mama bakt een taart.",
+          ex_fr: "Maman cuit un gâteau.",
+          article: "",
+        },
+        {
+          nl: "wassen",
+          fr: "laver",
+          ph: "[WA-sun]",
+          theme: "Quotidien",
+          icon: "🧼",
+          ex_nl: "Ik was mijn handen.",
+          ex_fr: "Je lave mes mains.",
+          article: "",
+        },
+        {
+          nl: "poetsen",
+          fr: "nettoyer",
+          ph: "[POOT-sun]",
+          theme: "Quotidien",
+          icon: "🧹",
+          ex_nl: "Poets je tanden!",
+          ex_fr: "Nettoie tes dents !",
+          article: "",
+        },
+        {
+          nl: "snijden",
+          fr: "couper",
+          ph: "[SNAY-dun]",
+          theme: "Quotidien",
+          icon: "🔪",
+          ex_nl: "Snijd het brood.",
+          ex_fr: "Coupe le pain.",
+          article: "",
+        },
+        {
+          nl: "rusten",
+          fr: "se reposer",
+          ph: "[RUS-tun]",
+          theme: "Quotidien",
+          icon: "😴",
+          ex_nl: "Na het werk rust ik.",
+          ex_fr: "Après le travail je me repose.",
+          article: "",
+        },
+        {
+          nl: "leven",
+          fr: "vivre",
+          ph: "[LAY-vun]",
+          theme: "Quotidien",
+          icon: "❤️",
+          ex_nl: "We leven een goed leven.",
+          ex_fr: "Nous vivons une bonne vie.",
+          article: "",
+        },
+        {
+          nl: "worden",
+          fr: "devenir",
+          ph: "[WOR-dun]",
+          theme: "Quotidien",
+          icon: "🔄",
+          ex_nl: "Ik wil dokter worden.",
+          ex_fr: "Je veux devenir médecin.",
+          article: "",
+        },
+        {
+          nl: "hebben",
+          fr: "avoir",
+          ph: "[HE-bun]",
+          theme: "Quotidien",
+          icon: "✋",
+          ex_nl: "Ik heb een hond.",
+          ex_fr: "J'ai un chien.",
+          article: "",
+        },
+        {
+          nl: "wachten",
+          fr: "attendre",
+          ph: "[WAKh-tun]",
+          theme: "Quotidien",
+          icon: "⏳",
+          ex_nl: "Ik wacht op de bus.",
+          ex_fr: "J'attends le bus.",
+          article: "",
+        },
+        {
+          nl: "verzamelen",
+          fr: "collectionner",
+          ph: "[fur-ZA-muh-lun]",
+          theme: "Quotidien",
+          icon: "🗃️",
+          ex_nl: "Hij verzamelt postzegels.",
+          ex_fr: "Il collectionne les timbres.",
+          article: "",
+        },
+
+        // ── École ──
+        {
+          nl: "studeren",
+          fr: "étudier",
+          ph: "[stu-DAY-run]",
+          theme: "École",
+          icon: "📝",
+          ex_nl: "Ik studeer voor het examen.",
+          ex_fr: "J'étudie pour l'examen.",
+          article: "",
+        },
+        {
+          nl: "lezen",
+          fr: "lire",
+          ph: "[LAY-zun]",
+          theme: "École",
+          icon: "📚",
+          ex_nl: "Ik lees een boek.",
+          ex_fr: "Je lis un livre.",
+          article: "",
+        },
+        {
+          nl: "tekenen",
+          fr: "dessiner",
+          ph: "[TAY-kun-un]",
+          theme: "École",
+          icon: "🎨",
+          ex_nl: "We tekenen in de klas.",
+          ex_fr: "Nous dessinons en classe.",
+          article: "",
+        },
+        {
+          nl: "spellen",
+          fr: "épeler",
+          ph: "[SPEL-un]",
+          theme: "École",
+          icon: "🔤",
+          ex_nl: "Spel je naam, alsjeblieft.",
+          ex_fr: "Épèle ton nom s'il te plaît.",
+          article: "",
+        },
+        {
+          nl: "begrijpen",
+          fr: "comprendre",
+          ph: "[buh-KHRAY-pun]",
+          theme: "École",
+          icon: "🧠",
+          ex_nl: "Begrijp je de les?",
+          ex_fr: "Tu comprends la leçon ?",
+          article: "",
+        },
+        {
+          nl: "herhalen",
+          fr: "répéter",
+          ph: "[hur-HA-lun]",
+          theme: "École",
+          icon: "🔁",
+          ex_nl: "Herhaal de zin.",
+          ex_fr: "Répète la phrase.",
+          article: "",
+        },
+        {
+          nl: "vinden",
+          fr: "trouver",
+          ph: "[VIN-dun]",
+          theme: "École",
+          icon: "🔍",
+          ex_nl: "Ik vind het antwoord.",
+          ex_fr: "Je trouve la réponse.",
+          article: "",
+        },
+        {
+          nl: "weten",
+          fr: "savoir",
+          ph: "[VAY-tun]",
+          theme: "École",
+          icon: "💡",
+          ex_nl: "Ik weet het antwoord.",
+          ex_fr: "Je sais la réponse.",
+          article: "",
+        },
+
+        // ── Commerce ──
+        {
+          nl: "kopen",
+          fr: "acheter",
+          ph: "[KO-pun]",
+          theme: "Commerce",
+          icon: "🛒",
+          ex_nl: "Ik koop een brood.",
+          ex_fr: "J'achète un pain.",
+          article: "",
+        },
+        {
+          nl: "verkopen",
+          fr: "vendre",
+          ph: "[fur-KO-pun]",
+          theme: "Commerce",
+          icon: "🏪",
+          ex_nl: "Hij verkoopt bloemen.",
+          ex_fr: "Il vend des fleurs.",
+          article: "",
+        },
+        {
+          nl: "betalen",
+          fr: "payer",
+          ph: "[buh-TA-lun]",
+          theme: "Commerce",
+          icon: "💳",
+          ex_nl: "Ik betaal met de kaart.",
+          ex_fr: "Je paie par carte.",
+          article: "",
+        },
+        {
+          nl: "bestellen",
+          fr: "commander",
+          ph: "[buh-STEL-un]",
+          theme: "Commerce",
+          icon: "📋",
+          ex_nl: "We bestellen pizza.",
+          ex_fr: "Nous commandons une pizza.",
+          article: "",
+        },
+        {
+          nl: "kosten",
+          fr: "coûter",
+          ph: "[KOS-tun]",
+          theme: "Commerce",
+          icon: "💰",
+          ex_nl: "Hoeveel kost dit?",
+          ex_fr: "Combien ça coûte ?",
+          article: "",
+        },
+        {
+          nl: "zoeken",
+          fr: "chercher",
+          ph: "[ZOO-kun]",
+          theme: "Commerce",
+          icon: "🔎",
+          ex_nl: "Ik zoek mijn sleutels.",
+          ex_fr: "Je cherche mes clés.",
+          article: "",
+        },
+        {
+          nl: "halen",
+          fr: "obtenir",
+          ph: "[HA-lun]",
+          theme: "Commerce",
+          icon: "🏆",
+          ex_nl: "Ik haal een goed cijfer.",
+          ex_fr: "J'obtiens une bonne note.",
+          article: "",
+        },
+        {
+          nl: "nemen",
+          fr: "prendre",
+          ph: "[NAY-mun]",
+          theme: "Commerce",
+          icon: "🤲",
+          ex_nl: "Ik neem de bus.",
+          ex_fr: "Je prends le bus.",
+          article: "",
+        },
+        {
+          nl: "geven",
+          fr: "donner",
+          ph: "[KHE-vun]",
+          theme: "Commerce",
+          icon: "🎁",
+          ex_nl: "Ik geef je een cadeau.",
+          ex_fr: "Je te donne un cadeau.",
+          article: "",
+        },
+        {
+          nl: "bezoeken",
+          fr: "visiter",
+          ph: "[buh-ZOO-kun]",
+          theme: "Commerce",
+          icon: "🗺️",
+          ex_nl: "We bezoeken het museum.",
+          ex_fr: "Nous visitons le musée.",
+          article: "",
+        },
+        {
+          nl: "plaatsen",
+          fr: "placer",
+          ph: "[PLAT-sun]",
+          theme: "Commerce",
+          icon: "📌",
+          ex_nl: "Ik plaats een bestelling.",
+          ex_fr: "Je place une commande.",
+          article: "",
+        },
+        {
+          nl: "verkiezen",
+          fr: "préférer",
+          ph: "[fur-KEE-zun]",
+          theme: "Commerce",
+          icon: "❤️",
+          ex_nl: "Ik verkies chocolade.",
+          ex_fr: "Je préfère le chocolat.",
+          article: "",
+        },
+      ];
+
+      // ── VERBS DATA ──────────────────────────────────────
+      // format : inf · pres1 (ik) · imp_sg · imp_pl · pp · fr
+      const VERBS = [
+        {
+          inf: "worden",
+          pres1: "word",
+          imp_sg: "werd",
+          imp_pl: "werden",
+          pp: "geworden",
+          fr: "devenir",
+          icon: "🔄",
+        },
+        {
+          inf: "blaffen",
+          pres1: "blaf",
+          imp_sg: "blafte",
+          imp_pl: "blaften",
+          pp: "geblaft",
+          fr: "aboyer",
+          icon: "🐕",
+        },
+        {
+          inf: "roeien",
+          pres1: "roei",
+          imp_sg: "roeide",
+          imp_pl: "roeiden",
+          pp: "geroeid",
+          fr: "ramer",
+          icon: "🚣",
+        },
+        {
+          inf: "leven",
+          pres1: "leef",
+          imp_sg: "leefde",
+          imp_pl: "leefden",
+          pp: "geleefd",
+          fr: "vivre",
+          icon: "❤️",
+        },
+        {
+          inf: "geven",
+          pres1: "geef",
+          imp_sg: "gaf",
+          imp_pl: "gaven",
+          pp: "gegeven",
+          fr: "donner",
+          icon: "🎁",
+        },
+        {
+          inf: "gooien",
+          pres1: "gooi",
+          imp_sg: "gooide",
+          imp_pl: "gooiden",
+          pp: "gegooid",
+          fr: "jeter",
+          icon: "🎯",
+        },
+        {
+          inf: "vinden",
+          pres1: "vind",
+          imp_sg: "vond",
+          imp_pl: "vonden",
+          pp: "gevonden",
+          fr: "trouver",
+          icon: "🔍",
+        },
+        {
+          inf: "hoesten",
+          pres1: "hoest",
+          imp_sg: "hoestte",
+          imp_pl: "hoestten",
+          pp: "gehoest",
+          fr: "tousser",
+          icon: "🤧",
+        },
+        {
+          inf: "vertellen",
+          pres1: "vertel",
+          imp_sg: "vertelde",
+          imp_pl: "vertelden",
+          pp: "verteld",
+          fr: "raconter",
+          icon: "📖",
+        },
+        {
+          inf: "missen",
+          pres1: "mis",
+          imp_sg: "miste",
+          imp_pl: "misten",
+          pp: "gemist",
+          fr: "manquer",
+          icon: "💔",
+        },
+        {
+          inf: "horen",
+          pres1: "hoor",
+          imp_sg: "hoorde",
+          imp_pl: "hoorden",
+          pp: "gehoord",
+          fr: "entendre",
+          icon: "👂",
+        },
+        {
+          inf: "verhuizen",
+          pres1: "verhuis",
+          imp_sg: "verhuisde",
+          imp_pl: "verhuisden",
+          pp: "verhuisd",
+          fr: "d\u00e9m\u00e9nager",
+          icon: "📦",
+        },
+        {
+          inf: "bakken",
+          pres1: "bak",
+          imp_sg: "bakte",
+          imp_pl: "bakten",
+          pp: "gebakken",
+          fr: "cuire",
+          icon: "🍳",
+        },
+        {
+          inf: "fluiten",
+          pres1: "fluit",
+          imp_sg: "floot",
+          imp_pl: "floten",
+          pp: "gefloten",
+          fr: "siffler",
+          icon: "🎵",
+        },
+        {
+          inf: "spreken",
+          pres1: "spreek",
+          imp_sg: "sprak",
+          imp_pl: "spraken",
+          pp: "gesproken",
+          fr: "parler",
+          icon: "💬",
+        },
+        {
+          inf: "spelen",
+          pres1: "speel",
+          imp_sg: "speelde",
+          imp_pl: "speelden",
+          pp: "gespeeld",
+          fr: "jouer",
+          icon: "🎮",
+        },
+        {
+          inf: "staan",
+          pres1: "sta",
+          imp_sg: "stond",
+          imp_pl: "stonden",
+          pp: "gestaan",
+          fr: "\u00eatre debout",
+          icon: "🧍",
+        },
+        {
+          inf: "lopen",
+          pres1: "loop",
+          imp_sg: "liep",
+          imp_pl: "liepen",
+          pp: "gelopen",
+          fr: "courir",
+          icon: "🏃",
+        },
+        {
+          inf: "lezen",
+          pres1: "lees",
+          imp_sg: "las",
+          imp_pl: "lazen",
+          pp: "gelezen",
+          fr: "lire",
+          icon: "📚",
+        },
+        {
+          inf: "rusten",
+          pres1: "rust",
+          imp_sg: "rustte",
+          imp_pl: "rustten",
+          pp: "gerust",
+          fr: "se reposer",
+          icon: "😴",
+        },
+        {
+          inf: "dansen",
+          pres1: "dans",
+          imp_sg: "danste",
+          imp_pl: "dansten",
+          pp: "gedanst",
+          fr: "danser",
+          icon: "💃",
+        },
+        {
+          inf: "verzamelen",
+          pres1: "verzamel",
+          imp_sg: "verzamelde",
+          imp_pl: "verzamelden",
+          pp: "verzameld",
+          fr: "collectionner",
+          icon: "🗃️",
+        },
+        {
+          inf: "halen",
+          pres1: "haal",
+          imp_sg: "haalde",
+          imp_pl: "haalden",
+          pp: "gehaald",
+          fr: "obtenir",
+          icon: "🏆",
+        },
+        {
+          inf: "hebben",
+          pres1: "heb",
+          imp_sg: "had",
+          imp_pl: "hadden",
+          pp: "gehad",
+          fr: "avoir",
+          icon: "✋",
+        },
+        {
+          inf: "zitten",
+          pres1: "zit",
+          imp_sg: "zat",
+          imp_pl: "zaten",
+          pp: "gezeten",
+          fr: "s\u2019asseoir",
+          icon: "🪑",
+        },
+        {
+          inf: "betalen",
+          pres1: "betaal",
+          imp_sg: "betaalde",
+          imp_pl: "betaalden",
+          pp: "betaald",
+          fr: "payer",
+          icon: "💳",
+        },
+        {
+          inf: "gaan",
+          pres1: "ga",
+          imp_sg: "ging",
+          imp_pl: "gingen",
+          pp: "gegaan",
+          fr: "aller",
+          icon: "🚶",
+        },
+        {
+          inf: "blijven",
+          pres1: "blijf",
+          imp_sg: "bleef",
+          imp_pl: "bleven",
+          pp: "gebleven",
+          fr: "rester",
+          icon: "🏠",
+        },
+        {
+          inf: "zingen",
+          pres1: "zing",
+          imp_sg: "zong",
+          imp_pl: "zongen",
+          pp: "gezongen",
+          fr: "chanter",
+          icon: "🎤",
+        },
+        {
+          inf: "stoppen",
+          pres1: "stop",
+          imp_sg: "stopte",
+          imp_pl: "stopten",
+          pp: "gestopt",
+          fr: "arr\u00eater",
+          icon: "🛑",
+        },
+        {
+          inf: "kijken",
+          pres1: "kijk",
+          imp_sg: "keek",
+          imp_pl: "keken",
+          pp: "gekeken",
+          fr: "regarder",
+          icon: "👀",
+        },
+        {
+          inf: "willen",
+          pres1: "wil",
+          imp_sg: "wilde",
+          imp_pl: "wilden",
+          pp: "gewild",
+          fr: "vouloir",
+          icon: "💭",
+        },
+        {
+          inf: "kopen",
+          pres1: "koop",
+          imp_sg: "kocht",
+          imp_pl: "kochten",
+          pp: "gekocht",
+          fr: "acheter",
+          icon: "🛒",
+        },
+        {
+          inf: "plakken",
+          pres1: "plak",
+          imp_sg: "plakte",
+          imp_pl: "plakten",
+          pp: "geplakt",
+          fr: "coller",
+          icon: "🖊️",
+        },
+        {
+          inf: "knippen",
+          pres1: "knip",
+          imp_sg: "knipte",
+          imp_pl: "knipten",
+          pp: "geknipt",
+          fr: "d\u00e9couper",
+          icon: "✂️",
+        },
+        {
+          inf: "heten",
+          pres1: "heet",
+          imp_sg: "heette",
+          imp_pl: "heetten",
+          pp: "geheten",
+          fr: "s\u2019appeler",
+          icon: "🏷️",
+        },
+        {
+          inf: "spellen",
+          pres1: "spel",
+          imp_sg: "spelde",
+          imp_pl: "spelden",
+          pp: "gespeld",
+          fr: "\u00e9peler",
+          icon: "🔤",
+        },
+        {
+          inf: "liggen",
+          pres1: "lig",
+          imp_sg: "lag",
+          imp_pl: "lagen",
+          pp: "gelegen",
+          fr: "\u00eatre couch\u00e9",
+          icon: "🛏️",
+        },
+        {
+          inf: "komen",
+          pres1: "kom",
+          imp_sg: "kwam",
+          imp_pl: "kwamen",
+          pp: "gekomen",
+          fr: "venir",
+          icon: "🚀",
+        },
+        {
+          inf: "voelen",
+          pres1: "voel",
+          imp_sg: "voelde",
+          imp_pl: "voelden",
+          pp: "gevoeld",
+          fr: "sentir",
+          icon: "🫀",
+        },
+        {
+          inf: "herhalen",
+          pres1: "herhaal",
+          imp_sg: "herhaalde",
+          imp_pl: "herhaalden",
+          pp: "herhaald",
+          fr: "r\u00e9p\u00e9ter",
+          icon: "🔁",
+        },
+        {
+          inf: "begrijpen",
+          pres1: "begrijp",
+          imp_sg: "begreep",
+          imp_pl: "begrepen",
+          pp: "begrepen",
+          fr: "comprendre",
+          icon: "🧠",
+        },
+        {
+          inf: "zeggen",
+          pres1: "zeg",
+          imp_sg: "zei",
+          imp_pl: "zeiden",
+          pp: "gezegd",
+          fr: "dire",
+          icon: "🗣️",
+        },
+        {
+          inf: "tekenen",
+          pres1: "teken",
+          imp_sg: "tekende",
+          imp_pl: "tekenden",
+          pp: "getekend",
+          fr: "dessiner",
+          icon: "🎨",
+        },
+        {
+          inf: "studeren",
+          pres1: "studeer",
+          imp_sg: "studeerde",
+          imp_pl: "studeerden",
+          pp: "gestudeerd",
+          fr: "\u00e9tudier",
+          icon: "📝",
+        },
+        {
+          inf: "wandelen",
+          pres1: "wandel",
+          imp_sg: "wandelde",
+          imp_pl: "wandelden",
+          pp: "gewandeld",
+          fr: "se promener",
+          icon: "🌳",
+        },
+        {
+          inf: "boksen",
+          pres1: "boks",
+          imp_sg: "bokste",
+          imp_pl: "boksten",
+          pp: "gebokst",
+          fr: "boxer",
+          icon: "🥊",
+        },
+        {
+          inf: "schaatsen",
+          pres1: "schaats",
+          imp_sg: "schaatste",
+          imp_pl: "schaatsten",
+          pp: "geschaatst",
+          fr: "patiner",
+          icon: "⛸️",
+        },
+        {
+          inf: "joggen",
+          pres1: "jog",
+          imp_sg: "jogde",
+          imp_pl: "jogden",
+          pp: "gejogd",
+          fr: "faire du jogging",
+          icon: "🏅",
+        },
+        {
+          inf: "voetballen",
+          pres1: "voetbal",
+          imp_sg: "voetbalde",
+          imp_pl: "voetbalden",
+          pp: "gevoetbald",
+          fr: "jouer au football",
+          icon: "⚽",
+        },
+        {
+          inf: "reizen",
+          pres1: "reis",
+          imp_sg: "reisde",
+          imp_pl: "reisden",
+          pp: "gereisd",
+          fr: "voyager",
+          icon: "✈️",
+        },
+        {
+          inf: "verkiezen",
+          pres1: "verkies",
+          imp_sg: "verkoos",
+          imp_pl: "verkozen",
+          pp: "verkozen",
+          fr: "pr\u00e9f\u00e9rer",
+          icon: "❤️\u200d🔥",
+        },
+        {
+          inf: "plaatsen",
+          pres1: "plaats",
+          imp_sg: "plaatste",
+          imp_pl: "plaatsten",
+          pp: "geplaatst",
+          fr: "placer",
+          icon: "📌",
+        },
+        {
+          inf: "wachten",
+          pres1: "wacht",
+          imp_sg: "wachtte",
+          imp_pl: "wachtten",
+          pp: "gewacht",
+          fr: "attendre",
+          icon: "⏳",
+        },
+        {
+          inf: "bezoeken",
+          pres1: "bezoek",
+          imp_sg: "bezocht",
+          imp_pl: "bezochten",
+          pp: "bezocht",
+          fr: "visiter",
+          icon: "🗺️",
+        },
+        {
+          inf: "praten",
+          pres1: "praat",
+          imp_sg: "praatte",
+          imp_pl: "praatten",
+          pp: "gepraat",
+          fr: "parler (informel)",
+          icon: "🗨️",
+        },
+        {
+          inf: "kosten",
+          pres1: "kost",
+          imp_sg: "kostte",
+          imp_pl: "kostten",
+          pp: "gekost",
+          fr: "co\u00fbter",
+          icon: "💰",
+        },
+        {
+          inf: "verkopen",
+          pres1: "verkoop",
+          imp_sg: "verkocht",
+          imp_pl: "verkochten",
+          pp: "verkocht",
+          fr: "vendre",
+          icon: "🏪",
+        },
+        {
+          inf: "zoeken",
+          pres1: "zoek",
+          imp_sg: "zocht",
+          imp_pl: "zochten",
+          pp: "gezocht",
+          fr: "chercher",
+          icon: "🔎",
+        },
+        {
+          inf: "bestellen",
+          pres1: "bestel",
+          imp_sg: "bestelde",
+          imp_pl: "bestelden",
+          pp: "besteld",
+          fr: "commander",
+          icon: "📋",
+        },
+        {
+          inf: "snijden",
+          pres1: "snijd",
+          imp_sg: "sneed",
+          imp_pl: "sneden",
+          pp: "gesneden",
+          fr: "couper",
+          icon: "🔪",
+        },
+        {
+          inf: "nemen",
+          pres1: "neem",
+          imp_sg: "nam",
+          imp_pl: "namen",
+          pp: "genomen",
+          fr: "prendre",
+          icon: "🤲",
+        },
+        {
+          inf: "slaan",
+          pres1: "sla",
+          imp_sg: "sloeg",
+          imp_pl: "sloegen",
+          pp: "geslagen",
+          fr: "frapper",
+          icon: "👊",
+        },
+        {
+          inf: "blazen",
+          pres1: "blaas",
+          imp_sg: "blies",
+          imp_pl: "bliezen",
+          pp: "geblazen",
+          fr: "souffler",
+          icon: "💨",
+        },
+        {
+          inf: "poetsen",
+          pres1: "poets",
+          imp_sg: "poetste",
+          imp_pl: "poetsten",
+          pp: "gepoetst",
+          fr: "nettoyer",
+          icon: "🧹",
+        },
+        {
+          inf: "beginnen",
+          pres1: "begin",
+          imp_sg: "begon",
+          imp_pl: "begonnen",
+          pp: "begonnen",
+          fr: "commencer",
+          icon: "🚦",
+        },
+        {
+          inf: "wassen",
+          pres1: "was",
+          imp_sg: "waste",
+          imp_pl: "wasten",
+          pp: "gewassen",
+          fr: "laver",
+          icon: "🧼",
+        },
+      ];
+
+      // ── MNEMONICS ───────────────────────────────────────
+      const MNEMOS = [
+        {
+          nl: "worden",
+          fr: "devenir",
+          story:
+            "WORDEN ressemble à WORD (mot en anglais) — un mot qui DEVIENT un autre mot ! WOR-DEN → DEVENIR 🔄",
+          visual: "worden ≈ word → chaque mot devient quelque chose 🔤",
+        },
+        {
+          nl: "gaan",
+          fr: "aller",
+          story:
+            "GAAN = GO en anglais ! Les deux ont le son G et veulent dire 'aller'. GAAN-GO-ALLER, tu vas partout !",
+          visual: "Gaan → Go (EN) → Aller 🚶",
+        },
+        {
+          nl: "hebben",
+          fr: "avoir",
+          story:
+            "HEBBEN contient HEB = HAVE en anglais ! J'ai = ik HEB, tu as = jij HEBT — HEB-HEB-HAVE-AVOIR !",
+          visual: "Hebben → Have (EN) → Avoir ✋",
+        },
+        {
+          nl: "blijven",
+          fr: "rester",
+          story:
+            "BLIJVEN — imagine BLIE quelqu'un qui VIENT de RESTER sur place. BLI-JVEN c'est rester CHEZ SOI !",
+          visual: "blijven → stay (EN) → rester 🏠",
+        },
+        {
+          nl: "komen",
+          fr: "venir",
+          story:
+            "KOMEN ressemble à COME (en anglais) ! COME HERE = KOM HIER ! Le son est presque identique.",
+          visual: "Komen = Come (EN) = Venir 🚀",
+        },
+        {
+          nl: "zingen",
+          fr: "chanter",
+          story:
+            "ZINGEN ressemble à SINGING en anglais ! Le Z remplace le S — ZING zing zing, la chanson continue !",
+          visual: "Zingen ≈ Singing (EN) → Chanter 🎤",
+        },
+        {
+          nl: "kijken",
+          fr: "regarder",
+          story:
+            "KIJKEN — imagine un détective KIJ-KIJ qui REGARDE partout avec sa loupe. KIJ-KEN = regarder !",
+          visual: "Kijken → KIJ (regard) → Regarder 👀",
+        },
+        {
+          nl: "lopen",
+          fr: "courir",
+          story:
+            "LOPEN ressemble à LOPE (galop en anglais) — LOPEN LOPEN on galope, on COURT ! LO-PEN = courir !",
+          visual: "Lopen ≈ Lope (EN) → Courir 🏃",
+        },
+        {
+          nl: "lezen",
+          fr: "lire",
+          story:
+            "LEZEN — les yeux suivent les lettres. LE-ZEN c'est zen, on est zen quand on LIT un bon livre !",
+          visual: "Lezen → Lire → zen 📚",
+        },
+        {
+          nl: "spreken",
+          fr: "parler",
+          story:
+            "SPREKEN ressemble à SPEAK (anglais) ! S-PREKEN, SPEAK-EN uniquement avec le R hollandais. PARLER !",
+          visual: "Spreken ≈ Speak (EN) → Parler 💬",
+        },
+        {
+          nl: "horen",
+          fr: "entendre",
+          story:
+            "HOREN ressemble à HEAR (anglais) ! HO-REN, HEAR-EN — tes oreilles ENTENDENT le H de HOREN.",
+          visual: "Horen ≈ Hear (EN) → Entendre 👂",
+        },
+        {
+          nl: "willen",
+          fr: "vouloir",
+          story:
+            "WILLEN ressemble à WILL en anglais — I WILL do it = je VEUX le faire ! WIL = VOULOIR !",
+          visual: "Willen ≈ Will (EN) → Vouloir 💭",
+        },
+        {
+          nl: "kopen",
+          fr: "acheter",
+          story:
+            "KOPEN — tu COPEN (copies) le prix ? Non, tu KOPEN = ACHÈTES ! KO comme le son KO-mmerce !",
+          visual: "Kopen → Ko(mmerce) → Acheter 🛒",
+        },
+        {
+          nl: "vinden",
+          fr: "trouver",
+          story:
+            "VINDEN ressemble à FIND (anglais) ! FIND-EN = chercher et TROUVER. VIN-DEN, tu TROUVES le vin ?",
+          visual: "Vinden ≈ Find (EN) → Trouver 🔍",
+        },
+        {
+          nl: "wachten",
+          fr: "attendre",
+          story:
+            "WACHTEN — imagine un WATCHMAN (gardien en EN) qui ATTEND toujours. WATCH-TEN = ATTENDRE !",
+          visual: "Wachten ≈ Watch (EN gardien) → Attendre ⏳",
+        },
+        {
+          nl: "beginnen",
+          fr: "commencer",
+          story:
+            "BEGINNEN ressemble à BEGIN en anglais ! BEGIN = COMMENCER, le néerlandais double juste le N !",
+          visual: "Beginnen ≈ Begin (EN) → Commencer 🚦",
+        },
+        {
+          nl: "stoppen",
+          fr: "arrêter",
+          story:
+            "STOPPEN = STOP en français et en anglais ! Un panneau STOP = stoppen. Arrête-toi !",
+          visual: "Stoppen = Stop (FR/EN) → Arrêter 🛑",
+        },
+        {
+          nl: "zeggen",
+          fr: "dire",
+          story:
+            "ZEGGEN — ZEG ça ! Tous les Belges disent ZEG pour attirer l'attention. ZEG = HEY = DIRE quelque chose !",
+          visual: "Zeggen → Zeg (hey!) → Dire 🗣️",
+        },
+        {
+          nl: "zoeken",
+          fr: "chercher",
+          story:
+            "ZOEKEN — ZOO-KEN comme chercher dans un ZOO tous les animaux ! ZOO-KEN = CHERCHER !",
+          visual: "Zoeken → Zoo + ken → Chercher 🔎",
+        },
+        {
+          nl: "wassen",
+          fr: "laver",
+          story:
+            "WASSEN ressemble à WASH en anglais ! WAS-SEN = WASH-EN. Tu WAS tes mains = tu les LAVES !",
+          visual: "Wassen ≈ Wash (EN) → Laver 🧼",
+        },
+        {
+          nl: "bakken",
+          fr: "cuire",
+          story:
+            "BAKKEN ressemble à BAKE (anglais) ! On BAKE un gâteau = on le CUIT au four. BAK-KEN = CUIRE !",
+          visual: "Bakken ≈ Bake (EN) → Cuire 🍳",
+        },
+        {
+          nl: "snijden",
+          fr: "couper",
+          story:
+            "SNIJDEN — SNI comme un couteau qui siffle. SNI-JE-DEN — le couteau COUPE. SNIJ = coup de lame !",
+          visual: "Snijden → Snij (lame) → Couper 🔪",
+        },
+        {
+          nl: "dansen",
+          fr: "danser",
+          story:
+            "DANSEN = DANSER ! Presque identique en français ! DAN-SEN, tu DANSES sur la piste !",
+          visual: "Dansen ≈ Danser (FR) → Danser 💃",
+        },
+        {
+          nl: "studeren",
+          fr: "étudier",
+          story:
+            "STUDEREN ressemble à STUDY (anglais) et ÉTUDIER (français) ! STU-DE-REN — STU tous les livres !",
+          visual: "Studeren ≈ Study (EN) ≈ Étudier (FR) 📝",
+        },
+      ];
+
+      /* ══════════════════════════════════════════════════
+         UTILITIES
+      ══════════════════════════════════════════════════ */
+      function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      /* ══════════════════════════════════════════════════
+         TABS
+      ══════════════════════════════════════════════════ */
+      function switchTab(id, btn) {
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".tab")
+          .forEach((t) => t.classList.remove("active"));
+        document.getElementById("tab-" + id).classList.add("active");
+        btn.classList.add("active");
+        if (id === "mnemos") renderMnemos();
+        if (id === "verbes") renderVerbes();
+      }
+
+      /* ══════════════════════════════════════════════════
+         VOCABULAIRE
+      ══════════════════════════════════════════════════ */
+      let currentTheme = "Tous";
+      const THEMES = ["Tous", ...new Set(VOCAB.map((w) => w.theme))];
+
+      function renderFilters() {
+        const fr = document.getElementById("theme-filters");
+        fr.innerHTML = THEMES.map(
+          (t) =>
+            `<button class="filter-btn ${t === "Tous" ? "active" : ""}" onclick="filterTheme('${t}', this)">${t}</button>`,
+        ).join("");
+      }
+
+      function filterTheme(theme, btn) {
+        currentTheme = theme;
+        document
+          .querySelectorAll(".filter-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderVocab();
+      }
+
+      function renderVocab() {
+        const grid = document.getElementById("vocab-grid");
+        let words =
+          currentTheme === "Tous"
+            ? VOCAB
+            : VOCAB.filter((w) => w.theme === currentTheme);
+        words = shuffle(words);
+        grid.innerHTML = words
+          .map(
+            (w) => `
+          <div class="flip-wrap" onclick="this.classList.toggle('flipped')">
+            <div class="flip-inner">
+              <div class="flip-front">
+                <span class="flip-icon">${w.icon}</span>
+                ${w.article ? `<span class="flip-article">${w.article}</span>` : ""}
+                <div class="flip-nl">${w.nl}</div>
+                <div class="flip-phonetic">${w.ph}</div>
+                <div class="flip-hint">👆 cliquer pour voir</div>
+              </div>
+              <div class="flip-back">
+                <span class="flip-icon">${w.icon}</span>
+                <div class="flip-fr">${w.fr}</div>
+                <div class="flip-example"><em>${w.ex_nl}</em><br>${w.ex_fr}</div>
+              </div>
+            </div>
+          </div>
+        `,
+          )
+          .join("");
+      }
+
+      /* ══════════════════════════════════════════════════
+         QUIZ
+      ══════════════════════════════════════════════════ */
+      let quizMode = "qcm";
+      let quizQueue = [];
+      let quizIdx = 0;
+      let quizScore = 0;
+      let quizAnswered = false;
+      const QUIZ_LENGTH = 10;
+
+      function setQuizMode(mode, btn) {
+        quizMode = mode;
+        document
+          .querySelectorAll(".mode-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+      }
+
+      function startQuiz() {
+        document.getElementById("quiz-results").classList.remove("show");
+        document.getElementById("quiz-main").style.display = "block";
+        document.getElementById("start-quiz-btn").style.display = "none";
+        quizQueue = shuffle(VOCAB).slice(0, QUIZ_LENGTH);
+        quizIdx = 0;
+        quizScore = 0;
+        quizAnswered = false;
+        document.getElementById("q-score").textContent = 0;
+        showQuestion();
+      }
+
+      function showQuestion() {
+        if (quizIdx >= QUIZ_LENGTH) {
+          showResults();
+          return;
+        }
+        quizAnswered = false;
+        const w = quizQueue[quizIdx];
+        updateProgress();
+
+        const qEl = document.getElementById("q-question");
+        const aEl = document.getElementById("q-choices-area");
+        const fb = document.getElementById("q-feedback");
+        const nxt = document.getElementById("q-next");
+        fb.className = "quiz-feedback";
+        fb.textContent = "";
+        nxt.className = "next-btn";
+
+        if (quizMode === "qcm") {
+          const dir = Math.random() > 0.5 ? "nl2fr" : "fr2nl";
+          if (dir === "nl2fr") {
+            qEl.innerHTML = `<span class="q-label">Que signifie ce mot ?</span><span>${w.icon} ${w.nl}</span>`;
+            const wrong = shuffle(VOCAB.filter((x) => x.nl !== w.nl))
+              .slice(0, 3)
+              .map((x) => x.fr);
+            const choices = shuffle([w.fr, ...wrong]);
+            aEl.innerHTML = `<div class="choices">${choices
+              .map(
+                (c) =>
+                  `<button class="choice-btn" onclick="checkChoice(this,'${escHtml(c)}','${escHtml(w.fr)}')">${c}</button>`,
+              )
+              .join("")}</div>`;
+          } else {
+            qEl.innerHTML = `<span class="q-label">Comment dit-on en néerlandais ?</span><span>${w.icon} ${w.fr}</span>`;
+            const wrong = shuffle(VOCAB.filter((x) => x.nl !== w.nl))
+              .slice(0, 3)
+              .map((x) => x.nl);
+            const choices = shuffle([w.nl, ...wrong]);
+            aEl.innerHTML = `<div class="choices">${choices
+              .map(
+                (c) =>
+                  `<button class="choice-btn" onclick="checkChoice(this,'${escHtml(c)}','${escHtml(w.nl)}')">${c}</button>`,
+              )
+              .join("")}</div>`;
+          }
+        } else if (quizMode === "free") {
+          qEl.innerHTML = `<span class="q-label">Traduis en n\u00E9erlandais</span><span>${w.icon} ${w.fr}</span>`;
+          aEl.innerHTML = `<div class="free-input-row">
+            <input class="free-input" id="free-ans" type="text" placeholder="\u00C9cris le mot n\u00E9erlandais..." autocomplete="off" data-ans="${w.nl}"/>
+            <button class="submit-btn" id="free-ok-btn">OK</button>
+          </div>`;
+          const freeEl = document.getElementById("free-ans");
+          const freeBtn = document.getElementById("free-ok-btn");
+          if (freeEl && freeBtn) {
+            freeBtn.addEventListener("click", submitFree);
+            freeEl.addEventListener("keydown", function (e) {
+              if (e.key === "Enter") submitFree();
+            });
+            setTimeout(function () {
+              freeEl.focus();
+            }, 50);
+          }
+        } else {
+          // conj
+          const vb = VERBS[Math.floor(Math.random() * VERBS.length)];
+          const formDefs = [
+            {
+              label: "ik _____ au pr\u00E9sent",
+              q: vb.inf + "  (" + vb.fr + ")",
+              ans: vb.pres1,
+            },
+            {
+              label: "imparfait singulier",
+              q: vb.inf + "  (" + vb.fr + ")",
+              ans: vb.imp_sg,
+            },
+            {
+              label: "imparfait pluriel",
+              q: vb.inf + "  (" + vb.fr + ")",
+              ans: vb.imp_pl,
+            },
+            {
+              label: "participe pass\u00E9",
+              q: vb.inf + "  (" + vb.fr + ")",
+              ans: vb.pp,
+            },
+            { label: "infinitif en n\u00E9erlandais", q: vb.fr, ans: vb.inf },
+          ];
+          const form = formDefs[Math.floor(Math.random() * formDefs.length)];
+          qEl.innerHTML =
+            '<span class="q-label">' +
+            form.label +
+            "</span><span>" +
+            form.q +
+            "</span>";
+          aEl.innerHTML =
+            '<div class="free-input-row"><input class="free-input" id="free-ans" type="text" placeholder="Tape ta r\u00E9ponse..." autocomplete="off" data-ans="' +
+            form.ans +
+            '"/><button class="submit-btn" id="free-ok-btn">OK</button></div>';
+          const conjEl = document.getElementById("free-ans");
+          const conjBtn = document.getElementById("free-ok-btn");
+          if (conjEl && conjBtn) {
+            conjBtn.addEventListener("click", submitFree);
+            conjEl.addEventListener("keydown", function (e) {
+              if (e.key === "Enter") submitFree();
+            });
+            setTimeout(function () {
+              conjEl.focus();
+            }, 50);
+          }
+        }
+      }
+
+      function escHtml(s) {
+        return s.replace(/'/g, "&#39;");
+      }
+
+      function checkChoice(btn, chosen, correct) {
+        if (quizAnswered) return;
+        quizAnswered = true;
+        document
+          .querySelectorAll(".choice-btn")
+          .forEach((b) => (b.disabled = true));
+        const ok = chosen === correct;
+        btn.classList.add(ok ? "correct" : "wrong");
+        if (!ok) {
+          document.querySelectorAll(".choice-btn").forEach((b) => {
+            if (b.textContent === correct) b.classList.add("correct");
+          });
+        }
+        handleResult(ok, correct);
+      }
+
+      function normalise(s) {
+        return s
+          .toLowerCase()
+          .replace(/\u00e9|\u00e8|\u00ea|\u00eb/g, "e")
+          .replace(/\u00ef|\u00ee/g, "i")
+          .replace(/\u00e0|\u00e2/g, "a")
+          .replace(/\u00f4/g, "o")
+          .replace(/\u00f9|\u00fb/g, "u");
+      }
+
+      function submitFree() {
+        if (quizAnswered) return;
+        const el = document.getElementById("free-ans");
+        if (!el) return;
+        const input = el.value.trim();
+        // answer always stored in data-ans (set for both free and conj modes)
+        const correctRaw = el.dataset.ans || "";
+        const ok = normalise(input) === normalise(correctRaw);
+        el.classList.add(ok ? "correct" : "wrong");
+        el.disabled = true;
+        const okBtn = document.getElementById("free-ok-btn");
+        if (okBtn) okBtn.disabled = true;
+        quizAnswered = true;
+        handleResult(ok, correctRaw);
+      }
+
+      function handleResult(ok, correctLabel) {
+        if (ok) {
+          quizScore++;
+          document.getElementById("q-score").textContent = quizScore;
+          confetti();
+        }
+        const fb = document.getElementById("q-feedback");
+        fb.className = "quiz-feedback show " + (ok ? "correct" : "wrong");
+        if (ok) {
+          const w = quizQueue[quizIdx];
+          fb.innerHTML = `✓ Parfait ! ${w ? `Exemple : <em>${w.ex_nl}</em> → ${w.ex_fr}` : ""}`;
+        } else {
+          fb.innerHTML = `✗ La bonne réponse était : <strong>${correctLabel}</strong>`;
+        }
+        document.getElementById("q-next").className = "next-btn show";
+      }
+
+      function nextQuestion() {
+        quizIdx++;
+        showQuestion();
+      }
+
+      function updateProgress() {
+        const pct = (quizIdx / QUIZ_LENGTH) * 100;
+        document.getElementById("q-progress").style.width = pct + "%";
+        document.getElementById("q-counter").textContent =
+          quizIdx + " / " + QUIZ_LENGTH;
+      }
+
+      function showResults() {
+        document.getElementById("quiz-main").style.display = "none";
+        const res = document.getElementById("quiz-results");
+        res.classList.add("show");
+        document.getElementById("res-score").textContent =
+          quizScore + " / " + QUIZ_LENGTH;
+        const pct = quizScore / QUIZ_LENGTH;
+        let emoji = "😅",
+          msg = "Continue d'entra\u00EEner, tu vas y arriver !";
+        if (pct >= 0.9) {
+          emoji = "🏆";
+          msg = "Excellent ! Tu ma\u00EEtrises le n\u00E9erlandais !";
+        } else if (pct >= 0.7) {
+          emoji = "🎉";
+          msg = "Tr\u00E8s bien ! Encore un peu d'entra\u00EEnement !";
+        } else if (pct >= 0.5) {
+          emoji = "😊";
+          msg = "Bien ! Continue \u00E0 r\u00E9viser les cartes !";
+        }
+        document.getElementById("res-emoji").textContent = emoji;
+        document.getElementById("res-msg").textContent = msg;
+        if (pct >= 0.7) {
+          confetti();
+          confetti();
+          confetti();
+        }
+        document.getElementById("start-quiz-btn").style.display = "block";
+      }
+
+      /* ══════════════════════════════════════════════════
+         TEMPS
+      ══════════════════════════════════════════════════ */
+      const TENSES = [
+        {
+          id: "pres",
+          icon: "🟢",
+          name: "Tegenwoordige tijd",
+          sub: "Le Présent",
+          color: "#4ade80",
+          intro: `Le présent néerlandais ressemble beaucoup au présent anglais. La règle principale : <strong>stam (radical) + t</strong> pour la 2e et 3e personne du singulier.`,
+          formula: `ik + stam | jij/hij/zij + stam + t | wij/jullie/zij + infinitif`,
+          tips: [
+            {
+              icon: "💡",
+              text: "Le radical (stam) = infinitif sans -en. Ex: werken → werk, eten → eet",
+            },
+            {
+              icon: "⚠️",
+              text: "Attention : si le stam se termine déjà par -t, on n'en rajoute pas une deuxième !",
+            },
+            {
+              icon: "🔄",
+              text: "Exception : 'jij' après le verbe → pas de -t ! 'Werk jij?' (et non: 'Werkt jij?')",
+            },
+          ],
+          examples: [
+            { nl: "Ik eet een appel.", fr: "Je mange une pomme." },
+            { nl: "Hij werkt elke dag.", fr: "Il travaille chaque jour." },
+            { nl: "Wij gaan naar school.", fr: "Nous allons à l'école." },
+            {
+              nl: "Jij spreekt goed Nederlands!",
+              fr: "Tu parles bien néerlandais !",
+            },
+          ],
+          verbs: VERBS,
+          tenseKey: "pres",
+        },
+        {
+          id: "imp",
+          icon: "🔵",
+          name: "Onvoltooid verleden tijd",
+          sub: "L'Imparfait",
+          color: "#60a5fa",
+          intro: `L'imparfait néerlandais décrit une action passée continue ou habituelle. Il suit 2 règles selon le stam. La clé secrète : <strong>T-K-OF-S-CH-P</strong> (l'astuce des 't kofschip' !)`,
+          formula: `stam + te/ten → si stam finit par t,k,f,s,ch,p | stam + de/den → tous les autres verbes`,
+          tips: [
+            {
+              icon: "⛵",
+              text: "Astuce 't kofschip' : si le dernier son du stam est dans T-K-O-F-S-C-H-I-P → utilise -te / -ten. Sinon → -de / -den !",
+            },
+            {
+              icon: "🔢",
+              text: "Pluriel : remplace -te par -ten ou -de par -den (pour wij/jullie/zij)",
+            },
+            {
+              icon: "💡",
+              text: "Les verbes irréguliers (zijn→was, hebben→had, gaan→ging) n'ont pas ces règles — apprenez-les par cœur !",
+            },
+          ],
+          examples: [
+            { nl: "Ik werkte gisteren.", fr: "Je travaillais hier." },
+            { nl: "Hij maakte zijn huiswerk.", fr: "Il faisait ses devoirs." },
+            { nl: "Wij speelden buiten.", fr: "Nous jouions dehors." },
+            { nl: "Ze leefde in Amsterdam.", fr: "Elle vivait à Amsterdam." },
+          ],
+          verbs: VERBS,
+          tenseKey: "imp",
+        },
+        {
+          id: "pc",
+          icon: "🟡",
+          name: "Voltooid tegenwoordige tijd",
+          sub: "Le Passé Composé",
+          color: "#ffd93d",
+          intro: `Le passé composé néerlandais = <strong>auxiliaire (hebben ou zijn) + participe passé</strong>. Très proche du français ! Le participe passé se forme avec <strong>ge- + stam + t/d</strong>.`,
+          formula: `hebben/zijn + ge + stam + t (kofschip) ou d (autres)`,
+          tips: [
+            {
+              icon: "🚶",
+              text: "ZIJN comme auxiliaire pour les verbes de déplacement (gaan, komen, rijden...) et les transformations (worden = devenir)",
+            },
+            {
+              icon: "📦",
+              text: "HEBBEN pour tout le reste — si vous doutez, utilisez hebben, vous aurez souvent raison !",
+            },
+            {
+              icon: "⛵",
+              text: "Même règle 't kofschip' pour le -t/-d final : werken → ge-werk-t ✓ | leven → ge-leefd ✓",
+            },
+          ],
+          examples: [
+            { nl: "Ik heb gegeten.", fr: "J'ai mangé." },
+            {
+              nl: "Zij is naar school gegaan.",
+              fr: "Elle est allée à l'école.",
+            },
+            { nl: "Wij hebben gewerkt.", fr: "Nous avons travaillé." },
+            {
+              nl: "Hij heeft gezegd dat hij komt.",
+              fr: "Il a dit qu'il vient.",
+            },
+          ],
+          verbs: VERBS,
+          tenseKey: "pp",
+          isPP: true,
+        },
+        {
+          id: "fut",
+          icon: "🟠",
+          name: "Toekomende tijd",
+          sub: "Le Futur",
+          color: "#ff914d",
+          intro: `Le néerlandais a deux façons d'exprimer le futur. Le plus simple et le plus courant : <strong>gaan + infinitif</strong> (comme "going to" en anglais). Le futur formel : <strong>zullen + infinitif</strong>.`,
+          formula: `Futur proche : gaan + infinitif | Futur formel : zullen + infinitif`,
+          tips: [
+            {
+              icon: "💬",
+              text: "'Ik ga eten' = Je vais manger (futur proche, langue parlée). C'est la forme la plus utilisée !",
+            },
+            {
+              icon: "📜",
+              text: "'Ik zal eten' = Je mangerai (futur formel, écrit). 'zullen' est irrégulier : ik/hij zal, wij zullen",
+            },
+            {
+              icon: "⚡",
+              text: "Souvent le néerlandais utilise simplement le présent + un marqueur de temps : 'Morgen werkt hij.' = Demain il travaille.",
+            },
+          ],
+          examples: [
+            {
+              nl: "Ik ga morgen naar Amsterdam.",
+              fr: "Je vais demain à Amsterdam.",
+            },
+            { nl: "Zij gaat studeren.", fr: "Elle va étudier." },
+            { nl: "Wij zullen winnen!", fr: "Nous allons gagner !" },
+            { nl: "Zal het morgen regenen?", fr: "Va-t-il pleuvoir demain ?" },
+          ],
+          futureConj: [
+            ["ik", "ga / zal"],
+            ["jij", "gaat / zult"],
+            ["hij/zij", "gaat / zal"],
+            ["wij", "gaan / zullen"],
+            ["jullie", "gaan / zullen"],
+            ["zij", "gaan / zullen"],
+          ],
+        },
+      ];
+
+      function renderTenses() {
+        const grid = document.getElementById("tense-grid");
+        grid.innerHTML = TENSES.map((t) => buildTenseCard(t)).join("");
+        // open first one
+        const first = grid.querySelector(".tense-card");
+        if (first) first.classList.add("open");
+      }
+
+      function buildTenseCard(t) {
+        const conjRows =
+          t.tenseKey === "pres" && t.verbs
+            ? t.verbs
+                .map(
+                  (v) =>
+                    '<tr><td class="pron">' +
+                    v.inf +
+                    '</td><td class="nl-form">ik ' +
+                    v.pres1 +
+                    '</td><td class="fr-form">' +
+                    v.fr +
+                    "</td></tr>",
+                )
+                .join("")
+            : t.tenseKey === "imp" && t.verbs
+              ? t.verbs
+                  .map(
+                    (v) =>
+                      '<tr><td class="pron">' +
+                      v.inf +
+                      '</td><td class="nl-form">' +
+                      v.imp_sg +
+                      " / " +
+                      v.imp_pl +
+                      '</td><td class="fr-form">' +
+                      v.fr +
+                      "</td></tr>",
+                  )
+                  .join("")
+              : "";
+
+        const ppRows =
+          t.isPP && t.verbs
+            ? t.verbs
+                .map(
+                  (v) =>
+                    '<tr><td class="nl-form">' +
+                    v.inf +
+                    '</td><td class="nl-form" style="color:var(--accent2)">' +
+                    v.pp +
+                    '</td><td class="fr-form">' +
+                    v.fr +
+                    "</td></tr>",
+                )
+                .join("")
+            : "";
+
+        const futRows = t.futureConj
+          ? t.futureConj
+              .map(
+                (r) =>
+                  `<tr><td class="pron">${r[0]}</td><td class="nl-form">${r[1]}</td></tr>`,
+              )
+              .join("")
+          : "";
+
+        return `
+          <div class="tense-card" id="tense-${t.id}">
+            <div class="tense-header" onclick="toggleTense('${t.id}')">
+              <span class="tense-icon">${t.icon}</span>
+              <div>
+                <div class="tense-name" style="color:${t.color}">${t.name}</div>
+                <div class="tense-subtitle">${t.sub}</div>
+              </div>
+              <span class="tense-chevron">▶</span>
+            </div>
+            <div class="tense-body">
+              <div class="rule-box">
+                ${t.intro.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")}
+                <div class="formula">${t.formula}</div>
+              </div>
+              ${t.tips.map((tip) => `<div class="tip-box"><span class="tip-icon">${tip.icon}</span><span>${tip.text}</span></div>`).join("")}
+              <div style="font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Exemples</div>
+              <div class="example-list">${t.examples.map((e) => `<div class="example-item"><div class="nl">${e.nl}</div><div class="fr">${e.fr}</div></div>`).join("")}</div>
+              ${
+                t.tenseKey && !t.isPP
+                  ? `
+                <div style="font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Conjugaisons des verbes clés</div>
+                <table class="conj-table">
+                  <thead><tr><th>Pronom</th><th>Néerlandais</th><th>Français</th></tr></thead>
+                  <tbody>${conjRows}</tbody>
+                </table>`
+                  : ""
+              }
+              ${
+                t.isPP
+                  ? `
+                <div style="font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Participes passés</div>
+                <table class="conj-table">
+                  <thead><tr><th>Infinitif</th><th>Participe passé</th><th>Français</th></tr></thead>
+                  <tbody>${ppRows}</tbody>
+                </table>`
+                  : ""
+              }
+              ${
+                t.futureConj
+                  ? `
+                <div style="font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Conjugaison de gaan / zullen</div>
+                <table class="conj-table">
+                  <thead><tr><th>Pronom</th><th>gaan / zullen</th></tr></thead>
+                  <tbody>${futRows}</tbody>
+                </table>`
+                  : ""
+              }
+            </div>
+          </div>`;
+      }
+
+      function toggleTense(id) {
+        const card = document.getElementById("tense-" + id);
+        card.classList.toggle("open");
+      }
+
+      /* ══════════════════════════════════════════════════
+         VERBES
+      ══════════════════════════════════════════════════ */
+      function renderVerbes() {
+        const grid = document.getElementById("verb-grid");
+        if (grid && grid.children.length > 0) return;
+        if (!grid) return;
+        const shuffled = shuffle(VERBS);
+        grid.innerHTML = shuffled
+          .map(function (v) {
+            return (
+              '<div class="flip-wrap verb-flip-card" onclick="this.classList.toggle(\u0027flipped\u0027)">' +
+              '<div class="flip-inner">' +
+              '<div class="flip-front">' +
+              '<span class="flip-icon">' +
+              v.icon +
+              "</span>" +
+              '<div class="flip-nl">' +
+              v.inf +
+              "</div>" +
+              '<div class="flip-phonetic">ik ' +
+              v.pres1 +
+              "</div>" +
+              '<div class="flip-fr" style="font-size:0.82rem;margin-top:4px">' +
+              v.fr +
+              "</div>" +
+              '<div class="flip-hint">👆 cliquer pour les formes</div>' +
+              "</div>" +
+              '<div class="flip-back" style="padding:10px 8px;">' +
+              '<span class="flip-icon" style="font-size:1rem;margin-bottom:4px">' +
+              v.icon +
+              "</span>" +
+              '<table style="font-size:0.75rem;width:100%;border-collapse:collapse">' +
+              '<tr><td style="color:var(--muted);padding:2px 5px">Infinitif</td><td style="font-weight:800;padding:2px 5px;color:var(--text)">' +
+              v.inf +
+              "</td></tr>" +
+              '<tr><td style="color:var(--muted);padding:2px 5px">ik (pr\u00E9sent)</td><td style="font-weight:800;padding:2px 5px;color:var(--accent)">ik ' +
+              v.pres1 +
+              "</td></tr>" +
+              '<tr><td style="color:var(--muted);padding:2px 5px">imp. sg</td><td style="font-weight:800;padding:2px 5px;color:var(--blue)">' +
+              v.imp_sg +
+              "</td></tr>" +
+              '<tr><td style="color:var(--muted);padding:2px 5px">imp. pl</td><td style="font-weight:800;padding:2px 5px;color:var(--blue)">' +
+              v.imp_pl +
+              "</td></tr>" +
+              '<tr><td style="color:var(--muted);padding:2px 5px">pp</td><td style="font-weight:800;padding:2px 5px;color:var(--green)">' +
+              v.pp +
+              "</td></tr>" +
+              '<tr><td style="color:var(--muted);padding:2px 5px">fran\u00E7ais</td><td style="font-weight:800;padding:2px 5px;color:var(--accent2)">' +
+              v.fr +
+              "</td></tr>" +
+              "</table>" +
+              "</div>" +
+              "</div>" +
+              "</div>"
+            );
+          })
+          .join("");
+      }
+
+      /* ══════════════════════════════════════════════════
+         MNÉMOS
+      ══════════════════════════════════════════════════ */
+      function renderMnemos() {
+        const grid = document.getElementById("mnemo-grid");
+        if (grid.children.length > 0) return;
+        const shuffled = shuffle(MNEMOS);
+        grid.innerHTML = shuffled
+          .map(
+            (m) => `
+          <div class="mnemo-card">
+            <div class="mnemo-top">
+              <span class="mnemo-nl">${m.nl}</span>
+              <span class="mnemo-fr">${m.fr}</span>
+            </div>
+            <div class="mnemo-story">${m.story}</div>
+            <div class="mnemo-visual">🖼️ ${m.visual}</div>
+          </div>
+        `,
+          )
+          .join("");
+      }
+
+      /* ══════════════════════════════════════════════════
+         MEMORY GAME
+      ══════════════════════════════════════════════════ */
+      let memCards = [],
+        memFlipped = [],
+        memMatched = 0,
+        memTries = 0;
+      let memTimer = null,
+        memSeconds = 0;
+      const ICONS_FOR_MEMORY = [
+        "🐶",
+        "🐱",
+        "🏠",
+        "🍎",
+        "🌙",
+        "🚪",
+        "🥛",
+        "🎓",
+        "📚",
+        "✏️",
+        "🌸",
+        "🧀",
+      ];
+
+      function selectGame(g) {
+        document
+          .querySelectorAll(".game-card")
+          .forEach((c) => c.classList.remove("selected"));
+        document.getElementById("gc-" + g).classList.add("selected");
+        document.getElementById("game-memory").classList.remove("active");
+        document.getElementById("game-rain").classList.remove("active");
+        document.getElementById("game-" + g).classList.add("active");
+      }
+
+      function startMemory() {
+        clearInterval(memTimer);
+        memSeconds = 0;
+        memMatched = 0;
+        memTries = 0;
+        memFlipped = [];
+        document.getElementById("mem-found").textContent = 0;
+        document.getElementById("mem-tries").textContent = 0;
+        document.getElementById("mem-time").textContent = "0s";
+
+        const pool = shuffle(VOCAB).slice(0, 8);
+        document.getElementById("mem-total").textContent = pool.length;
+        const pairs = shuffle([
+          ...pool.map((w, i) => ({
+            id: i,
+            side: "nl",
+            nl: w.nl,
+            fr: w.fr,
+            icon: w.icon,
+          })),
+          ...pool.map((w, i) => ({
+            id: i,
+            side: "fr",
+            nl: w.nl,
+            fr: w.fr,
+            icon: w.icon,
+          })),
+        ]);
+        memCards = pairs;
+        const grid = document.getElementById("memory-grid");
+        grid.innerHTML = pairs
+          .map(
+            (c, idx) => `
+          <div class="mem-card" id="mc-${idx}" onclick="flipMemory(${idx})">
+            <div class="mem-card-inner">
+              <div class="mem-front">🇳🇱</div>
+              <div class="mem-back">${c.side === "nl" ? c.icon + "<br>" + c.nl : c.fr}</div>
+            </div>
+          </div>
+        `,
+          )
+          .join("");
+
+        memTimer = setInterval(() => {
+          memSeconds++;
+          document.getElementById("mem-time").textContent = memSeconds + "s";
+        }, 1000);
+      }
+
+      function flipMemory(idx) {
+        const card = document.getElementById("mc-" + idx);
+        if (
+          card.classList.contains("matched") ||
+          card.classList.contains("revealed") ||
+          memFlipped.length >= 2
+        )
+          return;
+        card.classList.add("revealed");
+        memFlipped.push(idx);
+        if (memFlipped.length === 2) {
+          memTries++;
+          document.getElementById("mem-tries").textContent = memTries;
+          const [i1, i2] = memFlipped;
+          const c1 = memCards[i1],
+            c2 = memCards[i2];
+          if (c1.id === c2.id && c1.side !== c2.side) {
+            // match!
+            setTimeout(() => {
+              document.getElementById("mc-" + i1).classList.add("matched");
+              document.getElementById("mc-" + i2).classList.add("matched");
+              memFlipped = [];
+              memMatched++;
+              document.getElementById("mem-found").textContent = memMatched;
+              confetti();
+              if (memMatched === 8) {
+                clearInterval(memTimer);
+                setTimeout(
+                  () =>
+                    alert(
+                      `🏆 Bravo ! Terminé en ${memSeconds}s avec ${memTries} tentatives !`,
+                    ),
+                  300,
+                );
+              }
+            }, 400);
+          } else {
+            setTimeout(() => {
+              document.getElementById("mc-" + i1).classList.remove("revealed");
+              document.getElementById("mc-" + i2).classList.remove("revealed");
+              memFlipped = [];
+            }, 900);
+          }
+        }
+      }
+
+      /* ══════════════════════════════════════════════════
+         WORD RAIN
+      ══════════════════════════════════════════════════ */
+      let rainWords = [],
+        rainActive = false,
+        rainTimer = null,
+        rainDropTimer = null;
+      let rainScore_ = 0,
+        rainLevel_ = 1,
+        rainLives_ = 3;
+      let rainPool = [];
+
+      function renderLives() {
+        const row = document.getElementById("rain-lives");
+        row.innerHTML = Array.from(
+          { length: 3 },
+          (_, i) =>
+            `<span class="life ${i >= rainLives_ ? "lost" : ""}">❤️</span>`,
+        ).join("");
+      }
+
+      function startRain() {
+        clearInterval(rainTimer);
+        clearInterval(rainDropTimer);
+        rainScore_ = 0;
+        rainLevel_ = 1;
+        rainLives_ = 3;
+        rainWords = [];
+        rainActive = true;
+        rainPool = shuffle(VOCAB);
+        let poolIdx = 0;
+        document.getElementById("rain-score").textContent = 0;
+        document.getElementById("rain-level").textContent = 1;
+        renderLives();
+        document.getElementById("rain-arena").innerHTML = "";
+        const input = document.getElementById("rain-input");
+        input.value = "";
+        input.focus();
+
+        function spawnWord() {
+          if (!rainActive) return;
+          if (poolIdx >= rainPool.length) poolIdx = 0;
+          const w = rainPool[poolIdx++];
+          const el = document.createElement("div");
+          el.className = "rain-word";
+          el.textContent = w.nl;
+          el.dataset.answer = w.fr.toLowerCase().split("/")[0].trim();
+          el.style.left = Math.random() * 80 + "%";
+          document.getElementById("rain-arena").appendChild(el);
+          rainWords.push({ el, w, y: -50, speed: 0.5 + rainLevel_ * 0.2 });
+        }
+
+        function tick() {
+          if (!rainActive) return;
+          const arena = document.getElementById("rain-arena");
+          const h = arena.clientHeight;
+          rainWords = rainWords.filter((rw) => {
+            if (!rw.el.parentNode) return false;
+            rw.y += rw.speed;
+            rw.el.style.top = rw.y + "px";
+            if (rw.y > h) {
+              rw.el.classList.add("dying");
+              setTimeout(() => rw.el.remove(), 300);
+              rainLives_--;
+              renderLives();
+              if (rainLives_ <= 0) {
+                rainActive = false;
+                clearInterval(rainTimer);
+                clearInterval(rainDropTimer);
+                alert(`Game Over ! Score : ${rainScore_}`);
+                return false;
+              }
+              return false;
+            }
+            return true;
+          });
+        }
+
+        rainTimer = setInterval(tick, 16);
+        let interval = 2200;
+        function scheduleSpawn() {
+          if (!rainActive) return;
+          spawnWord();
+          interval = Math.max(800, 2200 - rainLevel_ * 200);
+          rainDropTimer = setTimeout(scheduleSpawn, interval);
+        }
+        scheduleSpawn();
+
+        // level up every 10 correct
+        input.oninput = null;
+        input.onkeydown = function (e) {
+          if (e.key !== "Enter") return;
+          const val = input.value.trim().toLowerCase();
+          input.value = "";
+          let hit = false;
+          rainWords = rainWords.filter((rw) => {
+            const ans = rw.el.dataset.answer;
+            if (!hit && (val === ans || val === ans.split("/")[0].trim())) {
+              hit = true;
+              rw.el.classList.add("correct-flash");
+              setTimeout(() => rw.el.remove(), 300);
+              return false;
+            }
+            return true;
+          });
+          if (hit) {
+            rainScore_++;
+            document.getElementById("rain-score").textContent = rainScore_;
+            confetti();
+            if (rainScore_ % 10 === 0) {
+              rainLevel_++;
+              document.getElementById("rain-level").textContent = rainLevel_;
+            }
+          }
+        };
+      }
+
+      /* ══════════════════════════════════════════════════
+         CONFETTI
+      ══════════════════════════════════════════════════ */
+      function confetti() {
+        const colors = [
+          "#ff914d",
+          "#ffd93d",
+          "#4ade80",
+          "#60a5fa",
+          "#a78bfa",
+          "#ff6b6b",
+        ];
+        for (let i = 0; i < 14; i++) {
+          const piece = document.createElement("div");
+          piece.className = "confetti-piece";
+          piece.style.left = Math.random() * 100 + "vw";
+          piece.style.background =
+            colors[Math.floor(Math.random() * colors.length)];
+          piece.style.animationDelay = Math.random() * 0.4 + "s";
+          piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+          document.body.appendChild(piece);
+          setTimeout(() => piece.remove(), 1600);
+        }
+      }
+
+      /* ══════════════════════════════════════════════════
+         INIT
+      ══════════════════════════════════════════════════ */
+      renderFilters();
+      renderVocab();
+      renderTenses();
+    </script>
+  </body>
+</html>

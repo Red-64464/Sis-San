@@ -159,6 +159,9 @@
       .m-coming {
         --c: var(--purple);
       }
+      .m-dutch {
+        --c: #ff914d;
+      }
 
       .module:hover {
         border-color: color-mix(in srgb, var(--c) 60%, transparent);
@@ -456,13 +459,29 @@
             </button>
           </div>
         </div>
-        <p class="subject-heading" style="margin-top: 32px">Autres cours</p>
-        <div class="empty-state">
-          <span class="empty-dots">. . .</span>
-          <p>
-            Aucun contenu pour l&apos;instant &mdash; &ccedil;a arrive
-            bient&ocirc;t !
-          </p>
+        <p class="subject-heading" style="margin-top: 32px">Langues</p>
+        <div class="modules">
+          <div class="module m-dutch">
+            <span class="module-icon">&#127475;&#127473;</span>
+            <h2>N&eacute;erlandais</h2>
+            <p>
+              Apprends le vocabulaire, les temps et conjugaisons,
+              entra&icirc;ne-toi avec des quiz al&eacute;atoires et des jeux
+              interactifs.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Vocabulaire</span>
+              <span class="tag">Quiz</span>
+              <span class="tag">Les Temps</span>
+              <span class="tag">Jeux</span>
+            </div>
+            <button
+              class="btn-open"
+              onclick="location.href = 'neerlandais/neerlandais.html'"
+            >
+              Ouvrir le chapitre <span class="arrow">&rarr;</span>
+            </button>
+          </div>
         </div>
       </div>
 
