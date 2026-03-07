@@ -1,0 +1,1841 @@
+﻿<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lieux Géométriques</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;700;900&family=Space+Mono:wght@400;700&display=swap");
+
+      :root {
+        --bg: #070712;
+        --panel: #0e0e20;
+        --card: #0d0d1a;
+        --border: #1c1c38;
+        --text: #eeeeff;
+        --muted: #5858a0;
+        --acc: #38bdf8;
+        --red: #ff6b6b;
+        --green: #4ade80;
+        --yellow: #ffd93d;
+        --purple: #a78bfa;
+        --orange: #ff9f43;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Lexend", sans-serif;
+        height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* ─── HEADER ──────────────────────────────── */
+      .hdr {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--border);
+        background: var(--panel);
+        flex-shrink: 0;
+      }
+
+      .back-btn {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        padding: 6px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.18s ease;
+        white-space: nowrap;
+      }
+      .back-btn:hover {
+        border-color: var(--acc);
+        color: var(--acc);
+      }
+
+      .hdr-center {
+        flex: 1;
+        text-align: center;
+      }
+
+      .hdr-title {
+        font-size: clamp(1rem, 2.5vw, 1.3rem);
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        background: linear-gradient(135deg, var(--acc) 0%, #a78bfa 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .hdr-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--acc);
+        box-shadow: 0 0 8px var(--acc);
+        margin-right: 4px;
+        vertical-align: middle;
+      }
+
+      .hdr-right {
+        width: 80px;
+      }
+
+      /* ─── TAB BAR ──────────────────────────────── */
+      .tab-bar {
+        display: flex;
+        gap: 6px;
+        padding: 8px 16px;
+        border-bottom: 1px solid var(--border);
+        background: var(--panel);
+        flex-shrink: 0;
+        flex-wrap: wrap;
+      }
+
+      .tab-btn {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        padding: 6px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+      }
+      .tab-btn:hover {
+        border-color: var(--acc);
+        color: var(--acc);
+      }
+      .tab-btn.active {
+        background: var(--acc);
+        border-color: var(--acc);
+        color: #08080f;
+        box-shadow: 0 0 14px color-mix(in srgb, var(--acc) 50%, transparent);
+      }
+
+      /* ─── MAIN LAYOUT ──────────────────────────── */
+      .layout {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+        min-height: 0;
+      }
+
+      /* ─── CANVAS ZONE ─────────────────────────── */
+      .canvas-zone {
+        flex: 1;
+        min-width: 0;
+        position: relative;
+        overflow: hidden;
+        background: #08080f;
+        border-right: 1px solid var(--border);
+      }
+
+      #cvs {
+        display: block;
+        width: 100%;
+        height: 100%;
+        cursor: default;
+      }
+      #cvs.drag-cursor {
+        cursor: grabbing;
+      }
+
+      /* ─── PANEL ───────────────────────────────── */
+      .panel {
+        width: 400px;
+        min-width: 320px;
+        flex-shrink: 0;
+        overflow-y: auto;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+      }
+
+      /* ─── PANEL COMPONENTS ────────────────────── */
+      .panel-title {
+        font-size: 1rem;
+        font-weight: 800;
+        letter-spacing: -0.3px;
+        color: var(--acc);
+        margin-bottom: 2px;
+      }
+
+      .mode-btns {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .mode-btn {
+        background: var(--card);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 600;
+        padding: 6px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .mode-btn:hover {
+        border-color: var(--acc);
+        color: var(--acc);
+      }
+      .mode-btn.active {
+        background: color-mix(in srgb, var(--acc) 15%, transparent);
+        border-color: var(--acc);
+        color: var(--acc);
+      }
+
+      .theory-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 16px;
+        font-size: 0.88rem;
+        line-height: 1.65;
+        color: var(--text);
+      }
+      .theory-card .theory-title {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--acc);
+        margin-bottom: 8px;
+      }
+      .theory-card p {
+        margin-bottom: 8px;
+      }
+      .theory-card p:last-child {
+        margin-bottom: 0;
+      }
+      .theory-card ul {
+        padding-left: 18px;
+      }
+      .theory-card li {
+        margin: 4px 0;
+        color: var(--muted);
+      }
+      .theory-card li b {
+        color: var(--text);
+      }
+      .theory-card .acc {
+        color: var(--acc);
+        font-weight: 700;
+      }
+
+      .coords-display {
+        background: color-mix(in srgb, var(--acc) 10%, transparent);
+        border: 1px solid color-mix(in srgb, var(--acc) 35%, transparent);
+        border-radius: 12px;
+        padding: 14px 18px;
+        font-family: "Space Mono", monospace;
+        font-size: 1.5rem;
+        font-weight: 700;
+        text-align: center;
+        color: var(--text);
+        letter-spacing: 1px;
+      }
+      .coords-display .cx {
+        color: var(--acc);
+      }
+      .coords-display .cy {
+        color: var(--purple);
+      }
+
+      .formula-card {
+        background: color-mix(in srgb, var(--acc) 6%, var(--card));
+        border: 1px solid color-mix(in srgb, var(--acc) 25%, transparent);
+        border-radius: 12px;
+        padding: 14px 16px;
+      }
+      .formula-card .formula-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--acc);
+        margin-bottom: 10px;
+      }
+      .formula-card .formula-body {
+        font-family: "Space Mono", monospace;
+        font-size: 0.9rem;
+        color: var(--text);
+        line-height: 1.7;
+      }
+      .formula-card .formula-result {
+        font-family: "Space Mono", monospace;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--acc);
+        margin-top: 6px;
+      }
+
+      .slider-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .slider-row label {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--muted);
+        min-width: 32px;
+        font-family: "Space Mono", monospace;
+      }
+      .slider-row input[type="range"] {
+        flex: 1;
+        -webkit-appearance: none;
+        appearance: none;
+        height: 6px;
+        border-radius: 3px;
+        background: var(--border);
+        outline: none;
+        cursor: pointer;
+      }
+      .slider-row input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: white;
+        border: 2.5px solid var(--acc);
+        box-shadow: 0 0 8px color-mix(in srgb, var(--acc) 50%, transparent);
+        cursor: grab;
+      }
+      .slider-row input[type="range"]::-webkit-slider-thumb:active {
+        cursor: grabbing;
+      }
+      .slider-row .val {
+        font-family: "Space Mono", monospace;
+        font-size: 0.8rem;
+        color: var(--acc);
+        min-width: 38px;
+        text-align: right;
+      }
+
+      .hint {
+        font-size: 0.82rem;
+        color: var(--muted);
+        line-height: 1.55;
+        padding: 8px 12px;
+        background: var(--card);
+        border-radius: 8px;
+        border-left: 3px solid var(--acc);
+      }
+
+      .step-row {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .step-num {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--acc);
+        color: #08080f;
+        font-size: 0.72rem;
+        font-weight: 900;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .step-body {
+        font-family: "Space Mono", monospace;
+        font-size: 0.82rem;
+        color: var(--text);
+        line-height: 1.6;
+      }
+      .step-body .acc {
+        color: var(--acc);
+      }
+      .step-body .red {
+        color: var(--red);
+      }
+      .step-body .yel {
+        color: var(--yellow);
+      }
+      .step-body .pur {
+        color: var(--purple);
+      }
+
+      .divider {
+        height: 1px;
+        background: var(--border);
+        border-radius: 1px;
+      }
+
+      /* ─── RESPONSIVE ─────────────────────────── */
+      @media (max-width: 768px) {
+        body {
+          overflow: auto;
+        }
+        .layout {
+          flex-direction: column;
+          overflow: visible;
+        }
+        .canvas-zone {
+          width: 100%;
+          height: 50vw;
+          min-height: 260px;
+          max-height: 360px;
+          border-right: none;
+          border-bottom: 1px solid var(--border);
+        }
+        .panel {
+          width: 100%;
+          min-width: unset;
+          overflow-y: visible;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ── HEADER ── -->
+    <header class="hdr">
+      <button class="back-btn" onclick="location.href = '../index.html'">
+        ← Retour
+      </button>
+      <div class="hdr-center">
+        <span class="hdr-dot"></span>
+        <span class="hdr-title">Lieux Géométriques</span>
+      </div>
+      <div class="hdr-right"></div>
+    </header>
+
+    <!-- ── TABS ── -->
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="repere">📍 Le Repère</button>
+      <button class="tab-btn" data-tab="distance">📏 La Distance</button>
+      <button class="tab-btn" data-tab="milieu">⚖️ Le Milieu</button>
+      <button class="tab-btn" data-tab="droite">
+        📐 Équation d&rsquo;une Droite
+      </button>
+    </div>
+
+    <!-- ── LAYOUT ── -->
+    <div class="layout">
+      <div class="canvas-zone">
+        <canvas id="cvs"></canvas>
+      </div>
+      <div class="panel" id="panel"></div>
+    </div>
+
+    <script>
+      /* ================================================================
+         STATE
+      ================================================================ */
+      const ST = {
+        tab: "repere",
+        mode: "coords",
+        P: { x: 3, y: 2 },
+        A: { x: -3, y: 1 },
+        B: { x: 2, y: -2 },
+        droite: { m: 2, b: 1, xp: 3, findMode: "y" },
+      };
+
+      /* ================================================================
+         CANVAS SETUP
+      ================================================================ */
+      const CVS = document.getElementById("cvs");
+      const CTX = CVS.getContext("2d");
+      let SC = 60; // pixels per unit (adaptive)
+      let CX, CY; // canvas pixel center = math origin O
+
+      function resize() {
+        const zone = CVS.parentElement;
+        CVS.width = zone.clientWidth;
+        CVS.height = zone.clientHeight;
+        CX = CVS.width / 2;
+        CY = CVS.height / 2;
+        SC = Math.min(CVS.width / 14, CVS.height / 10, 70);
+        drawAll();
+      }
+
+      const ro = new ResizeObserver(resize);
+      ro.observe(CVS.parentElement);
+
+      /* ── Coordinate helpers ── */
+      function toC(x, y) {
+        return [CX + x * SC, CY - y * SC];
+      }
+      function toW(px, py) {
+        return [(px - CX) / SC, (CY - py) / SC];
+      }
+      function snap(v) {
+        return Math.round(v * 2) / 2;
+      } // 0.5-unit snap
+      function fmt(v) {
+        return (Math.round(v * 100) / 100).toString();
+      }
+
+      /* ================================================================
+         DRAWING
+      ================================================================ */
+      function drawAll() {
+        CTX.clearRect(0, 0, CVS.width, CVS.height);
+        drawGrid();
+        drawAxes();
+        if (ST.tab === "repere") drawCoords();
+        else if (ST.tab === "distance") drawDistanceTab();
+        else if (ST.tab === "milieu") drawMilieuTab();
+        else if (ST.tab === "droite") drawDroiteTab();
+      }
+
+      function drawGrid() {
+        const rangeX = Math.ceil(CX / SC) + 1;
+        const rangeY = Math.ceil(CY / SC) + 1;
+        CTX.strokeStyle = "rgba(28,28,56,0.9)";
+        CTX.lineWidth = 1;
+        CTX.setLineDash([]);
+        for (let i = -rangeX; i <= rangeX; i++) {
+          if (i === 0) continue;
+          const [px] = toC(i, 0);
+          CTX.beginPath();
+          CTX.moveTo(px, 0);
+          CTX.lineTo(px, CVS.height);
+          CTX.stroke();
+        }
+        for (let j = -rangeY; j <= rangeY; j++) {
+          if (j === 0) continue;
+          const [, py] = toC(0, j);
+          CTX.beginPath();
+          CTX.moveTo(0, py);
+          CTX.lineTo(CVS.width, py);
+          CTX.stroke();
+        }
+      }
+
+      function drawAxes() {
+        const PAD = 28;
+        const axCol = "rgba(88,88,160,0.75)";
+        CTX.setLineDash([]);
+        CTX.strokeStyle = axCol;
+        CTX.lineWidth = 1.8;
+
+        // x axis
+        CTX.beginPath();
+        CTX.moveTo(PAD, CY);
+        CTX.lineTo(CVS.width - PAD, CY);
+        CTX.stroke();
+        // y axis
+        CTX.beginPath();
+        CTX.moveTo(CX, CVS.height - PAD);
+        CTX.lineTo(CX, PAD);
+        CTX.stroke();
+
+        // Arrow heads
+        const A = 7;
+        CTX.fillStyle = axCol;
+        // x arrow
+        CTX.beginPath();
+        CTX.moveTo(CVS.width - PAD, CY);
+        CTX.lineTo(CVS.width - PAD - A, CY - A * 0.45);
+        CTX.lineTo(CVS.width - PAD - A, CY + A * 0.45);
+        CTX.closePath();
+        CTX.fill();
+        // y arrow
+        CTX.beginPath();
+        CTX.moveTo(CX, PAD);
+        CTX.lineTo(CX - A * 0.45, PAD + A);
+        CTX.lineTo(CX + A * 0.45, PAD + A);
+        CTX.closePath();
+        CTX.fill();
+
+        // Axis labels
+        const labelSize = Math.max(12, SC * 0.22);
+        CTX.fillStyle = "rgba(140,140,210,0.9)";
+        CTX.font = `600 ${labelSize}px Lexend, sans-serif`;
+        CTX.textAlign = "center";
+        CTX.textBaseline = "middle";
+        CTX.fillText("x", CVS.width - PAD + 14, CY);
+        CTX.fillText("y", CX, PAD - 14);
+        CTX.fillText("O", CX - 13, CY + 13);
+
+        // Tick marks + numbers
+        const numSize = Math.max(9, SC * 0.17);
+        CTX.font = `400 ${numSize}px Space Mono, monospace`;
+        CTX.fillStyle = "rgba(88,88,140,0.8)";
+        const rangeX = Math.floor((CVS.width / 2 - PAD) / SC);
+        const rangeY = Math.floor((CVS.height / 2 - PAD) / SC);
+
+        for (let i = -rangeX; i <= rangeX; i++) {
+          if (i === 0) continue;
+          const [px] = toC(i, 0);
+          CTX.beginPath();
+          CTX.moveTo(px, CY - 4);
+          CTX.lineTo(px, CY + 4);
+          CTX.strokeStyle = "rgba(88,88,140,0.6)";
+          CTX.lineWidth = 1;
+          CTX.stroke();
+          CTX.textAlign = "center";
+          CTX.textBaseline = "top";
+          CTX.fillText(i, px, CY + 7);
+        }
+        for (let j = -rangeY; j <= rangeY; j++) {
+          if (j === 0) continue;
+          const [, py] = toC(0, j);
+          CTX.beginPath();
+          CTX.moveTo(CX - 4, py);
+          CTX.lineTo(CX + 4, py);
+          CTX.strokeStyle = "rgba(88,88,140,0.6)";
+          CTX.lineWidth = 1;
+          CTX.stroke();
+          CTX.textAlign = "right";
+          CTX.textBaseline = "middle";
+          CTX.fillText(j, CX - 8, py);
+        }
+      }
+
+      function drawPoint(x, y, color, label, showDrop = false) {
+        const [px, py] = toC(x, y);
+        const r = 7;
+
+        if (showDrop) {
+          CTX.setLineDash([5, 4]);
+          CTX.strokeStyle = color + "44";
+          CTX.lineWidth = 1;
+          CTX.beginPath();
+          CTX.moveTo(px, CY);
+          CTX.lineTo(px, py);
+          CTX.stroke();
+          CTX.beginPath();
+          CTX.moveTo(CX, py);
+          CTX.lineTo(px, py);
+          CTX.stroke();
+          CTX.setLineDash([]);
+        }
+
+        // Glow halo
+        const grad = CTX.createRadialGradient(px, py, r * 0.5, px, py, r * 2.5);
+        grad.addColorStop(0, color + "55");
+        grad.addColorStop(1, color + "00");
+        CTX.beginPath();
+        CTX.arc(px, py, r * 2.5, 0, Math.PI * 2);
+        CTX.fillStyle = grad;
+        CTX.fill();
+
+        // Circle
+        CTX.beginPath();
+        CTX.arc(px, py, r, 0, Math.PI * 2);
+        CTX.fillStyle = color;
+        CTX.fill();
+        CTX.strokeStyle = "#08080f";
+        CTX.lineWidth = 2;
+        CTX.stroke();
+
+        // Label
+        if (label) {
+          const lblSize = Math.max(11, SC * 0.2);
+          CTX.font = `700 ${lblSize}px Lexend, sans-serif`;
+          CTX.fillStyle = color;
+          CTX.textAlign = "left";
+          CTX.textBaseline = "bottom";
+          CTX.fillText(label, px + 10, py - 5);
+        }
+      }
+
+      function drawSegment(x1, y1, x2, y2, color, dashed = false) {
+        const [px1, py1] = toC(x1, y1);
+        const [px2, py2] = toC(x2, y2);
+        CTX.beginPath();
+        CTX.moveTo(px1, py1);
+        CTX.lineTo(px2, py2);
+        CTX.strokeStyle = color;
+        CTX.lineWidth = 2;
+        CTX.setLineDash(dashed ? [6, 4] : []);
+        CTX.stroke();
+        CTX.setLineDash([]);
+      }
+
+      /* ── Mode scenes ── */
+      function drawCoords() {
+        const { x, y } = ST.P;
+        drawPoint(x, y, "#38bdf8", `P(${fmt(x)} ; ${fmt(y)})`, true);
+      }
+
+      function drawMilieu() {
+        const { A, B } = ST;
+        const mx = (A.x + B.x) / 2;
+        const my = (A.y + B.y) / 2;
+        drawSegment(A.x, A.y, B.x, B.y, "rgba(100,100,160,0.4)", true);
+        drawPoint(A.x, A.y, "#ff6b6b", `A(${fmt(A.x)} ; ${fmt(A.y)})`, false);
+        drawPoint(B.x, B.y, "#ffd93d", `B(${fmt(B.x)} ; ${fmt(B.y)})`, false);
+        drawPoint(mx, my, "#38bdf8", `M(${fmt(mx)} ; ${fmt(my)})`, false);
+
+        // Small tick marks at midpoint on the segment
+        const [mx1, my1] = toC(A.x, A.y);
+        const [mx2, my2] = toC(B.x, B.y);
+        const mpx = (mx1 + mx2) / 2,
+          mpy = (my1 + my2) / 2;
+        const angle = Math.atan2(my2 - my1, mx2 - mx1) + Math.PI / 2;
+        const tk = 8;
+        CTX.strokeStyle = "#38bdf8bb";
+        CTX.lineWidth = 2;
+        CTX.setLineDash([]);
+        [-5, 5].forEach((off) => {
+          const ox = mpx + Math.cos(angle) * off,
+            oy = mpy + Math.sin(angle) * off;
+          CTX.beginPath();
+          CTX.moveTo(ox - Math.cos(angle) * tk, oy - Math.sin(angle) * tk);
+          CTX.lineTo(ox + Math.cos(angle) * tk, oy + Math.sin(angle) * tk);
+          CTX.stroke();
+        });
+      }
+
+      function drawDistance() {
+        const { A, B } = ST;
+        const dx = B.x - A.x,
+          dy = B.y - A.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        drawSegment(A.x, A.y, B.x, B.y, "#38bdf8", false);
+
+        // Distance label at midpoint of segment
+        const [ax, ay] = toC(A.x, A.y);
+        const [bx, by] = toC(B.x, B.y);
+        const mpx = (ax + bx) / 2,
+          mpy = (ay + by) / 2;
+        const angle = Math.atan2(by - ay, bx - ax);
+        const offset = 18;
+        const lx = mpx - Math.sin(angle) * offset;
+        const ly = mpy + Math.cos(angle) * offset;
+
+        CTX.fillStyle = "#38bdf8";
+        CTX.font = `700 ${Math.max(11, SC * 0.19)}px Space Mono, monospace`;
+        CTX.textAlign = "center";
+        CTX.textBaseline = "middle";
+        CTX.fillText(`${(Math.round(dist * 100) / 100).toFixed(2)} u`, lx, ly);
+
+        drawPoint(A.x, A.y, "#ff6b6b", `A(${fmt(A.x)} ; ${fmt(A.y)})`, false);
+        drawPoint(B.x, B.y, "#ffd93d", `B(${fmt(B.x)} ; ${fmt(B.y)})`, false);
+      }
+
+      /* ================================================================
+         PANEL RENDERING
+      ================================================================ */
+      function renderPanel() {
+        if (ST.tab === "repere") renderCoordsPanel();
+        else if (ST.tab === "distance") renderDistanceTab();
+        else if (ST.tab === "milieu") renderMilieuTab();
+        else if (ST.tab === "droite") renderDroiteTab();
+      }
+
+      function modeBtns(current) {
+        return `
+          <div class="mode-btns">
+            <button class="mode-btn ${current === "coords" ? "active" : ""}" onclick="setMode('coords')">📍 Coordonnées</button>
+            <button class="mode-btn ${current === "milieu" ? "active" : ""}" onclick="setMode('milieu')">⚖️ Milieu</button>
+            <button class="mode-btn ${current === "distance" ? "active" : ""}" onclick="setMode('distance')">📏 Distance</button>
+          </div>`;
+      }
+
+      function renderCoordsPanel() {
+        const { x, y } = ST.P;
+        const qx = x > 0 ? "droite" : x < 0 ? "gauche" : "sur l'axe y";
+        const qy = y > 0 ? "haut" : y < 0 ? "bas" : "sur l'axe x";
+        const q =
+          x > 0 && y > 0
+            ? 1
+            : x < 0 && y > 0
+              ? 2
+              : x < 0 && y < 0
+                ? 3
+                : x > 0 && y < 0
+                  ? 4
+                  : 0;
+
+        document.getElementById("panel").innerHTML = `
+          <div class="theory-card">
+            <div class="theory-title">Définition du repère</div>
+            <p>Un <b>repère orthonormé</b> (O ; <span class="acc">x</span>, <span class="acc">y</span>) est formé par :</p>
+            <ul>
+              <li>Un point <b>origine O(0 ; 0)</b></li>
+              <li>Un axe horizontal : l'axe des <b>abscisses (x)</b></li>
+              <li>Un axe vertical : l'axe des <b>ordonnées (y)</b></li>
+            </ul>
+            <p style="margin-top:8px">Tout point P est repéré par ses <b>coordonnées (x<sub>P</sub> ; y<sub>P</sub>)</b>.</p>
+          </div>
+
+          <div class="coords-display">
+            P( <span class="cx" id="cx-val">${fmt(x)}</span> ; <span class="cy" id="cy-val">${fmt(y)}</span> )
+          </div>
+
+          <div class="slider-row">
+            <label>x<sub>P</sub></label>
+            <input type="range" id="sl-px" min="-6" max="6" step="0.5" value="${x}">
+            <span class="val" id="sl-px-val">${fmt(x)}</span>
+          </div>
+          <div class="slider-row">
+            <label>y<sub>P</sub></label>
+            <input type="range" id="sl-py" min="-6" max="6" step="0.5" value="${y}">
+            <span class="val" id="sl-py-val">${fmt(y)}</span>
+          </div>
+
+          ${
+            q > 0
+              ? `<div class="hint">P est dans le <b style="color:var(--acc)">quadrant ${q}</b>
+               &nbsp;—&nbsp; à ${qx}, en ${qy}</div>`
+              : `<div class="hint">P est <b style="color:var(--acc)">sur un axe</b></div>`
+          }
+
+          <div class="theory-card">
+            <div class="theory-title">Les quadrants</div>
+            <p>Les axes divisent le plan en <b>4 quadrants</b> :</p>
+            <ul>
+              <li><b>Q1</b> : x > 0, y > 0 &nbsp;(en haut à droite)</li>
+              <li><b>Q2</b> : x &lt; 0, y > 0 &nbsp;(en haut à gauche)</li>
+              <li><b>Q3</b> : x &lt; 0, y &lt; 0 &nbsp;(en bas à gauche)</li>
+              <li><b>Q4</b> : x > 0, y &lt; 0 &nbsp;(en bas à droite)</li>
+            </ul>
+          </div>`;
+
+        document.getElementById("sl-px").addEventListener("input", (e) => {
+          ST.P.x = parseFloat(e.target.value);
+          drawAll();
+          updateCoordsPanel();
+        });
+        document.getElementById("sl-py").addEventListener("input", (e) => {
+          ST.P.y = parseFloat(e.target.value);
+          drawAll();
+          updateCoordsPanel();
+        });
+      }
+
+      function updateCoordsPanel() {
+        const { x, y } = ST.P;
+        const el = (id) => document.getElementById(id);
+        if (el("cx-val")) el("cx-val").textContent = fmt(x);
+        if (el("cy-val")) el("cy-val").textContent = fmt(y);
+        if (el("sl-px")) el("sl-px").value = x;
+        if (el("sl-py")) el("sl-py").value = y;
+        if (el("sl-px-val")) el("sl-px-val").textContent = fmt(x);
+        if (el("sl-py-val")) el("sl-py-val").textContent = fmt(y);
+      }
+
+      function renderMilieuPanel() {
+        const { A, B } = ST;
+        const mx = (A.x + B.x) / 2,
+          my = (A.y + B.y) / 2;
+
+        document.getElementById("panel").innerHTML = `
+          <div class="panel-title">⚖️ Milieu d'un segment</div>
+          ${modeBtns("milieu")}
+          <div class="divider"></div>
+
+          <div class="theory-card">
+            <div class="theory-title">Formule du milieu</div>
+            <p>Le <b>milieu M</b> du segment [AB] a pour coordonnées :</p>
+            <p style="text-align:center; font-family:'Space Mono',monospace; font-size:0.95rem; margin:10px 0; color:var(--acc)">
+              M = ( <sup>x<sub>A</sub> + x<sub>B</sub></sup>/<sub>2</sub> &nbsp;;&nbsp; <sup>y<sub>A</sub> + y<sub>B</sub></sup>/<sub>2</sub> )
+            </p>
+            <p>Fais glisser les points <b style="color:#ff6b6b">A</b> et <b style="color:#ffd93d">B</b> sur le repère !</p>
+          </div>
+
+          <div class="formula-card">
+            <div class="formula-label">Calcul pas à pas</div>
+            <div class="step-row">
+              <div class="step-num">1</div>
+              <div class="step-body">
+                x<sub>M</sub> = (<span class="red">${fmt(A.x)}</span> + <span class="yel">${fmt(B.x)}</span>) / 2
+                = <span class="acc" id="mx-val">${fmt(mx)}</span>
+              </div>
+            </div>
+            <div class="step-row" style="margin-top:8px">
+              <div class="step-num">2</div>
+              <div class="step-body">
+                y<sub>M</sub> = (<span class="red">${fmt(A.y)}</span> + <span class="yel">${fmt(B.y)}</span>) / 2
+                = <span class="acc" id="my-val">${fmt(my)}</span>
+              </div>
+            </div>
+            <div class="formula-result" id="m-result">
+              M( ${fmt(mx)} ; ${fmt(my)} )
+            </div>
+          </div>
+
+          <div class="slider-row">
+            <label style="color:#ff6b6b;min-width:40px">x<sub>A</sub></label>
+            <input type="range" id="sl-ax" min="-6" max="6" step="0.5" value="${A.x}">
+            <span class="val" style="color:#ff6b6b" id="sl-ax-val">${fmt(A.x)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#ff6b6b;min-width:40px">y<sub>A</sub></label>
+            <input type="range" id="sl-ay" min="-6" max="6" step="0.5" value="${A.y}">
+            <span class="val" style="color:#ff6b6b" id="sl-ay-val">${fmt(A.y)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#ffd93d;min-width:40px">x<sub>B</sub></label>
+            <input type="range" id="sl-bx" min="-6" max="6" step="0.5" value="${B.x}">
+            <span class="val" style="color:#ffd93d" id="sl-bx-val">${fmt(B.x)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#ffd93d;min-width:40px">y<sub>B</sub></label>
+            <input type="range" id="sl-by" min="-6" max="6" step="0.5" value="${B.y}">
+            <span class="val" style="color:#ffd93d" id="sl-by-val">${fmt(B.y)}</span>
+          </div>`;
+
+        ["ax", "ay", "bx", "by"].forEach((k) => {
+          document.getElementById(`sl-${k}`).addEventListener("input", (e) => {
+            const [pt, coord] = k.split("");
+            ST[pt.toUpperCase()][coord] = parseFloat(e.target.value);
+            drawAll();
+            updateMilieuPanel();
+          });
+        });
+      }
+
+      function updateMilieuPanel() {
+        const { A, B } = ST;
+        const mx = (A.x + B.x) / 2,
+          my = (A.y + B.y) / 2;
+        const el = (id) => document.getElementById(id);
+        const sets = {
+          "sl-ax": A.x,
+          "sl-ax-val": A.x,
+          "sl-ay": A.y,
+          "sl-ay-val": A.y,
+          "sl-bx": B.x,
+          "sl-bx-val": B.x,
+          "sl-by": B.y,
+          "sl-by-val": B.y,
+          "mx-val": mx,
+          "my-val": my,
+        };
+        for (const [id, val] of Object.entries(sets)) {
+          const e = el(id);
+          if (!e) continue;
+          if (e.tagName === "INPUT") e.value = val;
+          else e.textContent = fmt(val);
+        }
+        if (el("m-result"))
+          el("m-result").textContent = `M( ${fmt(mx)} ; ${fmt(my)} )`;
+      }
+
+      function renderDistancePanel() {
+        const { A, B } = ST;
+        const dx = B.x - A.x,
+          dy = B.y - A.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const dist2 = Math.round(dist * 100) / 100;
+
+        document.getElementById("panel").innerHTML = `
+          <div class="panel-title">📏 Distance entre deux points</div>
+          ${modeBtns("distance")}
+          <div class="divider"></div>
+
+          <div class="theory-card">
+            <div class="theory-title">Formule de la distance</div>
+            <p>La distance entre A et B se calcule grâce au <b>théorème de Pythagore</b> :</p>
+            <p style="text-align:center; font-family:'Space Mono',monospace; font-size:0.9rem; margin:10px 0; color:var(--acc)">
+              AB = √( (x<sub>B</sub>−x<sub>A</sub>)² + (y<sub>B</sub>−y<sub>A</sub>)² )
+            </p>
+            <p>Fais glisser <b style="color:#ff6b6b">A</b> et <b style="color:#ffd93d">B</b> pour voir le calcul se mettre à jour.</p>
+          </div>
+
+          <div class="formula-card">
+            <div class="formula-label">Calcul pas à pas</div>
+            <div class="step-row">
+              <div class="step-num">1</div>
+              <div class="step-body">
+                Δx = x<sub>B</sub> − x<sub>A</sub> = <span class="yel">${fmt(B.x)}</span> − <span class="red">${fmt(A.x)}</span>
+                = <span class="acc" id="dx-val">${fmt(dx)}</span>
+              </div>
+            </div>
+            <div class="step-row" style="margin-top:8px">
+              <div class="step-num">2</div>
+              <div class="step-body">
+                Δy = y<sub>B</sub> − y<sub>A</sub> = <span class="yel">${fmt(B.y)}</span> − <span class="red">${fmt(A.y)}</span>
+                = <span class="acc" id="dy-val">${fmt(dy)}</span>
+              </div>
+            </div>
+            <div class="step-row" style="margin-top:8px">
+              <div class="step-num">3</div>
+              <div class="step-body">
+                AB = √(<span id="dx2-val">${fmt(dx)}</span>² + <span id="dy2-val">${fmt(dy)}</span>²)
+                = √<span id="sum-val">${fmt(dx * dx + dy * dy)}</span>
+              </div>
+            </div>
+            <div class="formula-result" id="dist-result">
+              AB ≈ ${dist2.toFixed(2)} unités
+            </div>
+          </div>
+
+          <div class="slider-row">
+            <label style="color:#ff6b6b;min-width:40px">x<sub>A</sub></label>
+            <input type="range" id="sl-ax" min="-6" max="6" step="0.5" value="${A.x}">
+            <span class="val" style="color:#ff6b6b" id="sl-ax-val">${fmt(A.x)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#ff6b6b;min-width:40px">y<sub>A</sub></label>
+            <input type="range" id="sl-ay" min="-6" max="6" step="0.5" value="${A.y}">
+            <span class="val" style="color:#ff6b6b" id="sl-ay-val">${fmt(A.y)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#ffd93d;min-width:40px">x<sub>B</sub></label>
+            <input type="range" id="sl-bx" min="-6" max="6" step="0.5" value="${B.x}">
+            <span class="val" style="color:#ffd93d" id="sl-bx-val">${fmt(B.x)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#ffd93d;min-width:40px">y<sub>B</sub></label>
+            <input type="range" id="sl-by" min="-6" max="6" step="0.5" value="${B.y}">
+            <span class="val" style="color:#ffd93d" id="sl-by-val">${fmt(B.y)}</span>
+          </div>`;
+
+        ["ax", "ay", "bx", "by"].forEach((k) => {
+          document.getElementById(`sl-${k}`).addEventListener("input", (e) => {
+            const [pt, coord] = k.split("");
+            ST[pt.toUpperCase()][coord] = parseFloat(e.target.value);
+            drawAll();
+            updateDistancePanel();
+          });
+        });
+      }
+
+      function updateDistancePanel() {
+        const { A, B } = ST;
+        const dx = B.x - A.x,
+          dy = B.y - A.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const el = (id) => document.getElementById(id);
+
+        const sliders = {
+          "sl-ax": A.x,
+          "sl-ax-val": A.x,
+          "sl-ay": A.y,
+          "sl-ay-val": A.y,
+          "sl-bx": B.x,
+          "sl-bx-val": B.x,
+          "sl-by": B.y,
+          "sl-by-val": B.y,
+        };
+        for (const [id, val] of Object.entries(sliders)) {
+          const e = el(id);
+          if (!e) continue;
+          if (e.tagName === "INPUT") e.value = val;
+          else e.textContent = fmt(val);
+        }
+        if (el("dx-val")) el("dx-val").textContent = fmt(dx);
+        if (el("dy-val")) el("dy-val").textContent = fmt(dy);
+        if (el("dx2-val")) el("dx2-val").textContent = fmt(dx);
+        if (el("dy2-val")) el("dy2-val").textContent = fmt(dy);
+        if (el("sum-val")) el("sum-val").textContent = fmt(dx * dx + dy * dy);
+        if (el("dist-result"))
+          el("dist-result").textContent =
+            `AB ≈ ${(Math.round(dist * 100) / 100).toFixed(2)} unités`;
+      }
+
+      /* ================================================================
+         DISTANCE TAB — DRAWING
+      ================================================================ */
+      function drawRightAngle(cx, cy, dx, dy) {
+        const [px, py] = toC(cx, cy);
+        const s = Math.max(8, SC * 0.18);
+        const hx = dx !== 0 ? -Math.sign(dx) : 1;
+        const vy = dy !== 0 ? Math.sign(dy) : 1;
+        CTX.strokeStyle = "rgba(167,139,250,0.65)";
+        CTX.lineWidth = 1.5;
+        CTX.setLineDash([]);
+        CTX.beginPath();
+        CTX.moveTo(px + hx * s, py);
+        CTX.lineTo(px + hx * s, py - vy * s);
+        CTX.lineTo(px, py - vy * s);
+        CTX.stroke();
+      }
+
+      function drawDistanceTab() {
+        const { A, B } = ST;
+        const dx = B.x - A.x,
+          dy = B.y - A.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const Cx = B.x,
+          Cy = A.y; // right-angle corner
+
+        // Dashed legs of the right triangle
+        drawSegment(A.x, A.y, Cx, Cy, "rgba(167,139,250,0.4)", true);
+        drawSegment(Cx, Cy, B.x, B.y, "rgba(167,139,250,0.4)", true);
+
+        // Hypotenuse AB
+        drawSegment(A.x, A.y, B.x, B.y, "#38bdf8", false);
+
+        // Right-angle symbol at C
+        if (dx !== 0 && dy !== 0) drawRightAngle(Cx, Cy, dx, dy);
+
+        // Leg labels
+        const lblSz = Math.max(10, SC * 0.17);
+        CTX.font = `600 ${lblSz}px Space Mono, monospace`;
+        CTX.fillStyle = "rgba(167,139,250,0.9)";
+        if (Math.abs(dx) > 0.3) {
+          const [lx] = toC((A.x + Cx) / 2, A.y);
+          const [, ly] = toC((A.x + Cx) / 2, A.y);
+          CTX.textAlign = "center";
+          CTX.textBaseline = dy >= 0 ? "top" : "bottom";
+          CTX.fillText(
+            `|Δx| = ${Math.abs(dx).toFixed(1)}`,
+            lx,
+            ly + (dy >= 0 ? 8 : -8),
+          );
+        }
+        if (Math.abs(dy) > 0.3) {
+          const [rx] = toC(B.x, (Cy + B.y) / 2);
+          const [, ry] = toC(B.x, (Cy + B.y) / 2);
+          CTX.textAlign = dx >= 0 ? "left" : "right";
+          CTX.textBaseline = "middle";
+          CTX.fillText(
+            `|Δy| = ${Math.abs(dy).toFixed(1)}`,
+            rx + (dx >= 0 ? 8 : -8),
+            ry,
+          );
+        }
+
+        // Distance label on hypotenuse
+        const [apx, apy] = toC(A.x, A.y);
+        const [bpx, bpy] = toC(B.x, B.y);
+        const mpx = (apx + bpx) / 2,
+          mpy = (apy + bpy) / 2;
+        const angle = Math.atan2(bpy - apy, bpx - apx);
+        const off = 22;
+        CTX.fillStyle = "#38bdf8";
+        CTX.font = `700 ${Math.max(11, SC * 0.2)}px Space Mono, monospace`;
+        CTX.textAlign = "center";
+        CTX.textBaseline = "middle";
+        CTX.fillText(
+          `AB ≈ ${dist.toFixed(2)}`,
+          mpx - Math.sin(angle) * off,
+          mpy + Math.cos(angle) * off,
+        );
+
+        // Corner C dot (small, dim)
+        const [cpx, cpy] = toC(Cx, Cy);
+        CTX.beginPath();
+        CTX.arc(cpx, cpy, 4, 0, Math.PI * 2);
+        CTX.fillStyle = "rgba(167,139,250,0.55)";
+        CTX.fill();
+
+        drawPoint(A.x, A.y, "#ff6b6b", `A(${fmt(A.x)} ; ${fmt(A.y)})`, false);
+        drawPoint(B.x, B.y, "#ffd93d", `B(${fmt(B.x)} ; ${fmt(B.y)})`, false);
+      }
+
+      /* ================================================================
+         DISTANCE TAB — PANEL
+      ================================================================ */
+      function renderDistanceTab() {
+        const { A, B } = ST;
+        const dx = B.x - A.x,
+          dy = B.y - A.y;
+        const dxSq = dx * dx,
+          dySq = dy * dy;
+        const sum = dxSq + dySq;
+        const dist = Math.sqrt(sum);
+
+        document.getElementById("panel").innerHTML = `
+          <div class="theory-card">
+            <div class="theory-title">Distance entre deux points</div>
+            <p>Dans un repère orthonormé, la <b>distance</b> entre A et B est :</p>
+            <div style="text-align:center;font-family:'Space Mono',monospace;font-size:0.92rem;padding:10px 12px;margin:10px 0;background:color-mix(in srgb,var(--acc) 8%,transparent);border:1px solid color-mix(in srgb,var(--acc) 25%,transparent);border-radius:8px;color:var(--acc)">
+              AB = &radic; ( (x<sub>B</sub> &minus; x<sub>A</sub>)&sup2; + (y<sub>B</sub> &minus; y<sub>A</sub>)&sup2; )
+            </div>
+            <p style="color:var(--muted);font-size:0.82rem">Le triangle rectangle de coin C(x<sub>B</sub>&nbsp;;&nbsp;y<sub>A</sub>) permet d&rsquo;appliquer le <b style="color:var(--text)">théorème de Pythagore</b> avec [AB] comme hypoténuse.</p>
+          </div>
+
+          <div class="coords-display" style="font-size:2rem">
+            AB = <span class="cx" id="dist-live">${dist.toFixed(2)}</span>
+          </div>
+
+          <div class="slider-row">
+            <label style="color:#ff6b6b;min-width:40px">x<sub>A</sub></label>
+            <input type="range" id="sl-ax" min="-6" max="6" step="0.5" value="${A.x}">
+            <span class="val" style="color:#ff6b6b" id="sl-ax-val">${fmt(A.x)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#ff6b6b;min-width:40px">y<sub>A</sub></label>
+            <input type="range" id="sl-ay" min="-6" max="6" step="0.5" value="${A.y}">
+            <span class="val" style="color:#ff6b6b" id="sl-ay-val">${fmt(A.y)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#ffd93d;min-width:40px">x<sub>B</sub></label>
+            <input type="range" id="sl-bx" min="-6" max="6" step="0.5" value="${B.x}">
+            <span class="val" style="color:#ffd93d" id="sl-bx-val">${fmt(B.x)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#ffd93d;min-width:40px">y<sub>B</sub></label>
+            <input type="range" id="sl-by" min="-6" max="6" step="0.5" value="${B.y}">
+            <span class="val" style="color:#ffd93d" id="sl-by-val">${fmt(B.y)}</span>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="formula-card">
+            <div class="formula-label">Calcul pas à pas</div>
+            <div class="step-row">
+              <div class="step-num">1</div>
+              <div class="step-body">
+                &Delta;x = x<sub>B</sub> &minus; x<sub>A</sub> = <span class="yel">${fmt(B.x)}</span> &minus; (<span class="red">${fmt(A.x)}</span>)
+                = <span class="acc" id="vdx">${fmt(dx)}</span>
+              </div>
+            </div>
+            <div class="step-row" style="margin-top:8px">
+              <div class="step-num">2</div>
+              <div class="step-body">
+                &Delta;y = y<sub>B</sub> &minus; y<sub>A</sub> = <span class="yel">${fmt(B.y)}</span> &minus; (<span class="red">${fmt(A.y)}</span>)
+                = <span class="acc" id="vdy">${fmt(dy)}</span>
+              </div>
+            </div>
+            <div class="step-row" style="margin-top:8px">
+              <div class="step-num">3</div>
+              <div class="step-body">
+                &Delta;x&sup2; + &Delta;y&sup2; = (<span id="vdx2">${fmt(dx)}</span>)&sup2; + (<span id="vdy2">${fmt(dy)}</span>)&sup2;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span id="vdxsq">${fmt(dxSq)}</span> + <span id="vdysq">${fmt(dySq)}</span> = <span class="acc" id="vsum">${fmt(sum)}</span>
+              </div>
+            </div>
+            <div class="step-row" style="margin-top:8px">
+              <div class="step-num">4</div>
+              <div class="step-body">
+                AB = &radic;<span id="vsum2">${fmt(sum)}</span>
+                &asymp; <span class="acc" id="vdist">${dist.toFixed(4)}</span>
+              </div>
+            </div>
+            <div class="formula-result" id="dist-result">AB &asymp; ${dist.toFixed(2)} unités</div>
+          </div>
+
+          <div class="hint">💡 Fais glisser <b style="color:#ff6b6b">A</b> et <b style="color:#ffd93d">B</b> sur le repère, ou utilise les sliders !</div>`;
+
+        ["ax", "ay", "bx", "by"].forEach((k) => {
+          document.getElementById(`sl-${k}`).addEventListener("input", (e) => {
+            const [pt, coord] = k.split("");
+            ST[pt.toUpperCase()][coord] = parseFloat(e.target.value);
+            drawAll();
+            updateDistanceTab();
+          });
+        });
+      }
+
+      function updateDistanceTab() {
+        const { A, B } = ST;
+        const dx = B.x - A.x,
+          dy = B.y - A.y;
+        const dxSq = dx * dx,
+          dySq = dy * dy;
+        const sum = dxSq + dySq;
+        const dist = Math.sqrt(sum);
+        const el = (id) => document.getElementById(id);
+        const sliders = {
+          "sl-ax": A.x,
+          "sl-ax-val": A.x,
+          "sl-ay": A.y,
+          "sl-ay-val": A.y,
+          "sl-bx": B.x,
+          "sl-bx-val": B.x,
+          "sl-by": B.y,
+          "sl-by-val": B.y,
+        };
+        for (const [id, val] of Object.entries(sliders)) {
+          const e = el(id);
+          if (!e) continue;
+          if (e.tagName === "INPUT") e.value = val;
+          else e.textContent = fmt(val);
+        }
+        if (el("vdx")) el("vdx").textContent = fmt(dx);
+        if (el("vdy")) el("vdy").textContent = fmt(dy);
+        if (el("vdx2")) el("vdx2").textContent = fmt(dx);
+        if (el("vdy2")) el("vdy2").textContent = fmt(dy);
+        if (el("vdxsq")) el("vdxsq").textContent = fmt(dxSq);
+        if (el("vdysq")) el("vdysq").textContent = fmt(dySq);
+        if (el("vsum")) el("vsum").textContent = fmt(sum);
+        if (el("vsum2")) el("vsum2").textContent = fmt(sum);
+        if (el("vdist")) el("vdist").textContent = dist.toFixed(4);
+        if (el("dist-live")) el("dist-live").textContent = dist.toFixed(2);
+        if (el("dist-result"))
+          el("dist-result").textContent = `AB ≈ ${dist.toFixed(2)} unités`;
+      }
+
+      /* ================================================================
+         MILIEU TAB — DRAWING
+      ================================================================ */
+      function drawMilieuTab() {
+        const { A, B } = ST;
+        const mx = (A.x + B.x) / 2,
+          my = (A.y + B.y) / 2;
+
+        // Segment [AB]
+        const [apx, apy] = toC(A.x, A.y);
+        const [bpx, bpy] = toC(B.x, B.y);
+        CTX.beginPath();
+        CTX.moveTo(apx, apy);
+        CTX.lineTo(bpx, bpy);
+        CTX.strokeStyle = "rgba(100,100,180,0.45)";
+        CTX.lineWidth = 2;
+        CTX.setLineDash([]);
+        CTX.stroke();
+
+        // Tick marks on each half at midpoint
+        const [mpx, mpy] = toC(mx, my);
+        const angle = Math.atan2(bpy - apy, bpx - apx);
+        const perp = angle + Math.PI / 2;
+        const tk = 9;
+        CTX.strokeStyle = "rgba(56,189,248,0.8)";
+        CTX.lineWidth = 2;
+        CTX.setLineDash([]);
+        // One tick mark on [AM]
+        const h1px = (apx + mpx) / 2,
+          h1py = (apy + mpy) / 2;
+        CTX.beginPath();
+        CTX.moveTo(h1px - Math.cos(perp) * tk, h1py - Math.sin(perp) * tk);
+        CTX.lineTo(h1px + Math.cos(perp) * tk, h1py + Math.sin(perp) * tk);
+        CTX.stroke();
+        // One tick mark on [MB]
+        const h2px = (mpx + bpx) / 2,
+          h2py = (mpy + bpy) / 2;
+        CTX.beginPath();
+        CTX.moveTo(h2px - Math.cos(perp) * tk, h2py - Math.sin(perp) * tk);
+        CTX.lineTo(h2px + Math.cos(perp) * tk, h2py + Math.sin(perp) * tk);
+        CTX.stroke();
+
+        // Dashed projection lines from M to axes
+        CTX.setLineDash([4, 4]);
+        CTX.strokeStyle = "rgba(56,189,248,0.3)";
+        CTX.lineWidth = 1;
+        CTX.beginPath();
+        CTX.moveTo(mpx, CY);
+        CTX.lineTo(mpx, mpy);
+        CTX.stroke();
+        CTX.beginPath();
+        CTX.moveTo(CX, mpy);
+        CTX.lineTo(mpx, mpy);
+        CTX.stroke();
+        CTX.setLineDash([]);
+
+        drawPoint(A.x, A.y, "#ff6b6b", `A(${fmt(A.x)} ; ${fmt(A.y)})`, false);
+        drawPoint(B.x, B.y, "#ffd93d", `B(${fmt(B.x)} ; ${fmt(B.y)})`, false);
+        drawPoint(mx, my, "#38bdf8", `M(${fmt(mx)} ; ${fmt(my)})`, false);
+      }
+
+      /* ================================================================
+         MILIEU TAB — PANEL
+      ================================================================ */
+      function renderMilieuTab() {
+        const { A, B } = ST;
+        const mx = (A.x + B.x) / 2,
+          my = (A.y + B.y) / 2;
+
+        document.getElementById("panel").innerHTML = `
+          <div class="theory-card">
+            <div class="theory-title">Milieu d’un segment</div>
+            <p>Le <b>milieu M</b> du segment [AB] est le point qui se trouve <b>à égale distance</b> de A et de B :</p>
+            <p style="text-align:center">
+              <span style="font-family:'Space Mono',monospace;color:var(--muted);font-size:0.82rem">MA = MB</span>
+            </p>
+            <p style="margin-top:8px">Ses <b>coordonnées</b> se calculent en prenant la <b>moyenne</b> de chaque coordonnée :</p>
+            <div style="text-align:center;font-family:'Space Mono',monospace;font-size:0.88rem;padding:10px 12px;margin:10px 0;background:color-mix(in srgb,var(--acc) 8%,transparent);border:1px solid color-mix(in srgb,var(--acc) 25%,transparent);border-radius:8px;line-height:1.9">
+              <span style="color:var(--acc)">x<sub>M</sub></span> = <span style="color:var(--muted)">(x<sub>A</sub> + x<sub>B</sub>) / 2</span><br>
+              <span style="color:var(--acc)">y<sub>M</sub></span> = <span style="color:var(--muted)">(y<sub>A</sub> + y<sub>B</sub>) / 2</span>
+            </div>
+            <p style="color:var(--muted);font-size:0.82rem">Les deux petits traits sur le repere indiquent que <b style="color:var(--text)">AM = MB</b>.</p>
+          </div>
+
+          <div class="coords-display">
+            M( <span class="cx" id="mx-live">${fmt(mx)}</span> ; <span class="cy" id="my-live">${fmt(my)}</span> )
+          </div>
+
+          <div class="slider-row">
+            <label style="color:#ff6b6b;min-width:40px">x<sub>A</sub></label>
+            <input type="range" id="sl-ax" min="-6" max="6" step="0.5" value="${A.x}">
+            <span class="val" style="color:#ff6b6b" id="sl-ax-val">${fmt(A.x)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#ff6b6b;min-width:40px">y<sub>A</sub></label>
+            <input type="range" id="sl-ay" min="-6" max="6" step="0.5" value="${A.y}">
+            <span class="val" style="color:#ff6b6b" id="sl-ay-val">${fmt(A.y)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#ffd93d;min-width:40px">x<sub>B</sub></label>
+            <input type="range" id="sl-bx" min="-6" max="6" step="0.5" value="${B.x}">
+            <span class="val" style="color:#ffd93d" id="sl-bx-val">${fmt(B.x)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#ffd93d;min-width:40px">y<sub>B</sub></label>
+            <input type="range" id="sl-by" min="-6" max="6" step="0.5" value="${B.y}">
+            <span class="val" style="color:#ffd93d" id="sl-by-val">${fmt(B.y)}</span>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="formula-card">
+            <div class="formula-label">Calcul pas à pas</div>
+            <div class="step-row">
+              <div class="step-num">1</div>
+              <div class="step-body">
+                x<sub>M</sub> = (x<sub>A</sub> + x<sub>B</sub>) / 2<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= (<span class="red">${fmt(A.x)}</span> + <span class="yel">${fmt(B.x)}</span>) / 2
+                = <span class="acc" id="vmx">${fmt(mx)}</span>
+              </div>
+            </div>
+            <div class="step-row" style="margin-top:10px">
+              <div class="step-num">2</div>
+              <div class="step-body">
+                y<sub>M</sub> = (y<sub>A</sub> + y<sub>B</sub>) / 2<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= (<span class="red">${fmt(A.y)}</span> + <span class="yel">${fmt(B.y)}</span>) / 2
+                = <span class="acc" id="vmy">${fmt(my)}</span>
+              </div>
+            </div>
+            <div class="formula-result" id="m-result">
+              M( ${fmt(mx)} ; ${fmt(my)} )
+            </div>
+          </div>
+
+          <div class="hint">💡 Fais glisser <b style="color:#ff6b6b">A</b> et <b style="color:#ffd93d">B</b>, le point <b style="color:#38bdf8">M</b> se met à jour automatiquement !</div>`;
+
+        ["ax", "ay", "bx", "by"].forEach((k) => {
+          document.getElementById(`sl-${k}`).addEventListener("input", (e) => {
+            const [pt, coord] = k.split("");
+            ST[pt.toUpperCase()][coord] = parseFloat(e.target.value);
+            drawAll();
+            updateMilieuTab();
+          });
+        });
+      }
+
+      function updateMilieuTab() {
+        const { A, B } = ST;
+        const mx = (A.x + B.x) / 2,
+          my = (A.y + B.y) / 2;
+        const el = (id) => document.getElementById(id);
+        const map = {
+          "sl-ax": A.x,
+          "sl-ax-val": A.x,
+          "sl-ay": A.y,
+          "sl-ay-val": A.y,
+          "sl-bx": B.x,
+          "sl-bx-val": B.x,
+          "sl-by": B.y,
+          "sl-by-val": B.y,
+          vmx: mx,
+          vmy: my,
+          "mx-live": mx,
+          "my-live": my,
+        };
+        for (const [id, val] of Object.entries(map)) {
+          const e = el(id);
+          if (!e) continue;
+          if (e.tagName === "INPUT") e.value = val;
+          else e.textContent = fmt(val);
+        }
+        if (el("m-result"))
+          el("m-result").textContent = `M( ${fmt(mx)} ; ${fmt(my)} )`;
+      }
+
+      /* ================================================================
+         DROITE TAB — HELPERS
+      ================================================================ */
+      function fmtLine(m, b) {
+        // Formats y = mx + b nicely
+        const mR = Math.round(m * 100) / 100;
+        const bR = Math.round(b * 100) / 100;
+        let s = "y = ";
+        if (mR === 0) {
+          return `y = ${fmt(bR)}`;
+        }
+        if (mR === 1) s += "x";
+        else if (mR === -1) s += "-x";
+        else s += `${fmt(mR)}x`;
+        if (bR > 0) s += ` + ${fmt(bR)}`;
+        if (bR < 0) s += ` - ${fmt(Math.abs(bR))}`;
+        return s;
+      }
+
+      /* ================================================================
+         DROITE TAB — DRAWING
+      ================================================================ */
+      function drawDroiteTab() {
+        const { m, b, xp, findMode } = ST.droite;
+        const yp = m * xp + b;
+
+        // Full line
+        const yL = m * (-CX / SC) + b;
+        const yR = m * (CX / SC) + b;
+        const [x1, y1] = toC(-CX / SC, yL);
+        const [x2, y2] = toC(CX / SC, yR);
+        CTX.beginPath();
+        CTX.moveTo(x1, y1);
+        CTX.lineTo(x2, y2);
+        CTX.strokeStyle = "#38bdf8";
+        CTX.lineWidth = 2.5;
+        CTX.setLineDash([]);
+        CTX.stroke();
+
+        // y-intercept dot
+        const [bpx, bpy] = toC(0, b);
+        CTX.beginPath();
+        CTX.arc(bpx, bpy, 5, 0, Math.PI * 2);
+        CTX.fillStyle = "rgba(255,211,61,0.85)";
+        CTX.fill();
+        CTX.strokeStyle = "#08080f";
+        CTX.lineWidth = 1.5;
+        CTX.stroke();
+
+        // Dashed projections from P to axes
+        const [ppx, ppy] = toC(xp, yp);
+        CTX.setLineDash([4, 4]);
+        CTX.lineWidth = 1;
+        if (findMode === "y") {
+          // known: x (vertical dashed from axis to P)
+          CTX.strokeStyle = "rgba(56,189,248,0.35)";
+          CTX.beginPath();
+          CTX.moveTo(ppx, CY);
+          CTX.lineTo(ppx, ppy);
+          CTX.stroke();
+          CTX.strokeStyle = "rgba(167,139,250,0.35)";
+          CTX.beginPath();
+          CTX.moveTo(CX, ppy);
+          CTX.lineTo(ppx, ppy);
+          CTX.stroke();
+        } else {
+          CTX.strokeStyle = "rgba(167,139,250,0.35)";
+          CTX.beginPath();
+          CTX.moveTo(CX, ppy);
+          CTX.lineTo(ppx, ppy);
+          CTX.stroke();
+          CTX.strokeStyle = "rgba(56,189,248,0.35)";
+          CTX.beginPath();
+          CTX.moveTo(ppx, CY);
+          CTX.lineTo(ppx, ppy);
+          CTX.stroke();
+        }
+        CTX.setLineDash([]);
+
+        // Equation on canvas
+        const eq = fmtLine(m, b);
+        CTX.font = `700 ${Math.max(12, SC * 0.22)}px Space Mono, monospace`;
+        CTX.fillStyle = "#38bdf8";
+        CTX.textAlign = "left";
+        CTX.textBaseline = "top";
+        CTX.fillText(eq, 14, 14);
+
+        // Point P label
+        const ypR = Math.round(yp * 100) / 100;
+        const lbl =
+          findMode === "y"
+            ? `P(${fmt(xp)} ; ${fmt(ypR)})`
+            : `P(${fmt(xp)} ; ${fmt(ypR)})`;
+        drawPoint(xp, yp, "#a78bfa", lbl, false);
+      }
+
+      /* ================================================================
+         DROITE TAB — PANEL
+      ================================================================ */
+      function renderDroiteTab() {
+        const { m, b, xp, findMode } = ST.droite;
+        const mR = Math.round(m * 100) / 100;
+        const bR = Math.round(b * 100) / 100;
+        const yp = Math.round((m * xp + b) * 100) / 100;
+        const xFromY =
+          Math.abs(m) > 0.01
+            ? Math.round(((xp - b) / m) * 100) / 100 // used when findMode=x, xp stores yp
+            : null;
+        const eq = fmtLine(m, b);
+
+        // Step-by-step for finding y from x
+        const stepsFindY = `
+            <div class="step-row">
+              <div class="step-num">1</div>
+              <div class="step-body">
+                On remplace <b>x</b> par <span class="acc" id="v-xp">${fmt(xp)}</span> dans l’équation :<br>
+                y = <span class="pur" id="vs-m">${fmt(mR)}</span> × <span class="acc" id="vs-xp">${fmt(xp)}</span> + <span class="yel" id="vs-b">${fmt(bR)}</span>
+              </div>
+            </div>
+            <div class="step-row" style="margin-top:10px">
+              <div class="step-num">2</div>
+              <div class="step-body">
+                y = <span id="vs-mx">${fmt(mR * xp)}</span> + <span class="yel">${fmt(bR)}</span>
+              </div>
+            </div>
+            <div class="step-row" style="margin-top:10px">
+              <div class="step-num">3</div>
+              <div class="step-body">
+                <b>y = <span class="acc" id="v-yp">${fmt(yp)}</span></b>
+              </div>
+            </div>
+            <div class="formula-result">P( <span id="vr-x">${fmt(xp)}</span> ; <span id="vr-y">${fmt(yp)}</span> )</div>`;
+
+        // Step-by-step for finding x from y  (xp field stores the given yp here)
+        const givenY = xp; // reuse xp slider as the "given" value
+        const foundX =
+          Math.abs(m) > 0.01
+            ? Math.round(((givenY - b) / m) * 100) / 100
+            : null;
+        const stepsFindX =
+          Math.abs(m) < 0.01
+            ? `<div class="hint" style="color:var(--red)">m = 0 : la droite est horizontale, x n’est pas déterminable à partir de y seul.</div>`
+            : `
+            <div class="step-row">
+              <div class="step-num">1</div>
+              <div class="step-body">
+                On remplace <b>y</b> par <span class="acc" id="v-xp">${fmt(givenY)}</span> dans l’équation :<br>
+                <span class="acc">${fmt(givenY)}</span> = <span class="pur" id="vs-m">${fmt(mR)}</span> × x + <span class="yel" id="vs-b">${fmt(bR)}</span>
+              </div>
+            </div>
+            <div class="step-row" style="margin-top:10px">
+              <div class="step-num">2</div>
+              <div class="step-body">
+                <span class="pur">${fmt(mR)}</span> × x = <span class="acc">${fmt(givenY)}</span> − <span class="yel">${fmt(bR)}</span>
+                = <span id="vs-diff">${fmt(givenY - bR)}</span>
+              </div>
+            </div>
+            <div class="step-row" style="margin-top:10px">
+              <div class="step-num">3</div>
+              <div class="step-body">
+                x = <span id="vs-diff2">${fmt(givenY - bR)}</span> / <span class="pur">${fmt(mR)}</span>
+                = <b><span class="acc" id="v-yp">${fmt(foundX)}</span></b>
+              </div>
+            </div>
+            <div class="formula-result">P( <span id="vr-x">${fmt(foundX)}</span> ; <span id="vr-y">${fmt(givenY)}</span> )</div>`;
+
+        document.getElementById("panel").innerHTML = `
+          <div class="theory-card">
+            <div class="theory-title">Équation d’une droite</div>
+            <p>Toute droite non verticale a une équation de la forme :</p>
+            <div style="text-align:center;font-family:'Space Mono',monospace;font-size:1rem;padding:10px 14px;margin:10px 0;background:color-mix(in srgb,var(--acc) 8%,transparent);border:1px solid color-mix(in srgb,var(--acc) 25%,transparent);border-radius:8px;color:var(--acc)">
+              y = <b style="color:var(--purple)">m</b>&thinsp;x + <b style="color:var(--yellow)">b</b>
+            </div>
+            <ul style="margin-top:4px">
+              <li><b style="color:var(--purple)">m</b> = la <b>pente</b></li>
+              <li><b style="color:var(--yellow)">b</b> = l’<b>ordonnée à l’origine</b></li>
+            </ul>
+          </div>
+
+          <div class="coords-display" style="font-size:1.4rem;letter-spacing:0" id="eq-display">${eq}</div>
+
+          <div class="mode-btns">
+            <button class="mode-btn ${findMode === "y" ? "active" : ""}" onclick="setDroiteMode('y')">Trouver <b>y</b> &nbsp;(x connu)</button>
+            <button class="mode-btn ${findMode === "x" ? "active" : ""}" onclick="setDroiteMode('x')">Trouver <b>x</b> &nbsp;(y connu)</button>
+          </div>
+
+          <div class="slider-row">
+            <label style="color:var(--purple);min-width:28px">m</label>
+            <input type="range" id="sl-m" min="-4" max="4" step="0.5" value="${mR}">
+            <span class="val" style="color:var(--purple)" id="sl-m-val">${fmt(mR)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:var(--yellow);min-width:28px">b</label>
+            <input type="range" id="sl-b" min="-5" max="5" step="0.5" value="${bR}">
+            <span class="val" style="color:var(--yellow)" id="sl-b-val">${fmt(bR)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:var(--acc);min-width:28px">${findMode === "y" ? "x" : "y"}</label>
+            <input type="range" id="sl-xp" min="-6" max="6" step="0.5" value="${xp}">
+            <span class="val" style="color:var(--acc)" id="sl-xp-val">${fmt(xp)}</span>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="formula-card">
+            <div class="formula-label">Calcul pas à pas</div>
+            ${findMode === "y" ? stepsFindY : stepsFindX}
+          </div>
+
+          <div class="hint">💡 Fais glisser le point <b style="color:var(--purple)">P</b> sur la droite ou utilise les sliders !</div>`;
+
+        document.getElementById("sl-m").addEventListener("input", (e) => {
+          ST.droite.m = parseFloat(e.target.value);
+          drawAll();
+          renderDroiteTab();
+        });
+        document.getElementById("sl-b").addEventListener("input", (e) => {
+          ST.droite.b = parseFloat(e.target.value);
+          drawAll();
+          renderDroiteTab();
+        });
+        document.getElementById("sl-xp").addEventListener("input", (e) => {
+          ST.droite.xp = parseFloat(e.target.value);
+          drawAll();
+          updateDroiteTab();
+        });
+      }
+
+      function setDroiteMode(mode) {
+        ST.droite.findMode = mode;
+        drawAll();
+        renderDroiteTab();
+      }
+
+      function updateDroiteTab() {
+        const { m, b, xp, findMode } = ST.droite;
+        const mR = Math.round(m * 100) / 100;
+        const bR = Math.round(b * 100) / 100;
+        const yp = Math.round((m * xp + b) * 100) / 100;
+        const el = (id) => document.getElementById(id);
+
+        if (el("sl-xp")) el("sl-xp").value = xp;
+        if (el("sl-xp-val")) el("sl-xp-val").textContent = fmt(xp);
+        if (el("eq-display")) el("eq-display").textContent = fmtLine(mR, bR);
+
+        if (findMode === "y") {
+          if (el("v-xp")) el("v-xp").textContent = fmt(xp);
+          if (el("vs-xp")) el("vs-xp").textContent = fmt(xp);
+          if (el("vs-m")) el("vs-m").textContent = fmt(mR);
+          if (el("vs-b")) el("vs-b").textContent = fmt(bR);
+          if (el("vs-mx")) el("vs-mx").textContent = fmt(mR * xp);
+          if (el("v-yp")) el("v-yp").textContent = fmt(yp);
+          if (el("vr-x")) el("vr-x").textContent = fmt(xp);
+          if (el("vr-y")) el("vr-y").textContent = fmt(yp);
+        } else {
+          const givenY = xp;
+          const foundX =
+            Math.abs(m) > 0.01
+              ? Math.round(((givenY - b) / m) * 100) / 100
+              : null;
+          if (el("v-xp")) el("v-xp").textContent = fmt(givenY);
+          if (el("vs-diff")) el("vs-diff").textContent = fmt(givenY - bR);
+          if (el("vs-diff2")) el("vs-diff2").textContent = fmt(givenY - bR);
+          if (el("v-yp"))
+            el("v-yp").textContent = foundX !== null ? fmt(foundX) : "?";
+          if (el("vr-x"))
+            el("vr-x").textContent = foundX !== null ? fmt(foundX) : "?";
+          if (el("vr-y")) el("vr-y").textContent = fmt(givenY);
+        }
+      }
+
+      /* ================================================================
+         DRAG SYSTEM
+      ================================================================ */
+      let drag = null;
+
+      function getPointer(e) {
+        const rect = CVS.getBoundingClientRect();
+        if (e.touches) {
+          return [
+            e.touches[0].clientX - rect.left,
+            e.touches[0].clientY - rect.top,
+          ];
+        }
+        return [e.clientX - rect.left, e.clientY - rect.top];
+      }
+
+      function hitTest(px, py) {
+        const EPS = 14;
+        const pts =
+          ST.tab === "repere"
+            ? [{ key: "P", pt: ST.P }]
+            : ST.tab === "droite"
+              ? [
+                  {
+                    key: "PD",
+                    pt: {
+                      x: ST.droite.xp,
+                      y: ST.droite.m * ST.droite.xp + ST.droite.b,
+                    },
+                  },
+                ]
+              : [
+                  { key: "A", pt: ST.A },
+                  { key: "B", pt: ST.B },
+                ];
+
+        for (const { key, pt } of pts) {
+          const [cpx, cpy] = toC(pt.x, pt.y);
+          if (Math.hypot(px - cpx, py - cpy) < EPS) return key;
+        }
+        return null;
+      }
+
+      function onPointerDown(e) {
+        const [mx, my] = getPointer(e);
+        const hit = hitTest(mx, my);
+        if (hit) {
+          drag = hit;
+          CVS.classList.add("drag-cursor");
+          e.preventDefault();
+        }
+      }
+
+      function onPointerMove(e) {
+        if (!drag) {
+          // Change cursor on hover
+          const [mx, my] = getPointer(e);
+          CVS.style.cursor = hitTest(mx, my) ? "grab" : "default";
+          return;
+        }
+        e.preventDefault();
+        const [mx, my] = getPointer(e);
+        const [wx, wy] = toW(mx, my);
+        const target = drag === "P" ? ST.P : drag === "PD" ? null : ST[drag];
+        if (drag === "PD") {
+          ST.droite.xp = Math.max(-8, Math.min(8, snap(wx)));
+        } else if (target) {
+          target.x = Math.max(-8, Math.min(8, snap(wx)));
+          target.y = Math.max(-6, Math.min(6, snap(wy)));
+        }
+        drawAll();
+        if (ST.tab === "repere") updateCoordsPanel();
+        else if (ST.tab === "distance") updateDistanceTab();
+        else if (ST.tab === "milieu") updateMilieuTab();
+        else if (ST.tab === "droite") updateDroiteTab();
+      }
+
+      function onPointerUp() {
+        drag = null;
+        CVS.classList.remove("drag-cursor");
+      }
+
+      CVS.addEventListener("mousedown", onPointerDown);
+      CVS.addEventListener("mousemove", onPointerMove);
+      CVS.addEventListener("mouseup", onPointerUp);
+      CVS.addEventListener("mouseleave", onPointerUp);
+      CVS.addEventListener("touchstart", onPointerDown, { passive: false });
+      CVS.addEventListener("touchmove", onPointerMove, { passive: false });
+      CVS.addEventListener("touchend", onPointerUp);
+
+      /* ================================================================
+         MODE & TAB SWITCHING
+      ================================================================ */
+      function setMode(mode) {
+        ST.mode = mode;
+        drawAll();
+        renderPanel();
+      }
+
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document
+            .querySelectorAll(".tab-btn")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          ST.tab = btn.dataset.tab;
+          drawAll();
+          renderPanel();
+        });
+      });
+
+      /* ================================================================
+         INIT
+      ================================================================ */
+      resize();
+      renderPanel();
+    </script>
+  </body>
+</html>

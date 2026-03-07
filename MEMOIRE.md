@@ -1,6 +1,6 @@
 # 📚 Mémoire du Projet — Maths Interactif (SIS SANAA)
 
-> Dernière mise à jour : 2 mars 2026 — Module Factorisation créé (7 onglets interactifs)
+> Dernière mise à jour : 7 mars 2026 — Module Lieux Géométriques créé (4 onglets interactifs)
 
 ---
 
@@ -8,12 +8,18 @@
 
 ```
 SIS SANAA/
-├── index.html                          ← Page d'accueil (hub des matières)
-├── MEMOIRE.md                          ← Ce fichier
+├── index.html                              ← Page d'accueil (hub des matières)
+├── MEMOIRE.md                              ← Ce fichier
 ├── vecteurs/
-│   └── vecteurs_interactifs.html       ← Module vecteurs complet
-└── factorisation/
-    └── factorisation.html              ← Module factorisation (7 onglets)
+│   └── vecteurs_interactifs.html           ← Module vecteurs complet (10 onglets)
+├── factorisation/
+│   └── factorisation.html                 ← Module factorisation (7 onglets)
+├── trigonometrie/
+│   └── trigonometrie.html                 ← Module trigonométrie
+├── neerlandais/
+│   └── neerlandais.html                   ← Module néerlandais
+└── lieux_geometriques/
+    └── lieux_geometriques.html            ← Module lieux géométriques (4 onglets) ✅
 ```
 
 ---
@@ -30,17 +36,19 @@ SIS SANAA/
 
 ### Couleurs par matière
 
-| Matière       | Couleur             | Classe CSS    |
-| ------------- | ------------------- | ------------- |
-| Vecteurs      | `#00f5c3` vert néon | `.m-vecteurs` |
-| Factorisation | `#ff6b6b` rouge     | `.m-facto`    |
-| Matrices      | `#ffd93d` jaune     | `.m-matrices` |
-| Prochain      | `#a78bfa` violet    | `.m-coming`   |
+| Matière            | Couleur             | Classe CSS    |
+| ------------------ | ------------------- | ------------- |
+| Vecteurs           | `#00f5c3` vert néon | `.m-vecteurs` |
+| Factorisation      | `#ff6b6b` rouge     | `.m-facto`    |
+| Matrices           | `#ffd93d` jaune     | `.m-matrices` |
+| Lieux Géométriques | `#38bdf8` sky blue  | `.m-lieux`    |
+| Prochain           | `#a78bfa` violet    | `.m-coming`   |
 
 ### Liens actuels
 
 - **Vecteurs** → `vecteurs/vecteurs_interactifs.html` ✅
 - **Factorisation** → `factorisation/factorisation.html` ✅
+- **Lieux Géométriques** → `lieux_geometriques/lieux_geometriques.html` ✅
 - **Matrices** → `matrices/matrices.html` ⏳ (pas encore créé)
 
 ---
@@ -242,11 +250,100 @@ Toggle `addMode: 'add' | 'sub'` dans le panel.
 
 ---
 
+## � lieux_geometriques/lieux_geometriques.html — Module Lieux Géométriques (4ème)
+
+### Architecture
+
+- **Fichier unique** HTML/CSS/JS (~1 830 lignes)
+- **Canvas API** pour toutes les visualisations (layout canvas + panel côte à côte)
+- **Accent :** `--acc: #38bdf8` (sky blue)
+- **4 onglets** (le repère → distance → milieu → droite)
+- Responsive 768 px
+
+### Onglets disponibles (4 au total)
+
+| Onglet                   | data-tab   | Théorie couverte                                  |
+| ------------------------ | ---------- | ------------------------------------------------- |
+| 📍 Le Repère             | `repere`   | Coordonnées d'un point, quadrants, projections    |
+| 📏 La Distance           | `distance` | Distance AB, triangle rectangle, Pythagore        |
+| ⚖️ Le Milieu             | `milieu`   | Milieu M d'un segment, MA=MB, formule des milieux |
+| 📐 Équation d'une Droite | `droite`   | y = mx + b, trouver y (x connu) ou x (y connu)    |
+
+### State
+
+```js
+const ST = {
+  tab: "repere",
+  mode: "coords",
+  P: { x: 3, y: 2 }, // point draggable onglet repere
+  A: { x: -3, y: 1 }, // point A (distance + milieu)
+  B: { x: 2, y: -2 }, // point B (distance + milieu)
+  droite: { m: 2, b: 1, xp: 3, findMode: "y" }, // onglet droite
+};
+```
+
+### Tab : 📍 Le Repère
+
+- Canvas : point P draggable, projections en tirets vers les axes, halo glow cyan
+- Panel : carte théorie (définition du repère), affichage `P(x ; y)`, sliders x/y, détection du quadrant, carte des 4 quadrants
+- Fonctions : `drawCoords()`, `renderCoordsPanel()`, `updateCoordsPanel()`
+
+### Tab : 📏 La Distance
+
+- Canvas : A (rouge) + B (jaune) draggables, triangle rectangle avec côtés `|Δx|`/`|Δy|`, symbole angle droit, valeur AB sur l'hypoténuse
+- Panel : formule de Pythagore, affichage live d(A,B), sliders A/B, calcul en 4 étapes
+- Fonctions : `drawDistanceTab()`, `renderDistanceTab()`, `updateDistanceTab()`
+- Helper : `drawRightAngle(cx, cy, dx, dy)`
+
+### Tab : ⚖️ Le Milieu
+
+- Canvas : A + B draggables, segment avec tirets de graduation (MA = MB visuellement), M (bleu/cyan) calculé automatiquement, projections de M vers les axes
+- Panel : théorie MA = MB + formule milieu, affichage live M(x ; y), sliders A/B, calcul en 2 étapes
+- Fonctions : `drawMilieuTab()`, `renderMilieuTab()`, `updateMilieuTab()`
+
+### Tab : 📐 Équation d'une Droite
+
+**Concept pédagogique :** l'équation `y = mx + b` est donnée (via m et b), l'élève trouve la coordonnée manquante d'un point P.
+
+- Canvas : droite complète tracée depuis m/b, point P (violet) sur la droite draggable horizontalement (y toujours recalculé = m·xp+b), point jaune à l'ordonnée à l'origine, projections tirets vers axes, équation affichée en haut à gauche du canvas
+- Panel :
+  - Carte théorie : `y = mx + b`, m = pente, b = ordonnée à l'origine
+  - Affichage live de l'équation (ex. `y = 2x + 1`)
+  - Deux modes : **Trouver y** (x connu) / **Trouver x** (y connu)
+  - Sliders m (−4 à 4, pas 0.5), b (−5 à 5, pas 0.5), coord connue (−6 à 6, pas 0.5)
+  - Calcul pas à pas en 3 étapes (substitution → simplification → résultat)
+  - Résultat `P( x ; y )`
+- Fonctions : `fmtLine()`, `drawDroiteTab()`, `renderDroiteTab()`, `updateDroiteTab()`, `setDroiteMode()`
+- hitTest onglet droite : uniquement point `PD` (drag horizontal → met à jour `ST.droite.xp`)
+
+### Helpers Canvas partagés
+
+```js
+toC(x, y)       → [px, py]   // coord math → pixel canvas
+toW(px, py)     → [x, y]     // pixel → coord math
+snap(v)                       // arrondi au 0.5 le plus proche
+fmt(v)                        // formate un nombre (2 déc. max)
+drawPoint(x, y, color, label) // cercle glow + étiquette
+drawSegment(x1,y1, x2,y2, color, width)
+```
+
+### Drag system
+
+- `hitTest(px, py)` dispatch selon `ST.tab` :
+  - `repere` → `[{key:"P", pt:ST.P}]`
+  - `droite` → `[{key:"PD", pt:{x:ST.droite.xp, y:m·xp+b}}]`
+  - autres → `[{key:"A", pt:ST.A}, {key:"B", pt:ST.B}]`
+- `onPointerMove` : si drag = `"PD"` → met à jour seulement `ST.droite.xp` (y est calculé, pas stocké)
+- Mouse + touch supportés
+
+---
+
 ## 📋 À faire / idées futures
 
-### Pages manquantes (liens dans index.html → 404 si cliqués)
+### Pages manquantes
 
-- [ ] Créer `factorisation/factorisation.html`
+- [x] Créer `factorisation/factorisation.html` ✅
+- [x] Créer `lieux_geometriques/lieux_geometriques.html` ✅
 - [ ] Créer `matrices/matrices.html`
 
 ### Améliorations vecteurs
@@ -274,10 +371,12 @@ Toggle `addMode: 'add' | 'sub'` dans le panel.
 ## 🎨 Charte graphique globale
 
 ```css
---bg: #070712 /* fond principal */ --panel: #0e0e20 /* fond des cartes */
+--bg: #070712 /* fond principal */ --panel: #0e0e20
+  /* fond des panneaux/cartes */ --card: #0d0d1a /* fond des theory-cards */
   --border: #1c1c38 /* bordures */ --text: #eeeeff /* texte principal */
   --muted: #5858a0 /* texte secondaire */ /* Couleurs accent */ --green: #00f5c3
-  --red: #ff6b6b --yellow: #ffd93d --purple: #a78bfa;
+  /* vecteurs */ --red: #ff6b6b /* factorisation */ --yellow: #ffd93d
+  --purple: #a78bfa --acc: #38bdf8 /* lieux géométriques (sky blue) */;
 ```
 
 **Polices :** `Lexend` (texte) + `Space Mono` (formules, coordonnées)
