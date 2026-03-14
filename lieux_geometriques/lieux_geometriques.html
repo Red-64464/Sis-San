@@ -32,10 +32,10 @@
         background: var(--bg);
         color: var(--text);
         font-family: "Lexend", sans-serif;
-        height: 100dvh;
+        min-height: 100dvh;
         display: flex;
         flex-direction: column;
-        overflow: hidden;
+        overflow-y: auto;
       }
 
       /* ─── HEADER ──────────────────────────────── */
@@ -136,8 +136,8 @@
       .layout {
         display: flex;
         flex: 1;
-        overflow: hidden;
         min-height: 0;
+        height: calc(100dvh - 138px);
       }
 
       /* ─── CANVAS ZONE ─────────────────────────── */
@@ -392,6 +392,88 @@
         border-radius: 1px;
       }
 
+      /* ─── PDF SECTION ─────────────────────────── */
+      #pdf-section {
+        max-width: 900px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0 14px 48px;
+      }
+      .pdf-outer-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 18px 20px;
+      }
+      .pdf-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .pdf-header-title {
+        font-family: "Lexend", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .pdf-header-line {
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+      .pdf-toggle-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+      }
+      .pdf-toggle-btn {
+        padding: 7px 20px;
+        border-radius: 30px;
+        border: 1.5px solid var(--border);
+        background: transparent;
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .pdf-toggle-btn:hover {
+        border-color: color-mix(in srgb, var(--acc) 40%, transparent);
+        color: var(--text);
+      }
+      .pdf-toggle-btn.active {
+        background: color-mix(in srgb, var(--acc) 15%, transparent);
+        border-color: color-mix(in srgb, var(--acc) 50%, transparent);
+        color: var(--text);
+      }
+      .pdf-pane {
+        display: none;
+      }
+      .pdf-pane.active {
+        display: block;
+      }
+      .pdf-embed {
+        width: 100%;
+        height: 560px;
+        border: none;
+        border-radius: 10px;
+        display: block;
+      }
+      .pdf-fallback {
+        display: block;
+        margin-top: 10px;
+        text-align: center;
+        font-size: 0.78rem;
+        color: var(--muted);
+        text-decoration: none;
+      }
+      .pdf-fallback:hover {
+        color: var(--text);
+      }
+
       /* ─── RESPONSIVE ─────────────────────────── */
       @media (max-width: 768px) {
         body {
@@ -438,6 +520,18 @@
       <button class="tab-btn" data-tab="droite">
         📐 Équation d&rsquo;une Droite
       </button>
+      <button class="tab-btn" data-tab="pente">📈 La Pente</button>
+      <button class="tab-btn" data-tab="paralleles">
+        ∥ Droites Parallèles
+      </button>
+      <button class="tab-btn" data-tab="perpendiculaires">
+        ⊥ Droites Perpendiculaires
+      </button>
+      <button class="tab-btn" data-tab="intersection">✕ Intersection</button>
+      <button class="tab-btn" data-tab="ptdroite">
+        📐 Distance Point-Droite
+      </button>
+      <button class="tab-btn" data-tab="cercle">⭕ Équation du Cercle</button>
     </div>
 
     <!-- ── LAYOUT ── -->
@@ -447,6 +541,7 @@
       </div>
       <div class="panel" id="panel"></div>
     </div>
+    <div id="pdf-section"></div>
 
     <script>
       /* ================================================================
@@ -459,6 +554,12 @@
         A: { x: -3, y: 1 },
         B: { x: 2, y: -2 },
         droite: { m: 2, b: 1, xp: 3, findMode: "y" },
+        pente: { m: 1.5, b: 0.5, A: { x: -2, y: -2.5 }, B: { x: 2, y: 3.5 } },
+        paralleles: { m: 1.5, b1: 2, b2: -1 },
+        perpendiculaires: { m: 1.5, b1: 1, b2: 0 },
+        intersection: { m1: 2, b1: -1, m2: -1, b2: 3 },
+        ptdroite: { m: 1, b: 0, P: { x: -2, y: 3 } },
+        cercle: { cx: 1, cy: 1, r: 3, P: { x: 4, y: 1 } },
       };
 
       /* ================================================================
@@ -507,6 +608,12 @@
         else if (ST.tab === "distance") drawDistanceTab();
         else if (ST.tab === "milieu") drawMilieuTab();
         else if (ST.tab === "droite") drawDroiteTab();
+        else if (ST.tab === "pente") drawPenteTab();
+        else if (ST.tab === "paralleles") drawParallelesTab();
+        else if (ST.tab === "perpendiculaires") drawPerpendicualairesTab();
+        else if (ST.tab === "intersection") drawIntersectionTab();
+        else if (ST.tab === "ptdroite") drawPtDroiteTab();
+        else if (ST.tab === "cercle") drawCercleTab();
       }
 
       function drawGrid() {
@@ -745,6 +852,13 @@
         else if (ST.tab === "distance") renderDistanceTab();
         else if (ST.tab === "milieu") renderMilieuTab();
         else if (ST.tab === "droite") renderDroiteTab();
+        else if (ST.tab === "pente") renderPenteTab();
+        else if (ST.tab === "paralleles") renderParallelesTab();
+        else if (ST.tab === "perpendiculaires") renderPerpendicualairesTab();
+        else if (ST.tab === "intersection") renderIntersectionTab();
+        else if (ST.tab === "ptdroite") renderPtDroiteTab();
+        else if (ST.tab === "cercle") renderCercleTab();
+        renderPdfSection();
       }
 
       function modeBtns(current) {
@@ -1721,6 +1835,1093 @@
       }
 
       /* ================================================================
+         PENTE TAB — DRAWING
+      ================================================================ */
+      function drawPenteTab() {
+        const { A, B } = ST.pente;
+        const dx = B.x - A.x,
+          dy = B.y - A.y;
+        const m = dx !== 0 ? dy / dx : Infinity;
+
+        // Extend line across canvas
+        const xMin = -CX / SC,
+          xMax = CX / SC;
+        if (isFinite(m)) {
+          const b = A.y - m * A.x;
+          const [x1, y1] = toC(xMin, m * xMin + b);
+          const [x2, y2] = toC(xMax, m * xMax + b);
+          CTX.beginPath();
+          CTX.moveTo(x1, y1);
+          CTX.lineTo(x2, y2);
+          CTX.strokeStyle = "rgba(56,189,248,0.35)";
+          CTX.lineWidth = 1.5;
+          CTX.setLineDash([6, 4]);
+          CTX.stroke();
+          CTX.setLineDash([]);
+        }
+
+        // Right triangle Δx / Δy
+        if (dx !== 0) {
+          const [ax, ay] = toC(A.x, A.y);
+          const [bx, by] = toC(B.x, B.y);
+          const [cx, cy] = toC(B.x, A.y);
+          CTX.beginPath();
+          CTX.moveTo(ax, ay);
+          CTX.lineTo(cx, cy);
+          CTX.lineTo(bx, by);
+          CTX.strokeStyle = "rgba(167,139,250,0.5)";
+          CTX.lineWidth = 1.5;
+          CTX.setLineDash([4, 3]);
+          CTX.stroke();
+          CTX.setLineDash([]);
+
+          // Labels
+          const lblSz = Math.max(10, SC * 0.17);
+          CTX.font = `600 ${lblSz}px Space Mono, monospace`;
+          CTX.fillStyle = "rgba(167,139,250,0.9)";
+          CTX.textAlign = "center";
+          CTX.textBaseline = dy >= 0 ? "top" : "bottom";
+          CTX.fillText(
+            `Δx = ${fmt(dx)}`,
+            (ax + cx) / 2,
+            cy + (dy >= 0 ? 8 : -8),
+          );
+          CTX.textAlign = dx >= 0 ? "left" : "right";
+          CTX.textBaseline = "middle";
+          CTX.fillText(
+            `Δy = ${fmt(dy)}`,
+            bx + (dx >= 0 ? 8 : -8),
+            (cy + by) / 2,
+          );
+        }
+
+        // Segment AB
+        const [ax2, ay2] = toC(A.x, A.y);
+        const [bx2, by2] = toC(B.x, B.y);
+        CTX.beginPath();
+        CTX.moveTo(ax2, ay2);
+        CTX.lineTo(bx2, by2);
+        CTX.strokeStyle = "#38bdf8";
+        CTX.lineWidth = 2.5;
+        CTX.setLineDash([]);
+        CTX.stroke();
+
+        // Pente label
+        if (isFinite(m) && dx !== 0) {
+          const mRnd = Math.round(m * 100) / 100;
+          const mpx = (ax2 + bx2) / 2,
+            mpy = (ay2 + by2) / 2;
+          const angle = Math.atan2(by2 - ay2, bx2 - ax2);
+          CTX.fillStyle = "#ffd93d";
+          CTX.font = `700 ${Math.max(11, SC * 0.2)}px Space Mono, monospace`;
+          CTX.textAlign = "center";
+          CTX.textBaseline = "middle";
+          CTX.fillText(
+            `m = ${fmt(mRnd)}`,
+            mpx - Math.sin(angle) * 26,
+            mpy + Math.cos(angle) * 26,
+          );
+        }
+
+        drawPoint(A.x, A.y, "#ff6b6b", `A(${fmt(A.x)} ; ${fmt(A.y)})`, false);
+        drawPoint(B.x, B.y, "#ffd93d", `B(${fmt(B.x)} ; ${fmt(B.y)})`, false);
+      }
+
+      /* ================================================================
+         PENTE TAB — PANEL
+      ================================================================ */
+      function renderPenteTab() {
+        const { A, B } = ST.pente;
+        const dx = B.x - A.x,
+          dy = B.y - A.y;
+        const m = dx !== 0 ? Math.round((dy / dx) * 100) / 100 : null;
+
+        document.getElementById("panel").innerHTML = `
+          <div class="theory-card">
+            <div class="theory-title">La pente d'une droite</div>
+            <p>La <b>pente</b> (ou coefficient directeur) mesure l'inclinaison d'une droite. Elle indique de combien monte ou descend la droite quand on avance d'une unité vers la droite.</p>
+            <div style="text-align:center;font-family:'Space Mono',monospace;font-size:0.92rem;padding:10px 12px;margin:10px 0;background:color-mix(in srgb,var(--acc) 8%,transparent);border:1px solid color-mix(in srgb,var(--acc) 25%,transparent);border-radius:8px;color:var(--acc)">
+              m = &Delta;y / &Delta;x = (y<sub>B</sub> &minus; y<sub>A</sub>) / (x<sub>B</sub> &minus; x<sub>A</sub>)
+            </div>
+            <ul>
+              <li><b style="color:var(--acc)">m &gt; 0</b> → droite montante</li>
+              <li><b style="color:var(--red)">m &lt; 0</b> → droite descendante</li>
+              <li><b style="color:var(--muted)">m = 0</b> → droite horizontale</li>
+            </ul>
+          </div>
+
+          <div class="coords-display" style="font-size:1.6rem">
+            m = <span class="cx" id="m-live">${m !== null ? fmt(m) : "∞"}</span>
+          </div>
+
+          <div class="slider-row">
+            <label style="color:#ff6b6b;min-width:40px">x<sub>A</sub></label>
+            <input type="range" id="sl-pax" min="-6" max="6" step="0.5" value="${A.x}">
+            <span class="val" style="color:#ff6b6b" id="sl-pax-val">${fmt(A.x)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#ff6b6b;min-width:40px">y<sub>A</sub></label>
+            <input type="range" id="sl-pay" min="-6" max="6" step="0.5" value="${A.y}">
+            <span class="val" style="color:#ff6b6b" id="sl-pay-val">${fmt(A.y)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#ffd93d;min-width:40px">x<sub>B</sub></label>
+            <input type="range" id="sl-pbx" min="-6" max="6" step="0.5" value="${B.x}">
+            <span class="val" style="color:#ffd93d" id="sl-pbx-val">${fmt(B.x)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#ffd93d;min-width:40px">y<sub>B</sub></label>
+            <input type="range" id="sl-pby" min="-6" max="6" step="0.5" value="${B.y}">
+            <span class="val" style="color:#ffd93d" id="sl-pby-val">${fmt(B.y)}</span>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="formula-card">
+            <div class="formula-label">Calcul pas à pas</div>
+            <div class="step-row">
+              <div class="step-num">1</div>
+              <div class="step-body">
+                &Delta;y = y<sub>B</sub> &minus; y<sub>A</sub> = <span class="yel">${fmt(B.y)}</span> &minus; (<span class="red">${fmt(A.y)}</span>) = <span class="acc" id="p-dy">${fmt(dy)}</span>
+              </div>
+            </div>
+            <div class="step-row" style="margin-top:8px">
+              <div class="step-num">2</div>
+              <div class="step-body">
+                &Delta;x = x<sub>B</sub> &minus; x<sub>A</sub> = <span class="yel">${fmt(B.x)}</span> &minus; (<span class="red">${fmt(A.x)}</span>) = <span class="acc" id="p-dx">${fmt(dx)}</span>
+              </div>
+            </div>
+            <div class="step-row" style="margin-top:8px">
+              <div class="step-num">3</div>
+              <div class="step-body">
+                m = &Delta;y / &Delta;x = <span id="p-dy2">${fmt(dy)}</span> / <span id="p-dx2">${fmt(dx)}</span>
+                = <b><span class="acc" id="p-m">${m !== null ? fmt(m) : "∞ (droite verticale)"}</span></b>
+              </div>
+            </div>
+            <div class="formula-result" id="p-result">m = ${m !== null ? fmt(m) : "∞"}</div>
+          </div>
+
+          <div class="hint">💡 Fais glisser <b style="color:#ff6b6b">A</b> et <b style="color:#ffd93d">B</b> pour voir la pente changer !</div>`;
+
+        ["pax", "pay", "pbx", "pby"].forEach((k) => {
+          document.getElementById(`sl-${k}`).addEventListener("input", (e) => {
+            const pt = k.startsWith("pa") ? "A" : "B";
+            const coord = k.endsWith("x") ? "x" : "y";
+            ST.pente[pt][coord] = parseFloat(e.target.value);
+            drawAll();
+            updatePenteTab();
+          });
+        });
+      }
+
+      function updatePenteTab() {
+        const { A, B } = ST.pente;
+        const dx = B.x - A.x,
+          dy = B.y - A.y;
+        const m = dx !== 0 ? Math.round((dy / dx) * 100) / 100 : null;
+        const el = (id) => document.getElementById(id);
+        const map = {
+          "sl-pax": A.x,
+          "sl-pax-val": A.x,
+          "sl-pay": A.y,
+          "sl-pay-val": A.y,
+          "sl-pbx": B.x,
+          "sl-pbx-val": B.x,
+          "sl-pby": B.y,
+          "sl-pby-val": B.y,
+        };
+        for (const [id, val] of Object.entries(map)) {
+          const e = el(id);
+          if (!e) continue;
+          if (e.tagName === "INPUT") e.value = val;
+          else e.textContent = fmt(val);
+        }
+        if (el("p-dy")) el("p-dy").textContent = fmt(dy);
+        if (el("p-dx")) el("p-dx").textContent = fmt(dx);
+        if (el("p-dy2")) el("p-dy2").textContent = fmt(dy);
+        if (el("p-dx2")) el("p-dx2").textContent = fmt(dx);
+        const ms = m !== null ? fmt(m) : "∞";
+        if (el("p-m"))
+          el("p-m").textContent = m !== null ? fmt(m) : "∞ (droite verticale)";
+        if (el("p-result")) el("p-result").textContent = `m = ${ms}`;
+        if (el("m-live")) el("m-live").textContent = ms;
+      }
+
+      /* ================================================================
+         PARALLELES TAB — DRAWING
+      ================================================================ */
+      function drawFullLine(m, b, color, width = 2) {
+        const xMin = -CX / SC,
+          xMax = CX / SC;
+        const [x1, y1] = toC(xMin, m * xMin + b);
+        const [x2, y2] = toC(xMax, m * xMax + b);
+        CTX.beginPath();
+        CTX.moveTo(x1, y1);
+        CTX.lineTo(x2, y2);
+        CTX.strokeStyle = color;
+        CTX.lineWidth = width;
+        CTX.setLineDash([]);
+        CTX.stroke();
+      }
+
+      function drawParallelesTab() {
+        const { m, b1, b2 } = ST.paralleles;
+        drawFullLine(m, b1, "#38bdf8", 2.5);
+        drawFullLine(m, b2, "#a78bfa", 2.5);
+
+        // Labels
+        CTX.font = `700 ${Math.max(11, SC * 0.2)}px Space Mono, monospace`;
+        CTX.textAlign = "left";
+        CTX.textBaseline = "top";
+        CTX.fillStyle = "#38bdf8";
+        CTX.fillText(fmtLine(m, b1), 14, 14);
+        CTX.fillStyle = "#a78bfa";
+        CTX.fillText(fmtLine(m, b2), 14, 14 + Math.max(16, SC * 0.28));
+
+        // Arrow showing equal slope
+        const [px1] = toC(1, m * 1 + b1);
+        const [, py1] = toC(1, m * 1 + b1);
+        const [px2] = toC(1, m * 1 + b2);
+        const [, py2] = toC(1, m * 1 + b2);
+        CTX.setLineDash([4, 3]);
+        CTX.strokeStyle = "rgba(255,211,61,0.5)";
+        CTX.lineWidth = 1.5;
+        CTX.beginPath();
+        CTX.moveTo(px1, py1);
+        CTX.lineTo(px2, py2);
+        CTX.stroke();
+        CTX.setLineDash([]);
+      }
+
+      /* ================================================================
+         PARALLELES TAB — PANEL
+      ================================================================ */
+      function renderParallelesTab() {
+        const { m, b1, b2 } = ST.paralleles;
+        const mR = Math.round(m * 100) / 100;
+
+        document.getElementById("panel").innerHTML = `
+          <div class="theory-card">
+            <div class="theory-title">Droites parallèles</div>
+            <p>Deux droites sont <b>parallèles</b> si et seulement si elles ont la <b>même pente</b> (même coefficient directeur m).</p>
+            <div style="text-align:center;font-family:'Space Mono',monospace;font-size:0.9rem;padding:10px 12px;margin:10px 0;background:color-mix(in srgb,var(--acc) 8%,transparent);border:1px solid color-mix(in srgb,var(--acc) 25%,transparent);border-radius:8px;color:var(--acc)">
+              d&#8197;&#8741;&#8197;d&prime; &nbsp;&hArr;&nbsp; m<sub>1</sub> = m<sub>2</sub>
+            </div>
+            <p style="color:var(--muted);font-size:0.82rem">Si elles ont aussi le même b, elles sont <b style="color:var(--text)">identiques</b> (pas juste parallèles).</p>
+          </div>
+
+          <div class="coords-display" style="font-size:1.1rem;letter-spacing:0">
+            <span style="color:#38bdf8" id="eq1-disp">${fmtLine(m, b1)}</span><br>
+            <span style="color:#a78bfa" id="eq2-disp">${fmtLine(m, b2)}</span>
+          </div>
+
+          <div class="slider-row">
+            <label style="color:var(--yellow);min-width:28px">m</label>
+            <input type="range" id="sl-pm" min="-4" max="4" step="0.5" value="${mR}">
+            <span class="val" style="color:var(--yellow)" id="sl-pm-val">${fmt(mR)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#38bdf8;min-width:28px">b<sub>1</sub></label>
+            <input type="range" id="sl-pb1" min="-5" max="5" step="0.5" value="${b1}">
+            <span class="val" style="color:#38bdf8" id="sl-pb1-val">${fmt(b1)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#a78bfa;min-width:28px">b<sub>2</sub></label>
+            <input type="range" id="sl-pb2" min="-5" max="5" step="0.5" value="${b2}">
+            <span class="val" style="color:#a78bfa" id="sl-pb2-val">${fmt(b2)}</span>
+          </div>
+
+          <div class="formula-card">
+            <div class="formula-label">Vérification</div>
+            <div class="step-row">
+              <div class="step-num">1</div>
+              <div class="step-body">Pente de (d) : m<sub>1</sub> = <span class="acc" id="v-m1">${fmt(mR)}</span></div>
+            </div>
+            <div class="step-row" style="margin-top:8px">
+              <div class="step-num">2</div>
+              <div class="step-body">Pente de (d') : m<sub>2</sub> = <span class="acc" id="v-m2">${fmt(mR)}</span></div>
+            </div>
+            <div class="formula-result" id="par-result">m<sub>1</sub> = m<sub>2</sub> = ${fmt(mR)} &rarr; (d) &#8741; (d&prime;)</div>
+          </div>
+
+          <div class="hint">💡 Les deux droites ont toujours la même pente <b style="color:var(--yellow)">m</b>. Change b<sub>1</sub> et b<sub>2</sub> pour les écarter !</div>`;
+
+        document.getElementById("sl-pm").addEventListener("input", (e) => {
+          ST.paralleles.m = parseFloat(e.target.value);
+          drawAll();
+          renderParallelesTab();
+        });
+        document.getElementById("sl-pb1").addEventListener("input", (e) => {
+          ST.paralleles.b1 = parseFloat(e.target.value);
+          drawAll();
+          renderParallelesTab();
+        });
+        document.getElementById("sl-pb2").addEventListener("input", (e) => {
+          ST.paralleles.b2 = parseFloat(e.target.value);
+          drawAll();
+          renderParallelesTab();
+        });
+      }
+
+      /* ================================================================
+         PERPENDICULAIRES TAB — DRAWING
+      ================================================================ */
+      function drawPerpendicualairesTab() {
+        const { m, b1, b2 } = ST.perpendiculaires;
+        const mPerp = Math.abs(m) > 0.01 ? -1 / m : 1000;
+        drawFullLine(m, b1, "#38bdf8", 2.5);
+        drawFullLine(mPerp, b2, "#a78bfa", 2.5);
+
+        // Right angle symbol at intersection
+        if (Math.abs(m) > 0.01) {
+          const xi = (b2 - b1) / (m - mPerp);
+          const yi = m * xi + b1;
+          if (Math.abs(xi) < CX / SC && Math.abs(yi) < CY / SC) {
+            const [ipx, ipy] = toC(xi, yi);
+            const s = Math.max(9, SC * 0.17);
+            const angle1 = Math.atan2(m * SC, -SC); // direction of line 1 on canvas
+            const cos1 = Math.cos(angle1),
+              sin1 = Math.sin(angle1);
+            const cos2 = Math.cos(angle1 + Math.PI / 2),
+              sin2 = Math.sin(angle1 + Math.PI / 2);
+            CTX.strokeStyle = "rgba(255,211,61,0.7)";
+            CTX.lineWidth = 2;
+            CTX.setLineDash([]);
+            CTX.beginPath();
+            CTX.moveTo(ipx + cos1 * s, ipy + sin1 * s);
+            CTX.lineTo(ipx + cos1 * s + cos2 * s, ipy + sin1 * s + sin2 * s);
+            CTX.lineTo(ipx + cos2 * s, ipy + sin2 * s);
+            CTX.stroke();
+          }
+        }
+
+        CTX.font = `700 ${Math.max(11, SC * 0.2)}px Space Mono, monospace`;
+        CTX.textAlign = "left";
+        CTX.textBaseline = "top";
+        CTX.fillStyle = "#38bdf8";
+        CTX.fillText(fmtLine(m, b1), 14, 14);
+        const mPerpR = Math.round(mPerp * 100) / 100;
+        CTX.fillStyle = "#a78bfa";
+        CTX.fillText(fmtLine(mPerpR, b2), 14, 14 + Math.max(16, SC * 0.28));
+      }
+
+      /* ================================================================
+         PERPENDICULAIRES TAB — PANEL
+      ================================================================ */
+      function renderPerpendicualairesTab() {
+        const { m, b1, b2 } = ST.perpendiculaires;
+        const mR = Math.round(m * 100) / 100;
+        const mPerp =
+          Math.abs(m) > 0.01 ? Math.round((-1 / m) * 100) / 100 : "∞";
+
+        document.getElementById("panel").innerHTML = `
+          <div class="theory-card">
+            <div class="theory-title">Droites perpendiculaires</div>
+            <p>Deux droites sont <b>perpendiculaires</b> si et seulement si le produit de leurs pentes est égal à <b>−1</b> :</p>
+            <div style="text-align:center;font-family:'Space Mono',monospace;font-size:0.9rem;padding:10px 12px;margin:10px 0;background:color-mix(in srgb,var(--acc) 8%,transparent);border:1px solid color-mix(in srgb,var(--acc) 25%,transparent);border-radius:8px;color:var(--acc)">
+              d &perp; d&prime; &nbsp;&hArr;&nbsp; m<sub>1</sub> &times; m<sub>2</sub> = &minus;1<br>
+              <span style="color:var(--muted);font-size:0.82rem">ou&nbsp; m<sub>2</sub> = &minus;1 / m<sub>1</sub></span>
+            </div>
+          </div>
+
+          <div class="coords-display" style="font-size:1.1rem;letter-spacing:0">
+            <span style="color:#38bdf8" id="eq1-perp">${fmtLine(m, b1)}</span><br>
+            <span style="color:#a78bfa" id="eq2-perp">${fmtLine(typeof mPerp === "number" ? mPerp : 0, b2)}</span>
+          </div>
+
+          <div class="slider-row">
+            <label style="color:var(--yellow);min-width:28px">m</label>
+            <input type="range" id="sl-prm" min="-4" max="4" step="0.5" value="${mR}">
+            <span class="val" style="color:var(--yellow)" id="sl-prm-val">${fmt(mR)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#38bdf8;min-width:28px">b<sub>1</sub></label>
+            <input type="range" id="sl-prb1" min="-5" max="5" step="0.5" value="${b1}">
+            <span class="val" style="color:#38bdf8" id="sl-prb1-val">${fmt(b1)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#a78bfa;min-width:28px">b<sub>2</sub></label>
+            <input type="range" id="sl-prb2" min="-5" max="5" step="0.5" value="${b2}">
+            <span class="val" style="color:#a78bfa" id="sl-prb2-val">${fmt(b2)}</span>
+          </div>
+
+          <div class="formula-card">
+            <div class="formula-label">Calcul de la pente perpendiculaire</div>
+            <div class="step-row">
+              <div class="step-num">1</div>
+              <div class="step-body">Pente (d) : m<sub>1</sub> = <span class="acc" id="v-prm1">${fmt(mR)}</span></div>
+            </div>
+            <div class="step-row" style="margin-top:8px">
+              <div class="step-num">2</div>
+              <div class="step-body">m<sub>2</sub> = &minus;1 / m<sub>1</sub> = &minus;1 / <span id="v-prm1b">${fmt(mR)}</span> = <span class="acc" id="v-prm2">${fmt(mPerp)}</span></div>
+            </div>
+            <div class="formula-result" id="perp-verify">m<sub>1</sub> &times; m<sub>2</sub> = ${Math.abs(m) > 0.01 ? fmt(mR * (typeof mPerp === "number" ? mPerp : 0)) : "—"}</div>
+          </div>
+
+          <div class="hint">💡 Le petit carré jaune à l'intersection montre l'angle droit !</div>`;
+
+        document.getElementById("sl-prm").addEventListener("input", (e) => {
+          ST.perpendiculaires.m = parseFloat(e.target.value);
+          drawAll();
+          renderPerpendicualairesTab();
+        });
+        document.getElementById("sl-prb1").addEventListener("input", (e) => {
+          ST.perpendiculaires.b1 = parseFloat(e.target.value);
+          drawAll();
+          renderPerpendicualairesTab();
+        });
+        document.getElementById("sl-prb2").addEventListener("input", (e) => {
+          ST.perpendiculaires.b2 = parseFloat(e.target.value);
+          drawAll();
+          renderPerpendicualairesTab();
+        });
+      }
+
+      /* ================================================================
+         INTERSECTION TAB — DRAWING
+      ================================================================ */
+      function drawIntersectionTab() {
+        const { m1, b1, m2, b2 } = ST.intersection;
+        drawFullLine(m1, b1, "#38bdf8", 2.5);
+        drawFullLine(m2, b2, "#a78bfa", 2.5);
+
+        // Intersection point
+        if (Math.abs(m1 - m2) > 0.001) {
+          const xi = (b2 - b1) / (m1 - m2);
+          const yi = m1 * xi + b1;
+          drawPoint(
+            xi,
+            yi,
+            "#ffd93d",
+            `I(${fmt(Math.round(xi * 100) / 100)} ; ${fmt(Math.round(yi * 100) / 100)})`,
+            true,
+          );
+        } else {
+          CTX.font = `700 ${Math.max(12, SC * 0.2)}px Lexend, sans-serif`;
+          CTX.fillStyle = "#ff6b6b";
+          CTX.textAlign = "center";
+          CTX.textBaseline = "top";
+          CTX.fillText("Pas d'intersection (parallèles)", CVS.width / 2, 16);
+        }
+
+        CTX.font = `700 ${Math.max(11, SC * 0.2)}px Space Mono, monospace`;
+        CTX.textAlign = "left";
+        CTX.textBaseline = "top";
+        CTX.fillStyle = "#38bdf8";
+        CTX.fillText(fmtLine(m1, b1), 14, 14);
+        CTX.fillStyle = "#a78bfa";
+        CTX.fillText(fmtLine(m2, b2), 14, 14 + Math.max(16, SC * 0.28));
+      }
+
+      /* ================================================================
+         INTERSECTION TAB — PANEL
+      ================================================================ */
+      function renderIntersectionTab() {
+        const { m1, b1, m2, b2 } = ST.intersection;
+        const parallel = Math.abs(m1 - m2) < 0.001;
+        const xi = parallel
+          ? null
+          : Math.round(((b2 - b1) / (m1 - m2)) * 100) / 100;
+        const yi = xi !== null ? Math.round((m1 * xi + b1) * 100) / 100 : null;
+
+        const stepsHtml = parallel
+          ? `<div class="hint" style="color:var(--red)">⚠️ Les deux droites ont la même pente → elles sont <b>parallèles</b>, pas d'intersection.</div>`
+          : `
+            <div class="step-row">
+              <div class="step-num">1</div>
+              <div class="step-body">Égaliser les deux expressions :<br>
+                <span class="acc">${fmt(m1)}</span>x + <span class="yel">${fmt(b1)}</span> = <span class="pur">${fmt(m2)}</span>x + <span class="yel">${fmt(b2)}</span>
+              </div>
+            </div>
+            <div class="step-row" style="margin-top:8px">
+              <div class="step-num">2</div>
+              <div class="step-body">(<span class="acc">${fmt(m1)}</span> &minus; <span class="pur">${fmt(m2)}</span>)x = <span class="yel">${fmt(b2)}</span> &minus; <span class="yel">${fmt(b1)}</span>
+                = <span class="acc" id="v-idiff">${fmt(b2 - b1)}</span>
+              </div>
+            </div>
+            <div class="step-row" style="margin-top:8px">
+              <div class="step-num">3</div>
+              <div class="step-body">x = <span id="v-idiff2">${fmt(b2 - b1)}</span> / <span id="v-imdiff">${fmt(m1 - m2)}</span>
+                = <b><span class="acc" id="v-xi">${fmt(xi)}</span></b>
+              </div>
+            </div>
+            <div class="step-row" style="margin-top:8px">
+              <div class="step-num">4</div>
+              <div class="step-body">y = <span class="acc">${fmt(m1)}</span> &times; <span id="v-xi2">${fmt(xi)}</span> + <span class="yel">${fmt(b1)}</span>
+                = <b><span class="acc" id="v-yi">${fmt(yi)}</span></b>
+              </div>
+            </div>
+            <div class="formula-result" id="inter-result">I( ${fmt(xi)} ; ${fmt(yi)} )</div>`;
+
+        document.getElementById("panel").innerHTML = `
+          <div class="theory-card">
+            <div class="theory-title">Intersection de deux droites</div>
+            <p>L'<b>intersection</b> de deux droites est le point I qui appartient aux deux droites à la fois.</p>
+            <p style="margin-top:8px">Pour le trouver, on <b>résout le système d'équations</b> :<br>
+            on cherche x tel que y est le même dans les deux droites.</p>
+          </div>
+
+          <div class="coords-display" id="inter-display" style="font-size:1.3rem;letter-spacing:0">
+            ${parallel ? '<span style="color:var(--red)">∅ (parallèles)</span>' : `I( <span class="cx">${fmt(xi)}</span> ; <span class="cy">${fmt(yi)}</span> )`}
+          </div>
+
+          <div class="slider-row">
+            <label style="color:#38bdf8;min-width:32px">m<sub>1</sub></label>
+            <input type="range" id="sl-im1" min="-4" max="4" step="0.5" value="${m1}">
+            <span class="val" style="color:#38bdf8" id="sl-im1-val">${fmt(m1)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#38bdf8;min-width:32px">b<sub>1</sub></label>
+            <input type="range" id="sl-ib1" min="-5" max="5" step="0.5" value="${b1}">
+            <span class="val" style="color:#38bdf8" id="sl-ib1-val">${fmt(b1)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#a78bfa;min-width:32px">m<sub>2</sub></label>
+            <input type="range" id="sl-im2" min="-4" max="4" step="0.5" value="${m2}">
+            <span class="val" style="color:#a78bfa" id="sl-im2-val">${fmt(m2)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#a78bfa;min-width:32px">b<sub>2</sub></label>
+            <input type="range" id="sl-ib2" min="-5" max="5" step="0.5" value="${b2}">
+            <span class="val" style="color:#a78bfa" id="sl-ib2-val">${fmt(b2)}</span>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="formula-card">
+            <div class="formula-label">Résolution du système</div>
+            ${stepsHtml}
+          </div>
+
+          <div class="hint">💡 Le point <b style="color:#ffd93d">I</b> (jaune) est l'intersection. Si les pentes sont égales, les droites sont parallèles !</div>`;
+
+        ["im1", "ib1", "im2", "ib2"].forEach((k) => {
+          document.getElementById(`sl-${k}`).addEventListener("input", (e) => {
+            const prop = k.replace("i", "");
+            ST.intersection[prop] = parseFloat(e.target.value);
+            drawAll();
+            renderIntersectionTab();
+          });
+        });
+      }
+
+      /* ================================================================
+         POINT-DROITE TAB — DRAWING
+      ================================================================ */
+      function drawPtDroiteTab() {
+        const { m, b, P } = ST.ptdroite;
+        drawFullLine(m, b, "#38bdf8", 2.5);
+
+        // Foot of perpendicular H
+        const mPerp = Math.abs(m) > 0.01 ? -1 / m : 0;
+        const bPerp = P.y - mPerp * P.x;
+        let hx, hy;
+        if (Math.abs(m) < 0.01) {
+          hx = P.x;
+          hy = b;
+        } else {
+          hx = (bPerp - b) / (m - mPerp);
+          hy = m * hx + b;
+        }
+
+        // Dashed perpendicular segment P → H
+        const [ppx, ppy] = toC(P.x, P.y);
+        const [hpx, hpy] = toC(hx, hy);
+        CTX.beginPath();
+        CTX.moveTo(ppx, ppy);
+        CTX.lineTo(hpx, hpy);
+        CTX.strokeStyle = "#ffd93d";
+        CTX.lineWidth = 1.8;
+        CTX.setLineDash([5, 4]);
+        CTX.stroke();
+        CTX.setLineDash([]);
+
+        // Right angle at H
+        const s = Math.max(8, SC * 0.16);
+        const lineAngle = Math.atan2(m * -SC, -SC);
+        const perp = lineAngle + Math.PI / 2;
+        const cos1 = Math.cos(lineAngle),
+          sin1 = Math.sin(lineAngle);
+        const cos2 = Math.cos(perp),
+          sin2 = Math.sin(perp);
+        CTX.strokeStyle = "rgba(255,211,61,0.7)";
+        CTX.lineWidth = 2;
+        CTX.setLineDash([]);
+        CTX.beginPath();
+        CTX.moveTo(hpx + cos1 * s, hpy + sin1 * s);
+        CTX.lineTo(hpx + cos1 * s + cos2 * s, hpy + sin1 * s + sin2 * s);
+        CTX.lineTo(hpx + cos2 * s, hpy + sin2 * s);
+        CTX.stroke();
+
+        // Distance label
+        const dist = Math.hypot(P.x - hx, P.y - hy);
+        const mpx = (ppx + hpx) / 2,
+          mpy = (ppy + hpy) / 2;
+        CTX.fillStyle = "#ffd93d";
+        CTX.font = `700 ${Math.max(10, SC * 0.18)}px Space Mono, monospace`;
+        CTX.textAlign = "left";
+        CTX.textBaseline = "middle";
+        CTX.fillText(`d = ${dist.toFixed(2)}`, mpx + 8, mpy);
+
+        drawPoint(
+          hx,
+          hy,
+          "#4ade80",
+          `H(${fmt(Math.round(hx * 100) / 100)} ; ${fmt(Math.round(hy * 100) / 100)})`,
+          false,
+        );
+        drawPoint(P.x, P.y, "#a78bfa", `P(${fmt(P.x)} ; ${fmt(P.y)})`, true);
+
+        CTX.font = `700 ${Math.max(11, SC * 0.2)}px Space Mono, monospace`;
+        CTX.fillStyle = "#38bdf8";
+        CTX.textAlign = "left";
+        CTX.textBaseline = "top";
+        CTX.fillText(fmtLine(m, b), 14, 14);
+      }
+
+      /* ================================================================
+         POINT-DROITE TAB — PANEL
+      ================================================================ */
+      function renderPtDroiteTab() {
+        const { m, b, P } = ST.ptdroite;
+        const mR = Math.round(m * 100) / 100,
+          bR = Math.round(b * 100) / 100;
+        const mPerp = Math.abs(m) > 0.01 ? -1 / m : 0;
+        const bPerp = P.y - mPerp * P.x;
+        let hx, hy;
+        if (Math.abs(m) < 0.01) {
+          hx = P.x;
+          hy = b;
+        } else {
+          hx = (bPerp - b) / (m - mPerp);
+          hy = m * hx + b;
+        }
+        const dist = Math.round(Math.hypot(P.x - hx, P.y - hy) * 1000) / 1000;
+        const hxR = Math.round(hx * 100) / 100,
+          hyR = Math.round(hy * 100) / 100;
+
+        // d = |ax0 + by0 + c| / sqrt(a²+b²) pour ax+by+c=0 → mx - y + b = 0
+        const a = mR,
+          bCoeff = -1,
+          c_ = bR;
+        const num = Math.abs(a * P.x + bCoeff * P.y + c_);
+        const den = Math.sqrt(a * a + bCoeff * bCoeff);
+        const distFormula = Math.round((num / den) * 1000) / 1000;
+
+        document.getElementById("panel").innerHTML = `
+          <div class="theory-card">
+            <div class="theory-title">Distance d'un point à une droite</div>
+            <p>La <b>distance</b> d'un point P à une droite est la longueur du segment <b>PH</b>, où H est le <b>pied de la perpendiculaire</b> abaissée de P sur la droite.</p>
+            <div style="text-align:center;font-family:'Space Mono',monospace;font-size:0.82rem;padding:10px 12px;margin:10px 0;background:color-mix(in srgb,var(--acc) 8%,transparent);border:1px solid color-mix(in srgb,var(--acc) 25%,transparent);border-radius:8px;color:var(--acc);line-height:1.8">
+              Droite : ax + by + c = 0<br>
+              d(P, droite) = |ax<sub>P</sub> + by<sub>P</sub> + c| / &radic;(a² + b²)
+            </div>
+          </div>
+
+          <div class="coords-display" style="font-size:1.6rem">
+            d = <span class="cx" id="pd-live">${dist}</span>
+          </div>
+
+          <div class="slider-row">
+            <label style="color:var(--purple);min-width:28px">m</label>
+            <input type="range" id="sl-pdm" min="-4" max="4" step="0.5" value="${mR}">
+            <span class="val" style="color:var(--purple)" id="sl-pdm-val">${fmt(mR)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:var(--yellow);min-width:28px">b</label>
+            <input type="range" id="sl-pdb" min="-5" max="5" step="0.5" value="${bR}">
+            <span class="val" style="color:var(--yellow)" id="sl-pdb-val">${fmt(bR)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:var(--acc);min-width:40px">x<sub>P</sub></label>
+            <input type="range" id="sl-pdpx" min="-6" max="6" step="0.5" value="${P.x}">
+            <span class="val" style="color:var(--acc)" id="sl-pdpx-val">${fmt(P.x)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:var(--acc);min-width:40px">y<sub>P</sub></label>
+            <input type="range" id="sl-pdpy" min="-6" max="6" step="0.5" value="${P.y}">
+            <span class="val" style="color:var(--acc)" id="sl-pdpy-val">${fmt(P.y)}</span>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="formula-card">
+            <div class="formula-label">Calcul (forme ax+by+c=0)</div>
+            <div class="step-row">
+              <div class="step-num">1</div>
+              <div class="step-body">
+                Droite : <span class="acc">${fmt(mR)}</span>x − y + <span class="yel">${fmt(bR)}</span> = 0<br>
+                → a = <span class="acc">${fmt(mR)}</span>, b = −1, c = <span class="yel">${fmt(bR)}</span>
+              </div>
+            </div>
+            <div class="step-row" style="margin-top:8px">
+              <div class="step-num">2</div>
+              <div class="step-body">
+                Numérateur : |<span class="acc">${fmt(mR)}</span> × <span class="pur">${fmt(P.x)}</span> + (−1) × <span class="pur">${fmt(P.y)}</span> + <span class="yel">${fmt(bR)}</span>|
+                = <span class="acc" id="pd-num">${fmt(num)}</span>
+              </div>
+            </div>
+            <div class="step-row" style="margin-top:8px">
+              <div class="step-num">3</div>
+              <div class="step-body">
+                Dénominateur : &radic;(<span class="acc">${fmt(mR)}</span>² + (−1)²) = &radic;<span id="pd-den2">${fmt(a * a + 1)}</span>
+                ≈ <span class="acc" id="pd-den">${den.toFixed(4)}</span>
+              </div>
+            </div>
+            <div class="step-row" style="margin-top:8px">
+              <div class="step-num">4</div>
+              <div class="step-body">
+                d = <span id="pd-num2">${fmt(num)}</span> / <span id="pd-den3">${den.toFixed(4)}</span>
+                ≈ <b><span class="acc" id="pd-dist">${distFormula}</span></b>
+              </div>
+            </div>
+            <div class="formula-result" id="pd-result">d(P, droite) ≈ ${dist}</div>
+          </div>
+
+          <div class="hint">💡 Le point vert <b style="color:#4ade80">H</b> est le pied de la perpendiculaire. PH est la distance la plus courte entre P et la droite.</div>`;
+
+        document.getElementById("sl-pdm").addEventListener("input", (e) => {
+          ST.ptdroite.m = parseFloat(e.target.value);
+          drawAll();
+          renderPtDroiteTab();
+        });
+        document.getElementById("sl-pdb").addEventListener("input", (e) => {
+          ST.ptdroite.b = parseFloat(e.target.value);
+          drawAll();
+          renderPtDroiteTab();
+        });
+        document.getElementById("sl-pdpx").addEventListener("input", (e) => {
+          ST.ptdroite.P.x = parseFloat(e.target.value);
+          drawAll();
+          updatePtDroiteTab();
+        });
+        document.getElementById("sl-pdpy").addEventListener("input", (e) => {
+          ST.ptdroite.P.y = parseFloat(e.target.value);
+          drawAll();
+          updatePtDroiteTab();
+        });
+      }
+
+      function updatePtDroiteTab() {
+        const { m, b, P } = ST.ptdroite;
+        const mR = Math.round(m * 100) / 100,
+          bR = Math.round(b * 100) / 100;
+        const mPerp = Math.abs(m) > 0.01 ? -1 / m : 0;
+        const bPerp = P.y - mPerp * P.x;
+        let hx, hy;
+        if (Math.abs(m) < 0.01) {
+          hx = P.x;
+          hy = b;
+        } else {
+          hx = (bPerp - b) / (m - mPerp);
+          hy = m * hx + b;
+        }
+        const dist = Math.round(Math.hypot(P.x - hx, P.y - hy) * 1000) / 1000;
+        const a = mR,
+          c_ = bR;
+        const num = Math.abs(a * P.x - P.y + c_);
+        const den = Math.sqrt(a * a + 1);
+        const el = (id) => document.getElementById(id);
+        if (el("sl-pdpx")) el("sl-pdpx").value = P.x;
+        if (el("sl-pdpx-val")) el("sl-pdpx-val").textContent = fmt(P.x);
+        if (el("sl-pdpy")) el("sl-pdpy").value = P.y;
+        if (el("sl-pdpy-val")) el("sl-pdpy-val").textContent = fmt(P.y);
+        if (el("pd-live")) el("pd-live").textContent = dist;
+        if (el("pd-num")) el("pd-num").textContent = fmt(num);
+        if (el("pd-num2")) el("pd-num2").textContent = fmt(num);
+        if (el("pd-dist"))
+          el("pd-dist").textContent = Math.round((num / den) * 1000) / 1000;
+        if (el("pd-result"))
+          el("pd-result").textContent = `d(P, droite) ≈ ${dist}`;
+      }
+
+      /* ================================================================
+         CERCLE TAB — DRAWING
+      ================================================================ */
+      function drawCercleTab() {
+        const { cx, cy, r, P } = ST.cercle;
+        const [ccpx, ccpy] = toC(cx, cy);
+
+        // Circle
+        CTX.beginPath();
+        CTX.arc(ccpx, ccpy, r * SC, 0, Math.PI * 2);
+        CTX.strokeStyle = "#38bdf8";
+        CTX.lineWidth = 2.5;
+        CTX.setLineDash([]);
+        CTX.stroke();
+
+        // Radius to P
+        const [ppx, ppy] = toC(P.x, P.y);
+        CTX.beginPath();
+        CTX.moveTo(ccpx, ccpy);
+        CTX.lineTo(ppx, ppy);
+        CTX.strokeStyle = "rgba(255,211,61,0.6)";
+        CTX.lineWidth = 1.8;
+        CTX.setLineDash([4, 3]);
+        CTX.stroke();
+        CTX.setLineDash([]);
+
+        // Radius label
+        const dist = Math.sqrt((P.x - cx) ** 2 + (P.y - cy) ** 2);
+        const mpx2 = (ccpx + ppx) / 2,
+          mpy2 = (ccpy + ppy) / 2;
+        CTX.fillStyle = "#ffd93d";
+        CTX.font = `600 ${Math.max(10, SC * 0.18)}px Space Mono, monospace`;
+        CTX.textAlign = "center";
+        CTX.textBaseline = "bottom";
+        CTX.fillText(`r = ${r.toFixed(1)}`, mpx2, mpy2 - 4);
+
+        // Check on/in/out
+        const onCircle = Math.abs(dist - r) < 0.15;
+        const insideCircle = dist < r - 0.15;
+        const pColor = onCircle
+          ? "#4ade80"
+          : insideCircle
+            ? "#ff9f43"
+            : "#a78bfa";
+
+        drawPoint(cx, cy, "#38bdf8", `C(${fmt(cx)} ; ${fmt(cy)})`, true);
+        drawPoint(P.x, P.y, pColor, `P(${fmt(P.x)} ; ${fmt(P.y)})`, false);
+      }
+
+      /* ================================================================
+         CERCLE TAB — PANEL
+      ================================================================ */
+      function renderCercleTab() {
+        const { cx, cy, r, P } = ST.cercle;
+        const cxR = Math.round(cx * 100) / 100,
+          cyR = Math.round(cy * 100) / 100,
+          rR = Math.round(r * 100) / 100;
+        const dist2 =
+          Math.round(((P.x - cx) ** 2 + (P.y - cy) ** 2) * 100) / 100;
+        const r2 = Math.round(r * r * 100) / 100;
+        const dist = Math.sqrt((P.x - cx) ** 2 + (P.y - cy) ** 2);
+        const position =
+          Math.abs(dist - r) < 0.15
+            ? "sur le cercle ✅"
+            : dist < r
+              ? "à l'intérieur 🔵"
+              : "à l'extérieur 🟣";
+        const lhsP =
+          Math.round(((P.x - cx) ** 2 + (P.y - cy) ** 2) * 100) / 100;
+
+        document.getElementById("panel").innerHTML = `
+          <div class="theory-card">
+            <div class="theory-title">Équation d'un cercle</div>
+            <p>Un cercle de <b>centre C(a ; b)</b> et de <b>rayon r</b> est l'ensemble des points P vérifiant :</p>
+            <div style="text-align:center;font-family:'Space Mono',monospace;font-size:0.9rem;padding:10px 12px;margin:10px 0;background:color-mix(in srgb,var(--acc) 8%,transparent);border:1px solid color-mix(in srgb,var(--acc) 25%,transparent);border-radius:8px;color:var(--acc)">
+              (x &minus; a)&sup2; + (y &minus; b)&sup2; = r&sup2;
+            </div>
+            <ul>
+              <li>Si &lt; r² : P est <b>à l'intérieur</b></li>
+              <li>Si = r² : P est <b>sur le cercle</b></li>
+              <li>Si &gt; r² : P est <b>à l'extérieur</b></li>
+            </ul>
+          </div>
+
+          <div class="coords-display" style="font-size:0.95rem;letter-spacing:0" id="cercle-eq">
+            (x &minus; ${fmt(cxR)})&sup2; + (y &minus; ${fmt(cyR)})&sup2; = ${fmt(r2)}
+          </div>
+
+          <div class="slider-row">
+            <label style="color:#38bdf8;min-width:32px">a</label>
+            <input type="range" id="sl-ca" min="-4" max="4" step="0.5" value="${cxR}">
+            <span class="val" style="color:#38bdf8" id="sl-ca-val">${fmt(cxR)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:#38bdf8;min-width:32px">b</label>
+            <input type="range" id="sl-cb" min="-4" max="4" step="0.5" value="${cyR}">
+            <span class="val" style="color:#38bdf8" id="sl-cb-val">${fmt(cyR)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:var(--acc);min-width:28px">r</label>
+            <input type="range" id="sl-cr" min="0.5" max="5" step="0.5" value="${rR}">
+            <span class="val" style="color:var(--acc)" id="sl-cr-val">${fmt(rR)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:var(--purple);min-width:40px">x<sub>P</sub></label>
+            <input type="range" id="sl-cpx" min="-6" max="6" step="0.5" value="${P.x}">
+            <span class="val" style="color:var(--purple)" id="sl-cpx-val">${fmt(P.x)}</span>
+          </div>
+          <div class="slider-row">
+            <label style="color:var(--purple);min-width:40px">y<sub>P</sub></label>
+            <input type="range" id="sl-cpy" min="-6" max="6" step="0.5" value="${P.y}">
+            <span class="val" style="color:var(--purple)" id="sl-cpy-val">${fmt(P.y)}</span>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="formula-card">
+            <div class="formula-label">Position de P par rapport au cercle</div>
+            <div class="step-row">
+              <div class="step-num">1</div>
+              <div class="step-body">
+                (x<sub>P</sub> &minus; a)&sup2; + (y<sub>P</sub> &minus; b)&sup2;<br>
+                = (<span class="pur">${fmt(P.x)}</span> &minus; <span class="acc">${fmt(cxR)}</span>)&sup2; + (<span class="pur">${fmt(P.y)}</span> &minus; <span class="acc">${fmt(cyR)}</span>)&sup2;<br>
+                = <span class="acc" id="c-lhs">${fmt(lhsP)}</span>
+              </div>
+            </div>
+            <div class="step-row" style="margin-top:8px">
+              <div class="step-num">2</div>
+              <div class="step-body">
+                r² = (<span class="acc">${fmt(rR)}</span>)&sup2; = <span class="acc" id="c-r2">${fmt(r2)}</span>
+              </div>
+            </div>
+            <div class="formula-result" id="c-pos">P est ${position}</div>
+          </div>
+
+          <div class="hint">💡 Fais glisser <b style="color:#38bdf8">C</b> et <b style="color:var(--purple)">P</b> sur le repère. La couleur de P change selon sa position !</div>`;
+
+        document.getElementById("sl-ca").addEventListener("input", (e) => {
+          ST.cercle.cx = parseFloat(e.target.value);
+          drawAll();
+          renderCercleTab();
+        });
+        document.getElementById("sl-cb").addEventListener("input", (e) => {
+          ST.cercle.cy = parseFloat(e.target.value);
+          drawAll();
+          renderCercleTab();
+        });
+        document.getElementById("sl-cr").addEventListener("input", (e) => {
+          ST.cercle.r = parseFloat(e.target.value);
+          drawAll();
+          renderCercleTab();
+        });
+        document.getElementById("sl-cpx").addEventListener("input", (e) => {
+          ST.cercle.P.x = parseFloat(e.target.value);
+          drawAll();
+          updateCercleTab();
+        });
+        document.getElementById("sl-cpy").addEventListener("input", (e) => {
+          ST.cercle.P.y = parseFloat(e.target.value);
+          drawAll();
+          updateCercleTab();
+        });
+      }
+
+      function updateCercleTab() {
+        const { cx, cy, r, P } = ST.cercle;
+        const cxR = Math.round(cx * 100) / 100,
+          cyR = Math.round(cy * 100) / 100,
+          rR = Math.round(r * 100) / 100;
+        const lhsP =
+          Math.round(((P.x - cx) ** 2 + (P.y - cy) ** 2) * 100) / 100;
+        const r2 = Math.round(r * r * 100) / 100;
+        const dist = Math.sqrt((P.x - cx) ** 2 + (P.y - cy) ** 2);
+        const position =
+          Math.abs(dist - r) < 0.15
+            ? "sur le cercle ✅"
+            : dist < r
+              ? "à l'intérieur 🔵"
+              : "à l'extérieur 🟣";
+        const el = (id) => document.getElementById(id);
+        if (el("sl-cpx")) el("sl-cpx").value = P.x;
+        if (el("sl-cpx-val")) el("sl-cpx-val").textContent = fmt(P.x);
+        if (el("sl-cpy")) el("sl-cpy").value = P.y;
+        if (el("sl-cpy-val")) el("sl-cpy-val").textContent = fmt(P.y);
+        if (el("c-lhs")) el("c-lhs").textContent = fmt(lhsP);
+        if (el("c-pos")) el("c-pos").textContent = `P est ${position}`;
+      }
+
+      /* ================================================================
+         PDF SYSTEM
+      ================================================================ */
+      const PDF_MAP = {
+        repere: {
+          slide: "pdfs/Le%20Rep%C3%A8re/Slide.pdf",
+          synth: "pdfs/Le%20Rep%C3%A8re/Synth%C3%A8se.pdf",
+        },
+        distance: {
+          slide: "pdfs/Distance%20entre%20deux%20points/SLIDE.pdf",
+          synth: "pdfs/Distance%20entre%20deux%20points/Synth%C3%A8se.pdf",
+        },
+        milieu: {
+          synth: "pdfs/Milieu%20d%27un%20segment/Synth%C3%A8se.pdf",
+        },
+        droite: {
+          synth: "pdfs/L%27%C3%A9quation%20d%27une%20droite/Synth%C3%A8se.pdf",
+        },
+        pente: {
+          synth: "pdfs/La%20pente%20d%27une%20droite/Synth%C3%A8se.pdf",
+        },
+        paralleles: {
+          synth: "pdfs/les%20droites%20parall%C3%A8les/Synth%C3%A8se.pdf",
+        },
+        perpendiculaires: {
+          synth: "pdfs/les%20droites%20perpendiculaires/Synth%C3%A8se.pdf",
+        },
+        intersection: {
+          synth: "pdfs/intersection%20de%20deux%20droites/Synth%C3%A8se.pdf",
+        },
+        ptdroite: {
+          synth:
+            "pdfs/distance%20entre%20un%20point%20et%20une%20droite/Synth%C3%A8se.pdf",
+        },
+        cercle: {
+          synth: "pdfs/L%27%C3%A9quation%20d%27un%20cercle/Synth%C3%A8se.pdf",
+        },
+      };
+
+      function renderPdfSection() {
+        const sec = document.getElementById("pdf-section");
+        const pdfs = PDF_MAP[ST.tab];
+        if (!pdfs) {
+          sec.innerHTML = "";
+          return;
+        }
+
+        const tabs = [];
+        if (pdfs.slide)
+          tabs.push({ id: "pdf-slide", label: "🎬 Slides", src: pdfs.slide });
+        if (pdfs.synth)
+          tabs.push({ id: "pdf-synth", label: "📋 Synthèse", src: pdfs.synth });
+        if (pdfs.correction)
+          tabs.push({
+            id: "pdf-correction",
+            label: "📝 Correction",
+            src: pdfs.correction,
+          });
+
+        const btnHtml = tabs
+          .map(
+            (t, i) =>
+              `<button class="pdf-toggle-btn${i === 0 ? " active" : ""}" onclick="pdfSwitch(this,'${t.id}')">${t.label}</button>`,
+          )
+          .join("");
+        const paneHtml = tabs
+          .map(
+            (t, i) =>
+              `<div class="pdf-pane${i === 0 ? " active" : ""}" id="${t.id}">
+            <embed src="${t.src}" type="application/pdf" class="pdf-embed">
+            <a href="${t.src}" target="_blank" class="pdf-fallback">🔗 Ouvrir en plein écran</a>
+          </div>`,
+          )
+          .join("");
+
+        sec.innerHTML = `
+          <div class="pdf-outer-card">
+            <div class="pdf-header">
+              <span class="pdf-header-title">📄 Documents du chapitre</span>
+              <div class="pdf-header-line"></div>
+            </div>
+            <div class="pdf-toggle-row">${btnHtml}</div>
+            ${paneHtml}
+          </div>`;
+      }
+
+      function pdfSwitch(btn, paneId) {
+        const card = btn.closest(".pdf-outer-card");
+        card
+          .querySelectorAll(".pdf-toggle-btn")
+          .forEach((b) => b.classList.remove("active"));
+        card
+          .querySelectorAll(".pdf-pane")
+          .forEach((p) => p.classList.remove("active"));
+        btn.classList.add("active");
+        card.querySelector("#" + paneId).classList.add("active");
+      }
+
+      /* ================================================================
          DRAG SYSTEM
       ================================================================ */
       let drag = null;
@@ -1738,24 +2939,37 @@
 
       function hitTest(px, py) {
         const EPS = 14;
-        const pts =
-          ST.tab === "repere"
-            ? [{ key: "P", pt: ST.P }]
-            : ST.tab === "droite"
-              ? [
-                  {
-                    key: "PD",
-                    pt: {
-                      x: ST.droite.xp,
-                      y: ST.droite.m * ST.droite.xp + ST.droite.b,
-                    },
-                  },
-                ]
-              : [
-                  { key: "A", pt: ST.A },
-                  { key: "B", pt: ST.B },
-                ];
-
+        let pts = [];
+        if (ST.tab === "repere") {
+          pts = [{ key: "P", pt: ST.P }];
+        } else if (ST.tab === "droite") {
+          pts = [
+            {
+              key: "PD",
+              pt: {
+                x: ST.droite.xp,
+                y: ST.droite.m * ST.droite.xp + ST.droite.b,
+              },
+            },
+          ];
+        } else if (ST.tab === "pente") {
+          pts = [
+            { key: "PA", pt: ST.pente.A },
+            { key: "PB", pt: ST.pente.B },
+          ];
+        } else if (ST.tab === "ptdroite") {
+          pts = [{ key: "PP", pt: ST.ptdroite.P }];
+        } else if (ST.tab === "cercle") {
+          pts = [
+            { key: "CC", pt: { x: ST.cercle.cx, y: ST.cercle.cy } },
+            { key: "CP", pt: ST.cercle.P },
+          ];
+        } else if (ST.tab === "distance" || ST.tab === "milieu") {
+          pts = [
+            { key: "A", pt: ST.A },
+            { key: "B", pt: ST.B },
+          ];
+        }
         for (const { key, pt } of pts) {
           const [cpx, cpy] = toC(pt.x, pt.y);
           if (Math.hypot(px - cpx, py - cpy) < EPS) return key;
@@ -1783,18 +2997,45 @@
         e.preventDefault();
         const [mx, my] = getPointer(e);
         const [wx, wy] = toW(mx, my);
-        const target = drag === "P" ? ST.P : drag === "PD" ? null : ST[drag];
-        if (drag === "PD") {
-          ST.droite.xp = Math.max(-8, Math.min(8, snap(wx)));
-        } else if (target) {
-          target.x = Math.max(-8, Math.min(8, snap(wx)));
-          target.y = Math.max(-6, Math.min(6, snap(wy)));
+        const sx = Math.max(-8, Math.min(8, snap(wx)));
+        const sy = Math.max(-6, Math.min(6, snap(wy)));
+
+        if (drag === "P") {
+          ST.P.x = sx;
+          ST.P.y = sy;
+        } else if (drag === "PD") {
+          ST.droite.xp = sx;
+        } else if (drag === "PA") {
+          ST.pente.A.x = sx;
+          ST.pente.A.y = sy;
+        } else if (drag === "PB") {
+          ST.pente.B.x = sx;
+          ST.pente.B.y = sy;
+        } else if (drag === "PP") {
+          ST.ptdroite.P.x = sx;
+          ST.ptdroite.P.y = sy;
+        } else if (drag === "CC") {
+          ST.cercle.cx = sx;
+          ST.cercle.cy = sy;
+        } else if (drag === "CP") {
+          ST.cercle.P.x = sx;
+          ST.cercle.P.y = sy;
+        } else if (drag === "A") {
+          ST.A.x = sx;
+          ST.A.y = sy;
+        } else if (drag === "B") {
+          ST.B.x = sx;
+          ST.B.y = sy;
         }
+
         drawAll();
         if (ST.tab === "repere") updateCoordsPanel();
         else if (ST.tab === "distance") updateDistanceTab();
         else if (ST.tab === "milieu") updateMilieuTab();
         else if (ST.tab === "droite") updateDroiteTab();
+        else if (ST.tab === "pente") updatePenteTab();
+        else if (ST.tab === "ptdroite") updatePtDroiteTab();
+        else if (ST.tab === "cercle") updateCercleTab();
       }
 
       function onPointerUp() {

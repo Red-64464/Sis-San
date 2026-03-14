@@ -346,6 +346,21 @@ drawSegment(x1,y1, x2,y2, color, width)
 - [x] Créer `lieux_geometriques/lieux_geometriques.html` ✅
 - [ ] Créer `matrices/matrices.html`
 
+### Lieux géométriques — onglets (10 au total) ✅
+
+| Onglet                     | data-tab           | Contenu                      |
+| -------------------------- | ------------------ | ---------------------------- |
+| 📍 Le Repère               | `repere`           | Coordonnées, quadrants       |
+| 📏 La Distance             | `distance`         | Distance AB, Pythagore       |
+| ⚖️ Le Milieu               | `milieu`           | Milieu M d'un segment        |
+| 📐 Équation d'une Droite   | `droite`           | y = mx+b, trouver x ou y     |
+| 📈 La Pente                | `pente`            | m = Δy/Δx, triangle Δx/Δy    |
+| ∥ Droites Parallèles       | `paralleles`       | m₁ = m₂ → parallèles         |
+| ⊥ Droites Perpendiculaires | `perpendiculaires` | m₁ × m₂ = −1, angle droit    |
+| ✕ Intersection             | `intersection`     | Système d'équations, point I |
+| 📐 Distance Point-Droite   | `ptdroite`         | Formule \|ax+by+c\|/√(a²+b²) |
+| ⭕ Équation du Cercle      | `cercle`           | (x−a)²+(y−b)² = r², position |
+
 ### Améliorations vecteurs
 
 - [ ] Onglet **Vecteur unitaire** (v⃗ / ‖v⃗‖)
