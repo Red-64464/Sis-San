@@ -2,30 +2,37 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Espace Cours</title>
-
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <title>Sis-San</title>
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#070712" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;700;900&display=swap");
-
-      :root {
-        --bg: #070712;
-        --card-bg: #0e0e20;
-        --border: #1c1c38;
-
-        --green: #00f5c3;
-        --red: #ff6b6b;
-        --yellow: #ffd93d;
-        --purple: #a78bfa;
-
-        --text: #eeeeff;
-        --muted: #5858a0;
-      }
-
       * {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
+      }
+      :root {
+        --bg: #070712;
+        --card: #0e0e20;
+        --border: #1c1c38;
+        --text: #eeeeff;
+        --muted: #5858a0;
+        --theory: #a78bfa;
+        --study: #00f5c3;
       }
 
       body {
@@ -33,521 +40,262 @@
         color: var(--text);
         font-family: "Lexend", sans-serif;
         min-height: 100vh;
+        min-height: 100dvh;
         display: flex;
         flex-direction: column;
-      }
-
-      /* ─── HERO ─────────────────────────────────── */
-      .hero {
-        text-align: center;
-        padding: 56px 24px 40px;
-        position: relative;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        padding-bottom: env(safe-area-inset-bottom, 24px);
         overflow: hidden;
+        -webkit-tap-highlight-color: transparent;
       }
-      .hero::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background:
-          radial-gradient(
-            ellipse 80% 60% at 50% 0%,
-            rgba(167, 139, 250, 0.12) 0%,
-            transparent 70%
-          ),
-          radial-gradient(
-            ellipse 50% 40% at 20% 100%,
-            rgba(0, 245, 195, 0.07) 0%,
-            transparent 60%
-          );
+      .blob {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(100px);
         pointer-events: none;
+        opacity: 0.18;
+        z-index: 0;
       }
-
-      .hero-emoji {
-        font-size: 3rem;
-        display: block;
-        margin-bottom: 14px;
-        filter: drop-shadow(0 0 24px rgba(167, 139, 250, 0.5));
+      .blob-1 {
+        width: 420px;
+        height: 420px;
+        background: var(--theory);
+        top: -120px;
+        left: -80px;
       }
-
-      .hero h1 {
-        font-size: clamp(2rem, 5vw, 3.2rem);
+      .blob-2 {
+        width: 350px;
+        height: 350px;
+        background: var(--study);
+        bottom: -100px;
+        right: -60px;
+      }
+      .landing {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        width: 100%;
+        max-width: 480px;
+      }
+      .logo {
+        font-size: 2.4rem;
         font-weight: 900;
         letter-spacing: -1.5px;
-        line-height: 1.1;
-        background: linear-gradient(
-          135deg,
-          var(--green) 0%,
-          var(--purple) 50%,
-          var(--red) 100%
-        );
+        text-align: center;
+        margin-bottom: 4px;
+      }
+      .logo span {
+        background: linear-gradient(135deg, var(--study), var(--theory));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        position: relative;
       }
-
-      .hero-sub {
-        margin-top: 12px;
+      .tagline {
         color: var(--muted);
-        font-size: 1rem;
-        font-weight: 400;
-        letter-spacing: 0.2px;
+        font-size: 0.92rem;
+        text-align: center;
+        margin-bottom: 12px;
+        line-height: 1.5;
       }
-
-      /* ─── GRID ──────────────────────────────────── */
-      .wrap {
-        max-width: 920px;
-        margin: 0 auto;
-        padding: 0 20px 60px;
+      .choices {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
         width: 100%;
       }
-
-      .section-label {
+      .choice {
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: 22px;
+        padding: 28px 18px 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         text-align: center;
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-        color: var(--muted);
-        margin-bottom: 24px;
-      }
-
-      .modules {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 16px;
-      }
-
-      /* ─── MODULE CARD ────────────────────────────── */
-      .module {
-        background: var(--card-bg);
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 24px 22px 20px;
+        gap: 14px;
+        cursor: pointer;
+        text-decoration: none;
+        color: var(--text);
+        transition:
+          transform 0.22s,
+          border-color 0.22s,
+          box-shadow 0.22s;
         position: relative;
         overflow: hidden;
-        transition:
-          transform 0.2s ease,
-          box-shadow 0.2s ease,
-          border-color 0.2s ease;
-        cursor: default;
       }
-
-      .module::before {
+      .choice::before {
         content: "";
         position: absolute;
         inset: 0;
+        border-radius: inherit;
         opacity: 0;
         transition: opacity 0.25s;
-        border-radius: inherit;
+        pointer-events: none;
       }
-
-      .module:hover {
+      .choice:hover {
         transform: translateY(-4px);
-        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
       }
-
-      .m-vecteurs {
-        --c: var(--green);
+      .choice:active {
+        transform: scale(0.97);
       }
-      .m-facto {
-        --c: var(--red);
+      .choice-theory {
+        --c: var(--theory);
       }
-      .m-matrices {
-        --c: var(--yellow);
+      .choice-theory:hover {
+        border-color: rgba(167, 139, 250, 0.5);
+        box-shadow: 0 8px 40px rgba(167, 139, 250, 0.15);
       }
-      .m-coming {
-        --c: var(--purple);
-      }
-      .m-dutch {
-        --c: #ff914d;
-      }
-      .m-lieux {
-        --c: #38bdf8;
-      }
-
-      .module:hover {
-        border-color: color-mix(in srgb, var(--c) 60%, transparent);
-      }
-      .module::before {
+      .choice-theory::before {
         background: radial-gradient(
-          ellipse at 0% 0%,
-          color-mix(in srgb, var(--c) 15%, transparent) 0%,
-          transparent 60%
+          ellipse at 50% 0%,
+          rgba(167, 139, 250, 0.12),
+          transparent 70%
         );
       }
-      .module:hover::before {
+      .choice-theory:hover::before {
         opacity: 1;
       }
-
-      .module-icon {
-        font-size: 2.2rem;
-        margin-bottom: 14px;
-        display: block;
-        position: relative;
-        z-index: 1;
-        filter: drop-shadow(
-          0 0 12px color-mix(in srgb, var(--c) 50%, transparent)
+      .choice-study {
+        --c: var(--study);
+      }
+      .choice-study:hover {
+        border-color: rgba(0, 245, 195, 0.5);
+        box-shadow: 0 8px 40px rgba(0, 245, 195, 0.15);
+      }
+      .choice-study::before {
+        background: radial-gradient(
+          ellipse at 50% 0%,
+          rgba(0, 245, 195, 0.12),
+          transparent 70%
         );
       }
-
-      .module h2 {
-        font-size: 1.15rem;
-        font-weight: 800;
-        letter-spacing: -0.3px;
-        margin-bottom: 8px;
-        position: relative;
-        z-index: 1;
+      .choice-study:hover::before {
+        opacity: 1;
       }
-
-      .module p {
-        color: var(--muted);
-        font-size: 0.88rem;
-        line-height: 1.6;
-        position: relative;
-        z-index: 1;
-      }
-
-      .tag-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        margin: 14px 0 18px;
-        position: relative;
-        z-index: 1;
-      }
-
-      .tag {
-        background: color-mix(in srgb, var(--c) 12%, transparent);
-        border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
-        color: color-mix(in srgb, var(--c) 90%, white);
-        border-radius: 999px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        padding: 4px 10px;
-        white-space: nowrap;
-      }
-
-      .btn-open {
+      .choice-icon {
+        width: 72px;
+        height: 72px;
+        border-radius: 20px;
         display: flex;
         align-items: center;
-        gap: 8px;
-        width: 100%;
-        padding: 12px 16px;
-        border-radius: 12px;
-        border: none;
+        justify-content: center;
+        font-size: 2rem;
         background: linear-gradient(
           135deg,
-          color-mix(in srgb, var(--c) 80%, black),
-          color-mix(in srgb, var(--c) 45%, var(--purple))
+          color-mix(in srgb, var(--c) 20%, transparent),
+          color-mix(in srgb, var(--c) 8%, transparent)
         );
-        color: #fff;
-        font-family: "Lexend", sans-serif;
-        font-size: 0.9rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition:
-          filter 0.18s ease,
-          transform 0.18s ease;
-        position: relative;
-        z-index: 1;
-        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
-        box-shadow: 0 4px 18px color-mix(in srgb, var(--c) 30%, transparent);
-        justify-content: center;
+        border: 1px solid color-mix(in srgb, var(--c) 25%, transparent);
       }
-      .btn-open:hover {
-        filter: brightness(1.12);
-        transform: scale(1.02);
+      .choice h2 {
+        font-size: 1.1rem;
+        font-weight: 800;
+        letter-spacing: -0.3px;
       }
-      .btn-open .arrow {
-        font-size: 1rem;
-        transition: transform 0.18s;
-      }
-      .btn-open:hover .arrow {
-        transform: translateX(4px);
-      }
-
-      .m-coming .btn-open {
-        background: rgba(255, 255, 255, 0.05);
-        box-shadow: none;
-        cursor: not-allowed;
-        color: var(--muted);
-        text-shadow: none;
-        border: 1px solid var(--border);
-      }
-      .m-coming .btn-open:hover {
-        filter: none;
-        transform: none;
-      }
-
-      /* ─── YEAR TABS ──────────────────────────────── */
-      .year-tabs {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin-bottom: 36px;
-        flex-wrap: wrap;
-      }
-
-      .year-tab {
-        background: var(--card-bg);
-        border: 1.5px solid var(--border);
-        color: var(--muted);
-        font-family: "Lexend", sans-serif;
-        font-size: 0.95rem;
-        font-weight: 700;
-        padding: 10px 28px;
-        border-radius: 999px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        letter-spacing: 0.5px;
-      }
-
-      .year-tab:hover {
-        border-color: var(--purple);
-        color: var(--purple);
-      }
-
-      .year-tab.active {
-        background: linear-gradient(135deg, var(--purple), var(--green));
-        border-color: transparent;
-        color: #fff;
-        box-shadow: 0 4px 20px rgba(167, 139, 250, 0.35);
-      }
-
-      /* ─── YEAR PANELS ───────────────────────────── */
-      .year-panel {
-        display: none;
-      }
-      .year-panel.active {
-        display: block;
-      }
-
-      /* ─── SUBJECT HEADING ───────────────────────── */
-      .subject-heading {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin: 0 0 16px;
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-        color: var(--muted);
-      }
-      .subject-heading::before,
-      .subject-heading::after {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: var(--border);
-      }
-
-      /* ─── EMPTY STATE ─────────────────────────────── */
-      .empty-state {
-        text-align: center;
-        padding: 64px 24px;
-        border: 1.5px dashed var(--border);
-        border-radius: 20px;
-        color: var(--muted);
-      }
-      .empty-state .empty-dots {
-        font-size: 2.4rem;
-        letter-spacing: 6px;
-        display: block;
-        margin-bottom: 16px;
-        opacity: 0.4;
-      }
-      .empty-state p {
-        font-size: 0.92rem;
-        font-weight: 500;
-        opacity: 0.5;
-      }
-
-      /* ─── FOOTER ────────────────────────────────── */
-      footer {
-        margin-top: auto;
-        text-align: center;
-        padding: 20px;
+      .choice p {
         color: var(--muted);
         font-size: 0.78rem;
+        line-height: 1.5;
+      }
+      .choice-arrow {
+        margin-top: auto;
+        padding: 10px 20px;
+        border-radius: 12px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        border: none;
+        cursor: pointer;
+        font-family: "Lexend", sans-serif;
+        transition:
+          filter 0.18s,
+          transform 0.18s;
+        color: #fff;
+      }
+      .choice-theory .choice-arrow {
+        background: linear-gradient(135deg, #a78bfa, #7c5cbf);
+      }
+      .choice-study .choice-arrow {
+        background: linear-gradient(135deg, #00f5c3, #00c49a);
+      }
+      .choice-arrow:hover {
+        filter: brightness(1.15);
+        transform: scale(1.04);
+      }
+      .footer-text {
+        color: var(--muted);
+        font-size: 0.72rem;
+        margin-top: 20px;
+        text-align: center;
+      }
+      @media (max-width: 400px) {
+        .choices {
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+        .choice {
+          padding: 22px 16px 20px;
+          flex-direction: row;
+          gap: 14px;
+          text-align: left;
+        }
+        .choice-icon {
+          width: 56px;
+          height: 56px;
+          min-width: 56px;
+          font-size: 1.6rem;
+          border-radius: 16px;
+        }
+        .choice-info {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        .choice h2 {
+          font-size: 1rem;
+        }
+        .choice-arrow {
+          align-self: flex-start;
+          padding: 8px 16px;
+          font-size: 0.78rem;
+        }
       }
     </style>
   </head>
-
   <body>
-    <div class="hero">
-      <span class="hero-emoji">✏️</span>
-      <h1>Espace Cours</h1>
-      <p class="hero-sub">Clique sur un chapitre et commence à explorer ✨</p>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="landing">
+      <div class="logo"><span>Sis-San</span></div>
+      <p class="tagline">Choisis ton mode pour commencer</p>
+      <div class="choices">
+        <a href="theory.html" class="choice choice-theory">
+          <div class="choice-icon">📖</div>
+          <div class="choice-info">
+            <h2>Théorie</h2>
+            <p>Cours, formules et exercices interactifs</p>
+          </div>
+          <div class="choice-arrow">Explorer →</div>
+        </a>
+        <a href="study/study.html" class="choice choice-study">
+          <div class="choice-icon">🎯</div>
+          <div class="choice-info">
+            <h2>Étude</h2>
+            <p>Pomodoro, tâches, stats et progression</p>
+          </div>
+          <div class="choice-arrow">Commencer →</div>
+        </a>
+      </div>
+      <p class="footer-text">Fait avec 💛 pour apprendre plus facilement</p>
     </div>
-
-    <div class="wrap">
-      <!-- ── YEAR SELECTOR ── -->
-      <div class="year-tabs">
-        <button class="year-tab active" onclick="switchYear('4eme', this)">
-          4 &egrave;me
-        </button>
-        <button class="year-tab" onclick="switchYear('5eme', this)">
-          5 &egrave;me
-        </button>
-        <button class="year-tab" onclick="switchYear('6eme', this)">
-          6 &egrave;me
-        </button>
-      </div>
-
-      <!-- 4EME PANEL -->
-      <div class="year-panel active" id="panel-4eme">
-        <p class="subject-heading">Math&eacute;matiques</p>
-        <div class="modules">
-          <div class="module m-vecteurs">
-            <span class="module-icon">&#128208;</span>
-            <h2>Vecteurs</h2>
-            <p>
-              Visualise les fl&egrave;ches sur un rep&egrave;re, additionne des
-              vecteurs, explore la norme et la colin&eacute;arit&eacute; en
-              glissant les points.
-            </p>
-            <div class="tag-row">
-              <span class="tag">Addition</span>
-              <span class="tag">Norme</span>
-              <span class="tag">Colin&eacute;arit&eacute;</span>
-              <span class="tag">Rep&egrave;re</span>
-            </div>
-            <button
-              class="btn-open"
-              onclick="location.href = 'vecteurs/vecteurs_interactifs.html'"
-            >
-              Ouvrir le chapitre <span class="arrow">&rarr;</span>
-            </button>
-          </div>
-          <div class="module m-facto">
-            <span class="module-icon">&#128290;</span>
-            <h2>Factorisation</h2>
-            <p>
-              D&eacute;compose des expressions, utilise les identit&eacute;s
-              remarquables et entra&icirc;ne-toi avec des exercices
-              guid&eacute;s pas &agrave; pas.
-            </p>
-            <div class="tag-row">
-              <span class="tag">Facteur commun</span>
-              <span class="tag">Identit&eacute;s</span>
-              <span class="tag">Exercices</span>
-            </div>
-            <button
-              class="btn-open"
-              onclick="location.href = 'factorisation/factorisation.html'"
-            >
-              Ouvrir le chapitre <span class="arrow">&rarr;</span>
-            </button>
-          </div>
-          <div class="module m-matrices">
-            <span class="module-icon">&#128208;</span>
-            <h2>Trigonom&eacute;trie</h2>
-            <p>
-              Explore le cercle trigonom&eacute;trique, les identit&eacute;s, la
-              loi des sinus et cosinus, et calcule des aires de triangles.
-            </p>
-            <div class="tag-row">
-              <span class="tag">Cercle trigo</span>
-              <span class="tag">Loi des sinus</span>
-              <span class="tag">Loi des cosinus</span>
-              <span class="tag">Identit&eacute;s</span>
-            </div>
-            <button
-              class="btn-open"
-              onclick="location.href = 'trigonometrie/trigonometrie.html'"
-            >
-              Ouvrir le chapitre <span class="arrow">&rarr;</span>
-            </button>
-          </div>
-          <div class="module m-lieux">
-            <span class="module-icon">&#128205;</span>
-            <h2>Lieux G&eacute;om&eacute;triques</h2>
-            <p>
-              Explore le rep&egrave;re, place des points, calcule des distances
-              et des milieux, et d&eacute;couvre les figures
-              g&eacute;om&eacute;triques.
-            </p>
-            <div class="tag-row">
-              <span class="tag">Rep&egrave;re</span>
-              <span class="tag">Distance</span>
-              <span class="tag">Milieu</span>
-              <span class="tag">Figures</span>
-            </div>
-            <button
-              class="btn-open"
-              onclick="
-                location.href = 'lieux_geometriques/lieux_geometriques.html'
-              "
-            >
-              Ouvrir le chapitre <span class="arrow">&rarr;</span>
-            </button>
-          </div>
-        </div>
-        <p class="subject-heading" style="margin-top: 32px">Langues</p>
-        <div class="modules">
-          <div class="module m-dutch">
-            <span class="module-icon">&#127475;&#127473;</span>
-            <h2>N&eacute;erlandais</h2>
-            <p>
-              Apprends le vocabulaire, les temps et conjugaisons,
-              entra&icirc;ne-toi avec des quiz al&eacute;atoires et des jeux
-              interactifs.
-            </p>
-            <div class="tag-row">
-              <span class="tag">Vocabulaire</span>
-              <span class="tag">Quiz</span>
-              <span class="tag">Les Temps</span>
-              <span class="tag">Jeux</span>
-            </div>
-            <button
-              class="btn-open"
-              onclick="location.href = 'neerlandais/neerlandais.html'"
-            >
-              Ouvrir le chapitre <span class="arrow">&rarr;</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- 5EME PANEL -->
-      <div class="year-panel" id="panel-5eme">
-        <div class="empty-state">
-          <span class="empty-dots">. . .</span>
-          <p>
-            Aucun contenu pour l&apos;instant &mdash; &ccedil;a arrive
-            bient&ocirc;t !
-          </p>
-        </div>
-      </div>
-
-      <!-- 6EME PANEL -->
-      <div class="year-panel" id="panel-6eme">
-        <div class="empty-state">
-          <span class="empty-dots">. . .</span>
-          <p>
-            Aucun contenu pour l&apos;instant &mdash; &ccedil;a arrive
-            bient&ocirc;t !
-          </p>
-        </div>
-      </div>
-    </div>
-    <footer>Fait avec 💛​ pour apprendre plus facilement</footer>
-
     <script>
-      function switchYear(year, btn) {
-        // Hide all panels
-        document
-          .querySelectorAll(".year-panel")
-          .forEach((p) => p.classList.remove("active"));
-        // Deactivate all tabs
-        document
-          .querySelectorAll(".year-tab")
-          .forEach((t) => t.classList.remove("active"));
-        // Show selected panel & activate tab
-        document.getElementById("panel-" + year).classList.add("active");
-        btn.classList.add("active");
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js").catch(function () {});
       }
     </script>
   </body>

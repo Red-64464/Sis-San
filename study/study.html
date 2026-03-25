@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <title>Sis-San — Étude</title>
+    <link rel="manifest" href="../manifest.json" />
+    <meta name="theme-color" content="#070712" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <link rel="apple-touch-icon" href="../assets/icons/icon-192.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="study.css" />
+  </head>
+  <body>
+    <!-- ═══════════════════════════════════════════
+     TOP BAR
+     ═══════════════════════════════════════════ -->
+    <div class="topbar">
+      <a href="../index.html" class="topbar-back">←</a>
+      <div class="topbar-title"><span>Sis</span>-San</div>
+      <div style="width: 36px"></div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+     PAGE: HOME / DASHBOARD
+     ═══════════════════════════════════════════ -->
+    <section id="page-home" class="page-section active">
+      <!-- Streak Banner -->
+      <div class="streak-banner">
+        <span class="streak-fire">🔥</span>
+        <div class="streak-info">
+          <div class="streak-count" id="dash-streak">0</div>
+          <div class="streak-label">jours consécutifs</div>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div class="summary-row">
+        <div class="summary-item">
+          <div class="summary-val" id="dash-focus-time">0min</div>
+          <div class="summary-lbl">Focus</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-val" id="dash-tasks-done">0</div>
+          <div class="summary-lbl">Tâches</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-val" id="dash-session-count">0</div>
+          <div class="summary-lbl">Sessions</div>
+        </div>
+      </div>
+
+      <!-- Quick Start -->
+      <div
+        class="dash-timer-card"
+        id="dash-timer-card"
+        style="display: none"
+        onclick="App.navigate('focus')"
+      >
+        <div class="dash-timer-ring">
+          <svg viewBox="0 0 80 80">
+            <circle class="timer-track" cx="40" cy="40" r="34" />
+            <circle
+              class="timer-progress"
+              id="dash-pomo-progress"
+              cx="40"
+              cy="40"
+              r="34"
+              stroke-dasharray="213.63"
+              stroke-dashoffset="0"
+            />
+          </svg>
+          <div class="dash-timer-time" id="dash-pomo-time">25:00</div>
+        </div>
+        <div class="dash-timer-info">
+          <div class="dash-timer-label" id="dash-pomo-label">Session</div>
+          <div class="dash-timer-phase" id="dash-pomo-phase">Focus</div>
+        </div>
+      </div>
+
+      <button
+        class="quick-start"
+        id="quick-start-btn"
+        onclick="App.navigate('focus')"
+      >
+        ⏱ Lancer une session Focus
+      </button>
+
+      <!-- Mood -->
+      <div class="card">
+        <div class="section-head">
+          <span class="section-title">Comment tu te sens ?</span>
+        </div>
+        <div class="mood-picker" id="mood-picker-home"></div>
+      </div>
+
+      <!-- Upcoming tasks -->
+      <div class="card">
+        <div class="section-head">
+          <span class="section-title">Prochaines tâches</span>
+          <button class="section-link" onclick="App.navigate('tasks')">
+            Voir tout →
+          </button>
+        </div>
+        <div id="dash-upcoming"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+     PAGE: FOCUS / POMODORO
+     ═══════════════════════════════════════════ -->
+    <section id="page-focus" class="page-section">
+      <!-- Timer -->
+      <div class="timer-wrap">
+        <div class="timer-ring">
+          <svg viewBox="0 0 240 240">
+            <circle class="timer-track" cx="120" cy="120" r="108" />
+            <circle
+              class="timer-progress"
+              id="pomo-progress"
+              cx="120"
+              cy="120"
+              r="108"
+              stroke-dasharray="678.58"
+              stroke-dashoffset="0"
+            />
+          </svg>
+          <div class="timer-display">
+            <div class="timer-time" id="pomo-time">25:00</div>
+            <div class="timer-phase" id="pomo-phase">Focus</div>
+          </div>
+        </div>
+
+        <!-- Label input -->
+        <div class="timer-label-input">
+          <input
+            type="text"
+            id="pomo-label"
+            placeholder="Sur quoi tu travailles ?"
+            maxlength="40"
+          />
+        </div>
+
+        <!-- Presets -->
+        <div class="timer-presets" id="pomo-presets"></div>
+
+        <!-- Cycle config -->
+        <div id="cycle-config" class="cycle-config"></div>
+
+        <!-- Controls -->
+        <div class="timer-controls">
+          <button class="timer-btn timer-btn-sec" onclick="Pomodoro.reset()">
+            ↺
+          </button>
+          <button class="timer-btn timer-btn-main" onclick="Pomodoro.toggle()">
+            <span id="pomo-toggle-icon">▶</span>
+          </button>
+          <div style="width: 60px"></div>
+        </div>
+      </div>
+
+      <!-- Sessions today -->
+      <div class="card">
+        <div class="section-head">
+          <span class="section-title">Sessions du jour</span>
+        </div>
+        <div class="session-log" id="session-log"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+     PAGE: TASKS
+     ═══════════════════════════════════════════ -->
+    <section id="page-tasks" class="page-section">
+      <!-- Add task -->
+      <div class="todo-add-row">
+        <input
+          type="text"
+          id="todo-input"
+          placeholder="Nouvelle tâche..."
+          onkeydown="Todo.handleKeydown(event)"
+        />
+        <button class="todo-add-btn" onclick="Todo.add()">+</button>
+      </div>
+      <div class="todo-options-row">
+        <input type="date" id="todo-date" placeholder="Date limite" />
+        <select id="todo-cat" class="todo-select">
+          <option value="none">Catégorie</option>
+          <option value="math">Maths</option>
+          <option value="science">Sciences</option>
+          <option value="lang">Langues</option>
+          <option value="other">Autre</option>
+        </select>
+        <select id="todo-prio" class="todo-select">
+          <option value="medium">Moyenne</option>
+          <option value="high">Haute</option>
+          <option value="low">Basse</option>
+        </select>
+      </div>
+
+      <!-- Filters -->
+      <div id="todo-filters" class="todo-filters"></div>
+
+      <!-- List -->
+      <div id="todo-list" class="todo-list"></div>
+
+      <!-- Calendar -->
+      <div class="card" style="margin-top: 20px">
+        <div class="cal-header">
+          <button class="cal-nav" onclick="Calendar.prev()">‹</button>
+          <span class="cal-title" id="cal-month-label"></span>
+          <button class="cal-nav" onclick="Calendar.next()">›</button>
+        </div>
+        <div class="cal-days">
+          <span class="cal-day-label">Lun</span>
+          <span class="cal-day-label">Mar</span>
+          <span class="cal-day-label">Mer</span>
+          <span class="cal-day-label">Jeu</span>
+          <span class="cal-day-label">Ven</span>
+          <span class="cal-day-label">Sam</span>
+          <span class="cal-day-label">Dim</span>
+        </div>
+        <div class="cal-days" id="calendar-wrap"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+     PAGE: PROFILE
+     ═══════════════════════════════════════════ -->
+    <section id="page-profile" class="page-section">
+      <!-- Level & XP -->
+      <div class="profile-header">
+        <div class="profile-level" id="profile-level">Niveau 1</div>
+        <div class="profile-xp-bar">
+          <div
+            class="profile-xp-fill"
+            id="profile-xp-fill"
+            style="width: 0%"
+          ></div>
+        </div>
+        <div class="profile-xp-text" id="profile-xp-text">0 / 100 XP</div>
+      </div>
+
+      <!-- Streak -->
+      <div class="card">
+        <div class="section-head">
+          <span class="section-title">🔥 Streak</span>
+        </div>
+        <div style="display: flex; align-items: baseline; gap: 8px">
+          <span
+            style="font-size: 1.6rem; font-weight: 900; color: var(--accent)"
+            id="profile-streak"
+            >0 jours</span
+          >
+          <span
+            style="font-size: 0.78rem; color: var(--muted)"
+            id="profile-best-streak"
+            >Record : 0 jours</span
+          >
+        </div>
+      </div>
+
+      <!-- Stats this week -->
+      <div class="card">
+        <div class="section-head">
+          <span class="section-title">📊 Cette semaine</span>
+        </div>
+        <div class="stat-bars" id="stat-bars"></div>
+      </div>
+
+      <!-- Global stats -->
+      <div class="card">
+        <div class="section-head">
+          <span class="section-title">📈 Statistiques globales</span>
+        </div>
+        <div class="summary-row" style="margin-bottom: 0">
+          <div class="summary-item">
+            <div class="summary-val" id="stat-total-time">0h</div>
+            <div class="summary-lbl">Temps total</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-val" id="stat-total-sessions">0</div>
+            <div class="summary-lbl">Sessions</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-val" id="stat-total-tasks">0</div>
+            <div class="summary-lbl">Tâches</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Heatmap -->
+      <div class="card">
+        <div class="section-head">
+          <span class="section-title">🗓 12 dernières semaines</span>
+        </div>
+        <div class="heatmap" id="heatmap"></div>
+      </div>
+
+      <!-- Mood History -->
+      <div class="card">
+        <div class="section-head">
+          <span class="section-title">😊 Historique humeur</span>
+        </div>
+        <div class="mood-history" id="mood-history"></div>
+      </div>
+
+      <!-- Badges -->
+      <div class="card">
+        <div class="section-head">
+          <span class="section-title">🏆 Badges</span>
+        </div>
+        <div class="badges-grid" id="badges-grid"></div>
+      </div>
+
+      <!-- Settings -->
+      <div class="card">
+        <div class="section-head">
+          <span class="section-title">⚙️ Paramètres</span>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">Durée Pomodoro</div>
+            <div class="setting-desc">Minutes par session de focus</div>
+          </div>
+          <span class="setting-value" id="setting-pomo-dur">25 min</span>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">Pause courte</div>
+            <div class="setting-desc">Minutes entre les sessions</div>
+          </div>
+          <span class="setting-value" id="setting-break-dur">5 min</span>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">Cycles</div>
+            <div class="setting-desc">Nombre de répétitions travail/pause</div>
+          </div>
+          <span class="setting-value" id="setting-cycles">1x</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+     MOOD MODAL (post-session)
+     ═══════════════════════════════════════════ -->
+    <div class="modal-overlay" id="mood-modal">
+      <div class="modal-box">
+        <div class="modal-title">Session terminée ! 🎉</div>
+        <div class="modal-sub">Comment ça s'est passé ?</div>
+        <div class="mood-picker">
+          <button class="mood-btn" onclick="Pomodoro.setSessionMood('😤')">
+            😤
+          </button>
+          <button class="mood-btn" onclick="Pomodoro.setSessionMood('😐')">
+            😐
+          </button>
+          <button class="mood-btn" onclick="Pomodoro.setSessionMood('😊')">
+            😊
+          </button>
+          <button class="mood-btn" onclick="Pomodoro.setSessionMood('🔥')">
+            🔥
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+     BOTTOM NAV
+     ═══════════════════════════════════════════ -->
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-page="home">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Home</span>
+      </button>
+      <button class="nav-btn" data-page="focus">
+        <span class="nav-icon">⏱</span>
+        <span class="nav-label">Focus</span>
+      </button>
+      <button class="nav-btn" data-page="tasks">
+        <span class="nav-icon">✅</span>
+        <span class="nav-label">Tâches</span>
+      </button>
+      <button class="nav-btn" data-page="profile">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Profil</span>
+      </button>
+    </nav>
+
+    <!-- ═══════════════════════════════════════════
+     SCRIPTS
+     ═══════════════════════════════════════════ -->
+    <script src="js/storage.js"></script>
+    <script src="js/gamification.js"></script>
+    <script src="js/confetti.js"></script>
+    <script src="js/pomodoro.js"></script>
+    <script src="js/todo.js"></script>
+    <script src="js/calendar.js"></script>
+    <script src="js/mood.js"></script>
+    <script src="js/stats.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

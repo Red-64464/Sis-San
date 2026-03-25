@@ -1,0 +1,588 @@
+﻿<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Sis-San — Théorie</title>
+    <meta name="theme-color" content="#070712" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;700;900&display=swap");
+
+      :root {
+        --bg: #070712;
+        --card-bg: #0e0e20;
+        --border: #1c1c38;
+
+        --green: #00f5c3;
+        --red: #ff6b6b;
+        --yellow: #ffd93d;
+        --purple: #a78bfa;
+
+        --text: #eeeeff;
+        --muted: #5858a0;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Lexend", sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ─── HERO ─────────────────────────────────── */
+      .hero {
+        text-align: center;
+        padding: 56px 24px 40px;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(
+            ellipse 80% 60% at 50% 0%,
+            rgba(167, 139, 250, 0.12) 0%,
+            transparent 70%
+          ),
+          radial-gradient(
+            ellipse 50% 40% at 20% 100%,
+            rgba(0, 245, 195, 0.07) 0%,
+            transparent 60%
+          );
+        pointer-events: none;
+      }
+
+      .hero-emoji {
+        font-size: 3rem;
+        display: block;
+        margin-bottom: 14px;
+        filter: drop-shadow(0 0 24px rgba(167, 139, 250, 0.5));
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 3.2rem);
+        font-weight: 900;
+        letter-spacing: -1.5px;
+        line-height: 1.1;
+        background: linear-gradient(
+          135deg,
+          var(--green) 0%,
+          var(--purple) 50%,
+          var(--red) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        position: relative;
+      }
+
+      .hero-sub {
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 1rem;
+        font-weight: 400;
+        letter-spacing: 0.2px;
+      }
+
+      /* ─── GRID ──────────────────────────────────── */
+      .wrap {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 0 20px 60px;
+        width: 100%;
+      }
+
+      .section-label {
+        text-align: center;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 24px;
+      }
+
+      .modules {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+      }
+
+      /* ─── MODULE CARD ────────────────────────────── */
+      .module {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 24px 22px 20px;
+        position: relative;
+        overflow: hidden;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease,
+          border-color 0.2s ease;
+        cursor: default;
+      }
+
+      .module::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 0.25s;
+        border-radius: inherit;
+      }
+
+      .module:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+      }
+
+      .m-vecteurs {
+        --c: var(--green);
+      }
+      .m-facto {
+        --c: var(--red);
+      }
+      .m-matrices {
+        --c: var(--yellow);
+      }
+      .m-coming {
+        --c: var(--purple);
+      }
+      .m-dutch {
+        --c: #ff914d;
+      }
+      .m-lieux {
+        --c: #38bdf8;
+      }
+
+      .module:hover {
+        border-color: color-mix(in srgb, var(--c) 60%, transparent);
+      }
+      .module::before {
+        background: radial-gradient(
+          ellipse at 0% 0%,
+          color-mix(in srgb, var(--c) 15%, transparent) 0%,
+          transparent 60%
+        );
+      }
+      .module:hover::before {
+        opacity: 1;
+      }
+
+      .module-icon {
+        font-size: 2.2rem;
+        margin-bottom: 14px;
+        display: block;
+        position: relative;
+        z-index: 1;
+        filter: drop-shadow(
+          0 0 12px color-mix(in srgb, var(--c) 50%, transparent)
+        );
+      }
+
+      .module h2 {
+        font-size: 1.15rem;
+        font-weight: 800;
+        letter-spacing: -0.3px;
+        margin-bottom: 8px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .module p {
+        color: var(--muted);
+        font-size: 0.88rem;
+        line-height: 1.6;
+        position: relative;
+        z-index: 1;
+      }
+
+      .tag-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 14px 0 18px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .tag {
+        background: color-mix(in srgb, var(--c) 12%, transparent);
+        border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+        color: color-mix(in srgb, var(--c) 90%, white);
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 4px 10px;
+        white-space: nowrap;
+      }
+
+      .btn-open {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: none;
+        background: linear-gradient(
+          135deg,
+          color-mix(in srgb, var(--c) 80%, black),
+          color-mix(in srgb, var(--c) 45%, var(--purple))
+        );
+        color: #fff;
+        font-family: "Lexend", sans-serif;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition:
+          filter 0.18s ease,
+          transform 0.18s ease;
+        position: relative;
+        z-index: 1;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 4px 18px color-mix(in srgb, var(--c) 30%, transparent);
+        justify-content: center;
+      }
+      .btn-open:hover {
+        filter: brightness(1.12);
+        transform: scale(1.02);
+      }
+      .btn-open .arrow {
+        font-size: 1rem;
+        transition: transform 0.18s;
+      }
+      .btn-open:hover .arrow {
+        transform: translateX(4px);
+      }
+
+      .m-coming .btn-open {
+        background: rgba(255, 255, 255, 0.05);
+        box-shadow: none;
+        cursor: not-allowed;
+        color: var(--muted);
+        text-shadow: none;
+        border: 1px solid var(--border);
+      }
+      .m-coming .btn-open:hover {
+        filter: none;
+        transform: none;
+      }
+
+      /* ─── YEAR TABS ──────────────────────────────── */
+      .year-tabs {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 36px;
+        flex-wrap: wrap;
+      }
+
+      .year-tab {
+        background: var(--card-bg);
+        border: 1.5px solid var(--border);
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        padding: 10px 28px;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        letter-spacing: 0.5px;
+      }
+
+      .year-tab:hover {
+        border-color: var(--purple);
+        color: var(--purple);
+      }
+
+      .year-tab.active {
+        background: linear-gradient(135deg, var(--purple), var(--green));
+        border-color: transparent;
+        color: #fff;
+        box-shadow: 0 4px 20px rgba(167, 139, 250, 0.35);
+      }
+
+      /* ─── YEAR PANELS ───────────────────────────── */
+      .year-panel {
+        display: none;
+      }
+      .year-panel.active {
+        display: block;
+      }
+
+      /* ─── SUBJECT HEADING ───────────────────────── */
+      .subject-heading {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 16px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .subject-heading::before,
+      .subject-heading::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+
+      /* ─── EMPTY STATE ─────────────────────────────── */
+      .empty-state {
+        text-align: center;
+        padding: 64px 24px;
+        border: 1.5px dashed var(--border);
+        border-radius: 20px;
+        color: var(--muted);
+      }
+      .empty-state .empty-dots {
+        font-size: 2.4rem;
+        letter-spacing: 6px;
+        display: block;
+        margin-bottom: 16px;
+        opacity: 0.4;
+      }
+      .empty-state p {
+        font-size: 0.92rem;
+        font-weight: 500;
+        opacity: 0.5;
+      }
+
+      /* ─── FOOTER ────────────────────────────────── */
+      footer {
+        margin-top: auto;
+        text-align: center;
+        padding: 20px;
+        color: var(--muted);
+        font-size: 0.78rem;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Back to main menu -->
+    <a
+      href="index.html"
+      style="
+        position: fixed;
+        top: 14px;
+        left: 14px;
+        z-index: 100;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: rgba(14, 14, 32, 0.85);
+        border: 1px solid #1c1c38;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #eeeeff;
+        text-decoration: none;
+        font-size: 1.1rem;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        transition: background 0.2s;
+      "
+      >←</a
+    >
+    <div class="hero">
+      <span class="hero-emoji">✏️</span>
+      <h1>Espace Cours</h1>
+      <p class="hero-sub">Clique sur un chapitre et commence à explorer ✨</p>
+    </div>
+
+    <div class="wrap">
+      <!-- ── YEAR SELECTOR ── -->
+      <div class="year-tabs">
+        <button class="year-tab active" onclick="switchYear('4eme', this)">
+          4 &egrave;me
+        </button>
+        <button class="year-tab" onclick="switchYear('5eme', this)">
+          5 &egrave;me
+        </button>
+        <button class="year-tab" onclick="switchYear('6eme', this)">
+          6 &egrave;me
+        </button>
+      </div>
+
+      <!-- 4EME PANEL -->
+      <div class="year-panel active" id="panel-4eme">
+        <p class="subject-heading">Math&eacute;matiques</p>
+        <div class="modules">
+          <div class="module m-vecteurs">
+            <span class="module-icon">&#128208;</span>
+            <h2>Vecteurs</h2>
+            <p>
+              Visualise les fl&egrave;ches sur un rep&egrave;re, additionne des
+              vecteurs, explore la norme et la colin&eacute;arit&eacute; en
+              glissant les points.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Addition</span>
+              <span class="tag">Norme</span>
+              <span class="tag">Colin&eacute;arit&eacute;</span>
+              <span class="tag">Rep&egrave;re</span>
+            </div>
+            <button
+              class="btn-open"
+              onclick="location.href = 'vecteurs/vecteurs_interactifs.html'"
+            >
+              Ouvrir le chapitre <span class="arrow">&rarr;</span>
+            </button>
+          </div>
+          <div class="module m-facto">
+            <span class="module-icon">&#128290;</span>
+            <h2>Factorisation</h2>
+            <p>
+              D&eacute;compose des expressions, utilise les identit&eacute;s
+              remarquables et entra&icirc;ne-toi avec des exercices
+              guid&eacute;s pas &agrave; pas.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Facteur commun</span>
+              <span class="tag">Identit&eacute;s</span>
+              <span class="tag">Exercices</span>
+            </div>
+            <button
+              class="btn-open"
+              onclick="location.href = 'factorisation/factorisation.html'"
+            >
+              Ouvrir le chapitre <span class="arrow">&rarr;</span>
+            </button>
+          </div>
+          <div class="module m-matrices">
+            <span class="module-icon">&#128208;</span>
+            <h2>Trigonom&eacute;trie</h2>
+            <p>
+              Explore le cercle trigonom&eacute;trique, les identit&eacute;s, la
+              loi des sinus et cosinus, et calcule des aires de triangles.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Cercle trigo</span>
+              <span class="tag">Loi des sinus</span>
+              <span class="tag">Loi des cosinus</span>
+              <span class="tag">Identit&eacute;s</span>
+            </div>
+            <button
+              class="btn-open"
+              onclick="location.href = 'trigonometrie/trigonometrie.html'"
+            >
+              Ouvrir le chapitre <span class="arrow">&rarr;</span>
+            </button>
+          </div>
+          <div class="module m-lieux">
+            <span class="module-icon">&#128205;</span>
+            <h2>Lieux G&eacute;om&eacute;triques</h2>
+            <p>
+              Explore le rep&egrave;re, place des points, calcule des distances
+              et des milieux, et d&eacute;couvre les figures
+              g&eacute;om&eacute;triques.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Rep&egrave;re</span>
+              <span class="tag">Distance</span>
+              <span class="tag">Milieu</span>
+              <span class="tag">Figures</span>
+            </div>
+            <button
+              class="btn-open"
+              onclick="
+                location.href = 'lieux_geometriques/lieux_geometriques.html'
+              "
+            >
+              Ouvrir le chapitre <span class="arrow">&rarr;</span>
+            </button>
+          </div>
+        </div>
+        <p class="subject-heading" style="margin-top: 32px">Langues</p>
+        <div class="modules">
+          <div class="module m-dutch">
+            <span class="module-icon">&#127475;&#127473;</span>
+            <h2>N&eacute;erlandais</h2>
+            <p>
+              Apprends le vocabulaire, les temps et conjugaisons,
+              entra&icirc;ne-toi avec des quiz al&eacute;atoires et des jeux
+              interactifs.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Vocabulaire</span>
+              <span class="tag">Quiz</span>
+              <span class="tag">Les Temps</span>
+              <span class="tag">Jeux</span>
+            </div>
+            <button
+              class="btn-open"
+              onclick="location.href = 'neerlandais/neerlandais.html'"
+            >
+              Ouvrir le chapitre <span class="arrow">&rarr;</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5EME PANEL -->
+      <div class="year-panel" id="panel-5eme">
+        <div class="empty-state">
+          <span class="empty-dots">. . .</span>
+          <p>
+            Aucun contenu pour l&apos;instant &mdash; &ccedil;a arrive
+            bient&ocirc;t !
+          </p>
+        </div>
+      </div>
+
+      <!-- 6EME PANEL -->
+      <div class="year-panel" id="panel-6eme">
+        <div class="empty-state">
+          <span class="empty-dots">. . .</span>
+          <p>
+            Aucun contenu pour l&apos;instant &mdash; &ccedil;a arrive
+            bient&ocirc;t !
+          </p>
+        </div>
+      </div>
+    </div>
+    <footer>Fait avec 💛​ pour apprendre plus facilement</footer>
+
+    <script>
+      function switchYear(year, btn) {
+        // Hide all panels
+        document
+          .querySelectorAll(".year-panel")
+          .forEach((p) => p.classList.remove("active"));
+        // Deactivate all tabs
+        document
+          .querySelectorAll(".year-tab")
+          .forEach((t) => t.classList.remove("active"));
+        // Show selected panel & activate tab
+        document.getElementById("panel-" + year).classList.add("active");
+        btn.classList.add("active");
+      }
+    </script>
+  </body>
+</html>
