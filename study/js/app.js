@@ -4,106 +4,26 @@
 
 /* ─── Motivation Quotes ─── */
 var QUOTES = [
-  {
-    icon: "🧠",
-    text: "Le génie, c'est 1% d'inspiration et 99% de transpiration.",
-    author: "Thomas Edison",
-  },
-  {
-    icon: "🚀",
-    text: "La seule façon de faire du bon travail, c'est d'aimer ce que vous faites.",
-    author: "Steve Jobs",
-  },
-  {
-    icon: "🌟",
-    text: "Chaque expert a d'abord été un débutant.",
-    author: "Helen Hayes",
-  },
-  {
-    icon: "🏆",
-    text: "Le succès, c'est tomber sept fois, se relever huit.",
-    author: "Proverbe japonais",
-  },
-  {
-    icon: "💪",
-    text: "Tu n'as pas à être excellent pour commencer, mais tu dois commencer pour être excellent.",
-    author: "Zig Ziglar",
-  },
-  {
-    icon: "🔥",
-    text: "Peu importe ta vitesse, tu avances quand même.",
-    author: "Proverbe",
-  },
-  {
-    icon: "⭐",
-    text: "L'éducation est l'arme la plus puissante pour changer le monde.",
-    author: "Nelson Mandela",
-  },
-  {
-    icon: "🎯",
-    text: "Fixe-toi des objectifs élevés, et les obstacles disparaîtront.",
-    author: "Andrew Carnegie",
-  },
-  {
-    icon: "💎",
-    text: "Le diamant, c'est un morceau de charbon qui a tenu bon.",
-    author: "Winston Churchill",
-  },
-  {
-    icon: "🧭",
-    text: "Le chemin de mille lieues commence par un seul pas.",
-    author: "Lao Tseu",
-  },
-  {
-    icon: "🌊",
-    text: "Ne regarde pas l'horloge – fais comme elle : avance.",
-    author: "Sam Levenson",
-  },
-  {
-    icon: "☀️",
-    text: "Chaque matin est une nouvelle chance de tout recommencer.",
-    author: "Proverbe",
-  },
-  {
-    icon: "🎓",
-    text: "Investir dans la connaissance rapporte toujours les meilleurs intérêts.",
-    author: "Benjamin Franklin",
-  },
-  {
-    icon: "⚡",
-    text: "Tu es plus forte que tu ne le crois, plus talentueuse que tu ne le penses.",
-    author: "A.A. Milne",
-  },
-  {
-    icon: "🦋",
-    text: "Ne compte pas les jours, fais que les jours comptent.",
-    author: "Muhammad Ali",
-  },
-  {
-    icon: "🌙",
-    text: "Même les journées difficiles sont une étape vers ta réussite.",
-    author: "Proverbe",
-  },
-  {
-    icon: "🏅",
-    text: "Les gagnants font les choses que les perdants refusent de faire.",
-    author: "Proverbe",
-  },
-  {
-    icon: "🌱",
-    text: "Une petite graine d'effort peut donner un arbre de résultats.",
-    author: "Proverbe",
-  },
-  {
-    icon: "🎵",
-    text: "La discipline, c'est choisir entre ce que tu veux maintenant et ce que tu veux le plus.",
-    author: "Abraham Lincoln",
-  },
-  {
-    icon: "💡",
-    text: "Chaque heure de travail aujourd'hui est une heure de liberté demain.",
-    author: "Proverbe",
-  },
+  { icon: "☀️", text: "Celui qui place sa confiance en Allah, Il lui suffit.", author: "Coran 65:3 🌿" },
+  { icon: "🌙", text: "N'abandonnez jamais de vous préserver et de travailler, car Allah voit vos efforts — et c'est Lui, non ce bas monde, qui vous accordera votre succès.", author: "Rappel du cœur 💫" },
+  { icon: "🤲", text: "Après la difficulté vient la facilité. Après la difficulté vient la facilité.", author: "Coran 94:5-6 🌸" },
+  { icon: "🌿", text: "Allah n'impose à une âme que ce qu'elle peut supporter.", author: "Coran 2:286 💚" },
+  { icon: "💎", text: "Le tawakkul, ce n'est pas croiser les bras — c'est attacher son chameau, puis faire confiance à Allah.", author: "Prophète Muhammad ﷺ 🌙" },
+  { icon: "🔥", text: "Ce qui est écrit pour toi t'atteindra, même si c'est entre deux montagnes. Ce qui n'est pas écrit pour toi ne t'atteindra pas, même si tu le cherches.", author: "Sagesse islamique 🌟" },
+  { icon: "⭐", text: "Cherche la connaissance du berceau à la tombe. Elle est ton héritage le plus précieux en ce bas monde.", author: "Sagesse prophétique 📚" },
+  { icon: "🌊", text: "Sois patiente — les plus beaux jardins ont besoin du temps pour fleurir.", author: "Proverbe du cœur 🌺" },
+  { icon: "🦋", text: "Chaque heure que tu consacres à apprendre est une sadaqa jariya pour ton avenir.", author: "Réflexion spirituelle ✨" },
+  { icon: "🏆", text: "Allah aime que lorsque l'un d'entre vous fait un travail, il le fasse avec excellence.", author: "Hadith authentique 💛" },
+  { icon: "🌱", text: "La persévérance est une lumière. Elle ne brûle pas — elle éclaire.", author: "Pensée soufie 🕯️" },
+  { icon: "💪", text: "Ne dis pas : je ne peux pas. Dis : avec l'aide d'Allah, j'essaie.", author: "Rappel du cœur 🤍" },
+  { icon: "🎯", text: "Fais de ta réussite une ibada. Étudie pour servir, non pour briller.", author: "Réflexion du cœur 🌙" },
+  { icon: "🧭", text: "Quand la route est longue, rappelle-toi pourquoi tu as commencé. Et rappelle-toi pour Qui tu travailles.", author: "Méditation spirituelle 💫" },
+  { icon: "🕌", text: "Ton Seigneur ne t'a pas abandonnée et ne te hait point.", author: "Coran 93:3 🌸" },
+  { icon: "📖", text: "Lis, au nom de ton Seigneur qui a créé. Il t'enseigne ce que tu ne savais pas.", author: "Coran 96:1-5 ✨" },
+  { icon: "🌟", text: "Les épreuves sont des purifications. Chaque difficulté efface une faute et élève un rang.", author: "Sagesse islamique 💎" },
+  { icon: "🤍", text: "Investis tout en Allah — car ce bas monde finit, et ce que tu as semé pour Lui demeure.", author: "Rappel du cœur 🌿" },
+  { icon: "🌙", text: "La nuit la plus longue a une aube. Continue.", author: "Pensée du croyant 🌅" },
+  { icon: "🕊️", text: "La sérénité du cœur naît du dhikr. Et dans le travail bien fait, il y a aussi un dhikr.", author: "Méditation soufie 🌺" },
 ];
 
 /* ─── Navigation ─── */
@@ -412,6 +332,17 @@ document.addEventListener("DOMContentLoaded", function () {
   setTimeout(function () {
     App.showMotivation();
   }, 800);
+
+  // Islamic daily notifications
+  if (typeof IslamicNotifs !== "undefined") {
+    if (Notification && Notification.permission === "granted") {
+      IslamicNotifs.init();
+    } else if (Notification && Notification.permission === "default") {
+      Notification.requestPermission().then(function(perm) {
+        if (perm === "granted") IslamicNotifs.init();
+      });
+    }
+  }
 
   // ── OneSignal Push Notifications ──
   // SETUP: create a free account at onesignal.com → New App → Web → copy your App ID below
