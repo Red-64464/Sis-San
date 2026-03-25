@@ -1393,10 +1393,14 @@ textarea::placeholder {
   border: 1.5px solid var(--border);
   border-radius: var(--radius);
   padding: 14px 16px;
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  animation: fadeInUp 0.2s ease;
+}
+.custom-timer-wrap.visible {
+  display: flex;
 }
 .custom-timer-label {
   font-size: 0.75rem;

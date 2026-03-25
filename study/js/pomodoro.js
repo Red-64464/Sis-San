@@ -42,6 +42,8 @@ var Pomodoro = (function () {
     state.remaining = state.totalSeconds;
     state.mode = "work";
     state.currentCycle = 1;
+    var wrap = document.getElementById("custom-wrap");
+    if (wrap) wrap.classList.remove("visible");
     renderPresets();
     render();
   }
@@ -86,7 +88,6 @@ var Pomodoro = (function () {
       startCountdown();
       render();
     } else {
-      requestNotifPermission();
       state.label =
         document.getElementById("pomo-label").value.trim() || "Session";
       state.running = true;
@@ -95,6 +96,7 @@ var Pomodoro = (function () {
       state.mode = "work";
       startCountdown();
       render();
+      _sendStartNotif();
     }
   }
 
@@ -265,7 +267,7 @@ var Pomodoro = (function () {
     html +=
       '<button class="preset-btn preset-btn-custom' +
       (state.isCustom ? " active" : "") +
-      '" onclick="document.getElementById(\'custom-h\').focus()">✏ Perso</button>';
+      '" onclick="Pomodoro.toggleCustomWrap()">✏ Perso</button>';
     wrap.innerHTML = html;
   }
 
@@ -419,7 +421,51 @@ var Pomodoro = (function () {
     }
   }
 
+  // ── Custom Wrap Toggle ──
+  function toggleCustomWrap() {
+    var wrap = document.getElementById("custom-wrap");
+    if (!wrap) return;
+    var isVisible = wrap.classList.contains("visible");
+    if (isVisible) {
+      wrap.classList.remove("visible");
+      state.isCustom = false;
+      renderPresets();
+    } else {
+      wrap.classList.add("visible");
+      setTimeout(function () {
+        wrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        var h = document.getElementById("custom-h");
+        if (h) h.focus();
+      }, 50);
+    }
+  }
+
   // ── Notifications ──
+  function _sendStartNotif() {
+    if (!("Notification" in window)) return;
+    function _send() {
+      if (Notification.permission === "granted") {
+        sendTimerNotification(
+          "🍅 " + (state.label || "Session") + " démarrée !",
+          _fmtDuration(state.totalSeconds) +
+            " de focus. Bonne concentration ! 💪",
+        );
+      }
+    }
+    if (Notification.permission === "granted") {
+      _send();
+    } else if (Notification.permission === "default") {
+      if (typeof OneSignal !== "undefined") {
+        try {
+          OneSignal.Slidedown.promptPush();
+        } catch (e) {}
+      }
+      Notification.requestPermission().then(function () {
+        _send();
+      });
+    }
+  }
+
   function requestNotifPermission() {
     if (typeof OneSignal !== "undefined") {
       try {
@@ -518,5 +564,6 @@ var Pomodoro = (function () {
     getState: getState,
     testNotification: testNotification,
     getNotifStatus: getNotifStatus,
+    toggleCustomWrap: toggleCustomWrap,
   };
 })();
