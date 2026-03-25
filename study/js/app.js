@@ -418,7 +418,7 @@ document.addEventListener("DOMContentLoaded", function () {
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   window.OneSignalDeferred.push(function (OneSignal) {
     OneSignal.init({
-      appId: "YOUR_ONESIGNAL_APP_ID", // ← replace with your App ID
+      appId: "c01fd3cb-203b-46d1-8a9f-f73df2050fba",
       serviceWorkerPath: "/sw.js",
       notifyButton: { enable: false },
       promptOptions: {
