@@ -14,12 +14,17 @@
       name="apple-mobile-web-app-status-bar-style"
       content="black-translucent"
     />
-    <link rel="apple-touch-icon" href="../assets/icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="../assets/icons/logo.png" />
     <link
       href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="study.css" />
+    <!-- OneSignal Push Notifications SDK -->
+    <script
+      src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
+      defer
+    ></script>
   </head>
   <body>
     <!-- ═══════════════════════════════════════════
@@ -27,7 +32,9 @@
      ═══════════════════════════════════════════ -->
     <div class="topbar">
       <a href="../index.html" class="topbar-back">←</a>
-      <div class="topbar-title"><span>Sis</span>-San</div>
+      <div class="topbar-title">
+        <img src="../assets/icons/logo.png" alt="Sis-San" class="topbar-logo" />
+      </div>
       <div style="width: 36px"></div>
     </div>
 
@@ -64,7 +71,6 @@
       <div
         class="dash-timer-card"
         id="dash-timer-card"
-        style="display: none"
         onclick="App.navigate('focus')"
       >
         <div class="dash-timer-ring">
@@ -153,6 +159,51 @@
 
         <!-- Presets -->
         <div class="timer-presets" id="pomo-presets"></div>
+
+        <!-- Custom Time Input -->
+        <div class="custom-timer-wrap" id="custom-wrap">
+          <div class="custom-timer-label">⏱ Temps personnalisé</div>
+          <div class="custom-timer-inputs">
+            <div class="custom-time-field">
+              <input
+                type="number"
+                id="custom-h"
+                min="0"
+                max="23"
+                placeholder="0"
+              />
+              <label>h</label>
+            </div>
+            <span class="custom-time-sep">:</span>
+            <div class="custom-time-field">
+              <input
+                type="number"
+                id="custom-m"
+                min="0"
+                max="59"
+                placeholder="25"
+              />
+              <label>min</label>
+            </div>
+            <span class="custom-time-sep">:</span>
+            <div class="custom-time-field">
+              <input
+                type="number"
+                id="custom-s"
+                min="0"
+                max="59"
+                placeholder="0"
+              />
+              <label>sec</label>
+            </div>
+          </div>
+          <button
+            class="custom-timer-apply"
+            onclick="Pomodoro.applyCustomTime()"
+          >
+            Appliquer
+          </button>
+        </div>
 
         <!-- Cycle config -->
         <div id="cycle-config" class="cycle-config"></div>
@@ -350,7 +401,76 @@
           <span class="setting-value" id="setting-cycles">1x</span>
         </div>
       </div>
+
+      <!-- Notifications -->
+      <div class="card">
+        <div class="section-head">
+          <span class="section-title">🔔 Notifications</span>
+        </div>
+        <p class="notif-intro">
+          Reçois une notification push sur ton téléphone (même écran verrouillé)
+          quand ton timer se termine.
+        </p>
+        <div class="notif-guide">
+          <div class="notif-guide-item">
+            📱 <strong>iPhone :</strong> Ajoute le site à ton écran d'accueil
+            via Safari → "Sur l'écran d'accueil", puis accepte la permission.
+          </div>
+          <div class="notif-guide-item">
+            🤖 <strong>Android :</strong> Accepte simplement la permission dans
+            Chrome — ça marche aussi sans l'ajouter.
+          </div>
+        </div>
+        <button
+          class="notif-test-btn"
+          id="notif-test-btn"
+          onclick="Pomodoro.testNotification()"
+        >
+          🔔 Envoyer une notif test
+        </button>
+        <div class="notif-status" id="notif-status"></div>
+      </div>
     </section>
+
+    <!-- ═══════════════════════════════════════════
+     MOTIVATION QUOTE MODAL
+     ═══════════════════════════════════════════ -->
+    <div
+      class="modal-overlay"
+      id="motivation-modal"
+      onclick="App.closeMotivation(event)"
+    >
+      <div class="modal-box motivation-box">
+        <button class="motivation-skip" onclick="App.closeMotivation()">
+          ✕
+        </button>
+        <div class="motivation-quote-icon" id="motivation-icon">💡</div>
+        <div class="motivation-quote-text" id="motivation-quote">"..."</div>
+        <div class="motivation-quote-author" id="motivation-author">— ...</div>
+        <button class="motivation-cta" onclick="App.closeMotivation()">
+          C'est parti ! 🚀
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+     BADGE UNLOCK MODAL
+     ═══════════════════════════════════════════ -->
+    <div class="modal-overlay" id="badge-modal">
+      <div class="modal-box badge-unlock-box">
+        <div class="badge-unlock-glow"></div>
+        <div class="badge-unlock-eyebrow">Badge débloqué !</div>
+        <div class="badge-unlock-icon" id="badge-modal-icon">🏆</div>
+        <div class="badge-unlock-name" id="badge-modal-name">Nom du badge</div>
+        <div class="badge-unlock-desc" id="badge-modal-desc">Description</div>
+        <button
+          class="badge-unlock-btn"
+          onclick="Gamification.closeBadgeModal()"
+        >
+          Super ! 🎉
+        </button>
+      </div>
+    </div>
 
     <!-- ═══════════════════════════════════════════
      MOOD MODAL (post-session)

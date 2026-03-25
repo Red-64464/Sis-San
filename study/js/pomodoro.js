@@ -15,6 +15,7 @@ var Pomodoro = (function () {
     totalCycles: 1,
     currentCycle: 1,
     configOpen: false,
+    isCustom: false, // true when custom HH:MM:SS time is active
   };
 
   var circumference = 2 * Math.PI * 108; // r=108 in SVG
@@ -36,6 +37,7 @@ var Pomodoro = (function () {
   function setPreset(minutes) {
     if (state.running) return;
     state.preset = minutes;
+    state.isCustom = false;
     state.totalSeconds = minutes * 60;
     state.remaining = state.totalSeconds;
     state.mode = "work";
@@ -56,6 +58,7 @@ var Pomodoro = (function () {
     var settings = Storage.getSettings();
     if (field === "work") {
       state.preset = v;
+      state.isCustom = false;
       state.totalSeconds = v * 60;
       state.remaining = v * 60;
       settings.pomoDuration = v;
@@ -83,6 +86,7 @@ var Pomodoro = (function () {
       startCountdown();
       render();
     } else {
+      requestNotifPermission();
       state.label =
         document.getElementById("pomo-label").value.trim() || "Session";
       state.running = true;
@@ -117,6 +121,18 @@ var Pomodoro = (function () {
 
   function onTimerEnd() {
     if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+
+    // Send local notification
+    sendTimerNotification(
+      state.mode === "work"
+        ? "Session Focus terminée ! 🎉"
+        : "Pause terminée ✅",
+      state.mode === "work"
+        ? "Tu as tenu " +
+            _fmtDuration(state.totalSeconds) +
+            " de focus. Bravo !"
+        : "La pause est finie. Retour au focus !",
+    );
 
     if (state.mode === "work") {
       // Record session
@@ -233,11 +249,11 @@ var Pomodoro = (function () {
     var wrap = document.getElementById("pomo-presets");
     if (!wrap) return;
     var presets = [15, 25, 45, 60];
-    wrap.innerHTML = presets
+    var html = presets
       .map(function (p) {
         return (
           '<button class="preset-btn' +
-          (p === state.preset ? " active" : "") +
+          (p === state.preset && !state.isCustom ? " active" : "") +
           '" onclick="Pomodoro.setPreset(' +
           p +
           ')">' +
@@ -246,6 +262,11 @@ var Pomodoro = (function () {
         );
       })
       .join("");
+    html +=
+      '<button class="preset-btn preset-btn-custom' +
+      (state.isCustom ? " active" : "") +
+      '" onclick="document.getElementById(\'custom-h\').focus()">✏ Perso</button>';
+    wrap.innerHTML = html;
   }
 
   function renderCycleConfig() {
@@ -270,8 +291,10 @@ var Pomodoro = (function () {
       (state.preset - 5) +
       ')">−</button>' +
       '<span class="cycle-val">' +
-      state.preset +
-      " min</span>" +
+      (state.isCustom
+        ? _fmtDuration(state.totalSeconds)
+        : state.preset + " min") +
+      "</span>" +
       '<button class="cycle-adj" onclick="Pomodoro.setCycleConfig(\'work\',' +
       (state.preset + 5) +
       ')">+</button>' +
@@ -357,15 +380,143 @@ var Pomodoro = (function () {
     return d.innerHTML;
   }
 
+  // ── Custom Time ──
+  function applyCustomTime() {
+    if (state.running) return;
+    var h = Math.max(
+      0,
+      parseInt(document.getElementById("custom-h").value) || 0,
+    );
+    var m = Math.max(
+      0,
+      parseInt(document.getElementById("custom-m").value) || 0,
+    );
+    var s = Math.max(
+      0,
+      parseInt(document.getElementById("custom-s").value) || 0,
+    );
+    var total = h * 3600 + m * 60 + s;
+    if (total <= 0) return;
+    state.isCustom = true;
+    state.totalSeconds = total;
+    state.remaining = total;
+    state.mode = "work";
+    state.currentCycle = 1;
+    renderPresets();
+    render();
+  }
+
+  function _fmtDuration(seconds) {
+    var h = Math.floor(seconds / 3600);
+    var m = Math.floor((seconds % 3600) / 60);
+    var s = seconds % 60;
+    if (h > 0) {
+      return h + "h" + (m > 0 ? String(m).padStart(2, "0") + "min" : "");
+    } else if (m > 0) {
+      return m + "min" + (s > 0 ? String(s).padStart(2, "0") + "s" : "");
+    } else {
+      return s + "s";
+    }
+  }
+
+  // ── Notifications ──
+  function requestNotifPermission() {
+    if (typeof OneSignal !== "undefined") {
+      try {
+        OneSignal.Slidedown.promptPush();
+      } catch (e) {}
+    } else if (
+      "Notification" in window &&
+      Notification.permission === "default"
+    ) {
+      Notification.requestPermission();
+    }
+  }
+
+  function sendTimerNotification(title, body) {
+    if ("Notification" in window && Notification.permission === "granted") {
+      try {
+        new Notification(title, {
+          body: body,
+          icon: "../assets/icons/icon-192.png",
+          badge: "../assets/icons/icon-192.png",
+          tag: "sissan-timer",
+          renotify: true,
+          vibrate: [200, 100, 200],
+        });
+      } catch (e) {}
+    }
+  }
+
+  function testNotification() {
+    var btn = document.getElementById("notif-test-btn");
+    var status = document.getElementById("notif-status");
+
+    // First request permission if needed
+    if (!("Notification" in window)) {
+      if (status) {
+        status.textContent = "Notifications non supportées sur ce navigateur.";
+        status.className = "notif-status notif-denied";
+      }
+      return;
+    }
+
+    function _doSend() {
+      var perm = Notification.permission;
+      if (perm === "granted") {
+        sendTimerNotification(
+          "Sis-San — Test 🎉",
+          "Super ! Les notifications fonctionnent sur ton appareil ✅",
+        );
+        if (status) {
+          status.textContent = "✅ Notification envoyée ! Vérifie ton écran.";
+          status.className = "notif-status notif-ok";
+        }
+        if (btn) btn.textContent = "✅ Ça marche !";
+        setTimeout(function () {
+          if (btn) btn.textContent = "🔔 Envoyer une notif test";
+        }, 3000);
+      } else if (perm === "denied") {
+        if (status) {
+          status.textContent =
+            "❌ Notifications bloquées. Va dans les réglages de ton navigateur pour les autoriser.";
+          status.className = "notif-status notif-denied";
+        }
+      } else {
+        if (status) {
+          status.textContent = "En attente de ta réponse…";
+          status.className = "notif-status notif-pending";
+        }
+      }
+    }
+
+    if (Notification.permission === "default") {
+      requestNotifPermission();
+      Notification.requestPermission().then(function () {
+        _doSend();
+      });
+    } else {
+      _doSend();
+    }
+  }
+
+  function getNotifStatus() {
+    if (!("Notification" in window)) return "unsupported";
+    return Notification.permission; // 'granted' | 'denied' | 'default'
+  }
+
   return {
     init: init,
     toggle: toggle,
     reset: reset,
     setPreset: setPreset,
+    applyCustomTime: applyCustomTime,
     toggleConfig: toggleConfig,
     setCycleConfig: setCycleConfig,
     setSessionMood: setSessionMood,
     renderSessionLog: renderSessionLog,
     getState: getState,
+    testNotification: testNotification,
+    getNotifStatus: getNotifStatus,
   };
 })();

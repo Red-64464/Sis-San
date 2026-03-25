@@ -2,6 +2,110 @@
    app.js — SPA Router & Dashboard
    ═══════════════════════════════════════════ */
 
+/* ─── Motivation Quotes ─── */
+var QUOTES = [
+  {
+    icon: "🧠",
+    text: "Le génie, c'est 1% d'inspiration et 99% de transpiration.",
+    author: "Thomas Edison",
+  },
+  {
+    icon: "🚀",
+    text: "La seule façon de faire du bon travail, c'est d'aimer ce que vous faites.",
+    author: "Steve Jobs",
+  },
+  {
+    icon: "🌟",
+    text: "Chaque expert a d'abord été un débutant.",
+    author: "Helen Hayes",
+  },
+  {
+    icon: "🏆",
+    text: "Le succès, c'est tomber sept fois, se relever huit.",
+    author: "Proverbe japonais",
+  },
+  {
+    icon: "💪",
+    text: "Tu n'as pas à être excellent pour commencer, mais tu dois commencer pour être excellent.",
+    author: "Zig Ziglar",
+  },
+  {
+    icon: "🔥",
+    text: "Peu importe ta vitesse, tu avances quand même.",
+    author: "Proverbe",
+  },
+  {
+    icon: "⭐",
+    text: "L'éducation est l'arme la plus puissante pour changer le monde.",
+    author: "Nelson Mandela",
+  },
+  {
+    icon: "🎯",
+    text: "Fixe-toi des objectifs élevés, et les obstacles disparaîtront.",
+    author: "Andrew Carnegie",
+  },
+  {
+    icon: "💎",
+    text: "Le diamant, c'est un morceau de charbon qui a tenu bon.",
+    author: "Winston Churchill",
+  },
+  {
+    icon: "🧭",
+    text: "Le chemin de mille lieues commence par un seul pas.",
+    author: "Lao Tseu",
+  },
+  {
+    icon: "🌊",
+    text: "Ne regarde pas l'horloge – fais comme elle : avance.",
+    author: "Sam Levenson",
+  },
+  {
+    icon: "☀️",
+    text: "Chaque matin est une nouvelle chance de tout recommencer.",
+    author: "Proverbe",
+  },
+  {
+    icon: "🎓",
+    text: "Investir dans la connaissance rapporte toujours les meilleurs intérêts.",
+    author: "Benjamin Franklin",
+  },
+  {
+    icon: "⚡",
+    text: "Tu es plus forte que tu ne le crois, plus talentueuse que tu ne le penses.",
+    author: "A.A. Milne",
+  },
+  {
+    icon: "🦋",
+    text: "Ne compte pas les jours, fais que les jours comptent.",
+    author: "Muhammad Ali",
+  },
+  {
+    icon: "🌙",
+    text: "Même les journées difficiles sont une étape vers ta réussite.",
+    author: "Proverbe",
+  },
+  {
+    icon: "🏅",
+    text: "Les gagnants font les choses que les perdants refusent de faire.",
+    author: "Proverbe",
+  },
+  {
+    icon: "🌱",
+    text: "Une petite graine d'effort peut donner un arbre de résultats.",
+    author: "Proverbe",
+  },
+  {
+    icon: "🎵",
+    text: "La discipline, c'est choisir entre ce que tu veux maintenant et ce que tu veux le plus.",
+    author: "Abraham Lincoln",
+  },
+  {
+    icon: "💡",
+    text: "Chaque heure de travail aujourd'hui est une heure de liberté demain.",
+    author: "Proverbe",
+  },
+];
+
 /* ─── Navigation ─── */
 var App = (function () {
   var currentPage = "home";
@@ -44,7 +148,37 @@ var App = (function () {
     navigate("home");
   }
 
-  return { navigate: navigate, init: init };
+  function showMotivation() {
+    if (sessionStorage.getItem("motivation-shown")) return;
+    sessionStorage.setItem("motivation-shown", "1");
+    var q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+    var iconEl = document.getElementById("motivation-icon");
+    var textEl = document.getElementById("motivation-quote");
+    var authorEl = document.getElementById("motivation-author");
+    if (iconEl) iconEl.textContent = q.icon;
+    if (textEl) textEl.textContent = "\u201C" + q.text + "\u201D";
+    if (authorEl) authorEl.textContent = "\u2014 " + q.author;
+    var modal = document.getElementById("motivation-modal");
+    if (modal) modal.classList.add("show");
+  }
+
+  function closeMotivation(e) {
+    if (
+      e &&
+      e.target !== document.getElementById("motivation-modal") &&
+      e.type !== "click"
+    )
+      return;
+    var modal = document.getElementById("motivation-modal");
+    if (modal) modal.classList.remove("show");
+  }
+
+  return {
+    navigate: navigate,
+    init: init,
+    showMotivation: showMotivation,
+    closeMotivation: closeMotivation,
+  };
 })();
 
 /* ─── Dashboard Timer (mini ring on home) ─── */
@@ -57,10 +191,12 @@ var DashboardTimer = (function () {
     var quickBtn = document.getElementById("quick-start-btn");
     if (!card) return;
 
-    if (s.running || s.paused) {
-      card.style.display = "flex";
-      if (quickBtn) quickBtn.style.display = "none";
+    // Always show the timer ring card
+    card.style.display = "flex";
+    if (quickBtn) quickBtn.style.display = "none";
 
+    if (s.running || s.paused) {
+      // Active state
       var min = Math.floor(s.remaining / 60);
       var sec = s.remaining % 60;
       var el = document.getElementById("dash-pomo-time");
@@ -82,8 +218,24 @@ var DashboardTimer = (function () {
       var phase = document.getElementById("dash-pomo-phase");
       if (phase) phase.textContent = s.mode === "work" ? "Focus" : "Pause";
     } else {
-      card.style.display = "none";
-      if (quickBtn) quickBtn.style.display = "flex";
+      // Idle state — show default time, full ring
+      var settings = Storage.getSettings();
+      var idleMins = settings.pomoDuration || 25;
+      var idleEl = document.getElementById("dash-pomo-time");
+      if (idleEl)
+        idleEl.textContent = String(idleMins).padStart(2, "0") + ":00";
+
+      var idleProg = document.getElementById("dash-pomo-progress");
+      if (idleProg) {
+        idleProg.style.strokeDasharray = circ;
+        idleProg.style.strokeDashoffset = 0; // full ring = ready
+        idleProg.style.stroke = "var(--muted)";
+      }
+
+      var idleLabel = document.getElementById("dash-pomo-label");
+      if (idleLabel) idleLabel.textContent = "Prête à focus ?";
+      var idlePhase = document.getElementById("dash-pomo-phase");
+      if (idlePhase) idlePhase.textContent = "Toucher pour démarrer";
     }
   }
 
@@ -246,5 +398,45 @@ var Profile = (function () {
 
 /* ─── Boot ─── */
 document.addEventListener("DOMContentLoaded", function () {
+  // Register service worker (PWA + push)
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("../sw.js", { scope: "/" })
+      .catch(function () {});
+  }
+
   App.init();
+  Gamification.checkBadges(); // unlock "Bienvenue !" badge on first visit
+
+  // Show daily motivation quote (once per session)
+  setTimeout(function () {
+    App.showMotivation();
+  }, 800);
+
+  // ── OneSignal Push Notifications ──
+  // SETUP: create a free account at onesignal.com → New App → Web → copy your App ID below
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  window.OneSignalDeferred.push(function (OneSignal) {
+    OneSignal.init({
+      appId: "YOUR_ONESIGNAL_APP_ID", // ← replace with your App ID
+      serviceWorkerPath: "/sw.js",
+      notifyButton: { enable: false },
+      promptOptions: {
+        slidedown: {
+          prompts: [
+            {
+              type: "push",
+              autoPrompt: false,
+              text: {
+                actionMessage:
+                  "Reçois des notifications quand ton timer se termine !",
+                acceptButton: "Oui !",
+                cancelButton: "Non merci",
+              },
+            },
+          ],
+        },
+      },
+    });
+  });
 });

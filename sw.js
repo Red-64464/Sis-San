@@ -1,3 +1,8 @@
+// OneSignal push notifications support
+try {
+  importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
+} catch (e) {}
+
 const CACHE_NAME = "sissan-v2";
 const ASSETS = [
   "./",
