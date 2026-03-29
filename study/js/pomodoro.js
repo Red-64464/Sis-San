@@ -428,15 +428,15 @@ var Pomodoro = (function () {
     var isVisible = wrap.classList.contains("visible");
     if (isVisible) {
       wrap.classList.remove("visible");
+      wrap.style.display = "";
       state.isCustom = false;
       renderPresets();
     } else {
       wrap.classList.add("visible");
+      wrap.style.display = "flex";
       setTimeout(function () {
         wrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        var h = document.getElementById("custom-h");
-        if (h) h.focus();
-      }, 50);
+      }, 80);
     }
   }
 

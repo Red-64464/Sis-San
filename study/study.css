@@ -2732,3 +2732,54 @@ textarea::placeholder {
   opacity: 0.5;
   text-decoration: line-through;
 }
+
+/* ─── Fix bouton Perso mobile ─── */
+.preset-btn {
+  min-height: 44px;
+  touch-action: manipulation;
+}
+.preset-btn-custom {
+  min-height: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0,245,195,0.15);
+}
+.custom-timer-wrap {
+  touch-action: manipulation;
+}
+.custom-timer-wrap.visible {
+  position: relative;
+  z-index: 10;
+  display: flex !important;
+}
+
+/* ─── Streak progress bar ─── */
+.streak-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 999px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+.streak-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ff6432, #ffd93d);
+  transition: width 0.6s ease;
+}
+
+/* ─── Modal citation islamique — style doré ─── */
+.motivation-quote-text {
+  font-style: normal;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.motivation-quote-author {
+  color: var(--warning);
+  font-size: 0.8rem;
+}
+.motivation-quote-icon {
+  font-size: 3rem;
+}
