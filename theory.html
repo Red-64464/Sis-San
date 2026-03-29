@@ -174,6 +174,9 @@
       .m-lieux {
         --c: #38bdf8;
       }
+      .m-chimie {
+        --c: #22d3ee;
+      }
 
       .module:hover {
         border-color: color-mix(in srgb, var(--c) 60%, transparent);
@@ -514,6 +517,30 @@
               onclick="
                 location.href = 'lieux_geometriques/lieux_geometriques.html'
               "
+            >
+              Ouvrir le chapitre <span class="arrow">&rarr;</span>
+            </button>
+          </div>
+        </div>
+        <p class="subject-heading" style="margin-top: 32px">Sciences</p>
+        <div class="modules">
+          <div class="module m-chimie">
+            <span class="module-icon">🧪</span>
+            <h2>Chimie</h2>
+            <p>
+              Explore la mati&egrave;re, les atomes et les mol&eacute;cules.
+              Visualise les atomes en 3D avec leurs &eacute;lectrons, construis
+              des mol&eacute;cules et teste tes connaissances en quiz.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Atomes 3D</span>
+              <span class="tag">Mol&eacute;cules</span>
+              <span class="tag">Indices</span>
+              <span class="tag">Quiz</span>
+            </div>
+            <button
+              class="btn-open"
+              onclick="location.href = 'chimie/chimie.html'"
             >
               Ouvrir le chapitre <span class="arrow">&rarr;</span>
             </button>

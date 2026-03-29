@@ -8,7 +8,7 @@
     />
     <title>Sis-San — Étude</title>
     <link rel="manifest" href="../manifest.json" />
-    <meta name="theme-color" content="#070712" />
+    <meta name="theme-color" content="#fdf3f5" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta
       name="apple-mobile-web-app-status-bar-style"
@@ -42,6 +42,9 @@
      PAGE: HOME / DASHBOARD
      ═══════════════════════════════════════════ -->
     <section id="page-home" class="page-section active">
+      <!-- Sticker deco -->
+      <div class="sticker-row">🌸 ✨ 🎀 ✨ 🌸</div>
+
       <!-- Streak Banner -->
       <div class="streak-banner">
         <span class="streak-fire">🔥</span>
@@ -227,6 +230,75 @@
         </div>
         <div class="session-log" id="session-log"></div>
       </div>
+
+      <!-- Ambient Sounds -->
+      <div class="card">
+        <div class="section-head">
+          <span class="section-title">🎵 Sons d'ambiance</span>
+        </div>
+        <div class="ambient-grid" id="ambient-grid">
+          <button
+            class="ambient-btn"
+            data-src=""
+            onclick="App.toggleAmbient(this, 'rain')"
+            title="Pluie"
+          >
+            🌧️<span>Pluie</span>
+          </button>
+          <button
+            class="ambient-btn"
+            data-src=""
+            onclick="App.toggleAmbient(this, 'cafe')"
+            title="Café"
+          >
+            ☕<span>Café</span>
+          </button>
+          <button
+            class="ambient-btn"
+            data-src=""
+            onclick="App.toggleAmbient(this, 'forest')"
+            title="Forêt"
+          >
+            🌲<span>Forêt</span>
+          </button>
+          <button
+            class="ambient-btn"
+            data-src=""
+            onclick="App.toggleAmbient(this, 'fire')"
+            title="Feu"
+          >
+            🔥<span>Feu</span>
+          </button>
+          <button
+            class="ambient-btn"
+            data-src=""
+            onclick="App.toggleAmbient(this, 'waves')"
+            title="Vagues"
+          >
+            🌊<span>Vagues</span>
+          </button>
+          <button
+            class="ambient-btn"
+            data-src=""
+            onclick="App.toggleAmbient(this, 'lofi')"
+            title="Lo-fi"
+          >
+            🎵<span>Lo-fi</span>
+          </button>
+        </div>
+        <div class="ambient-volume-row">
+          <span>🔈</span>
+          <input
+            type="range"
+            id="ambient-volume"
+            min="0"
+            max="100"
+            value="40"
+            oninput="App.setAmbientVolume(this.value)"
+          />
+          <span>🔊</span>
+        </div>
+      </div>
     </section>
 
     <!-- ═══════════════════════════════════════════
@@ -242,6 +314,20 @@
           onkeydown="Todo.handleKeydown(event)"
         />
         <button class="todo-add-btn" onclick="Todo.add()">+</button>
+      </div>
+      <div
+        style="
+          display: flex;
+          gap: 4px;
+          margin-bottom: 6px;
+          font-size: 0.7rem;
+          color: var(--muted);
+          font-weight: 600;
+        "
+      >
+        <span style="flex: 1.5">📅 Jour (calendrier)</span>
+        <span style="flex: 1">Catégorie</span>
+        <span style="flex: 1">Priorité</span>
       </div>
       <div class="todo-options-row">
         <input type="date" id="todo-date" placeholder="Date limite" />
@@ -271,6 +357,22 @@
           <button class="cal-nav" onclick="Calendar.prev()">‹</button>
           <span class="cal-title" id="cal-month-label"></span>
           <button class="cal-nav" onclick="Calendar.next()">›</button>
+        </div>
+        <div class="cal-view-toggle">
+          <button
+            class="cal-view-btn active"
+            id="btn-monthly"
+            onclick="Calendar.setView('month', this)"
+          >
+            Mois
+          </button>
+          <button
+            class="cal-view-btn"
+            id="btn-weekly"
+            onclick="Calendar.setView('week', this)"
+          >
+            Semaine
+          </button>
         </div>
         <div class="cal-days">
           <span class="cal-day-label">Lun</span>
@@ -384,21 +486,97 @@
             <div class="setting-label">Durée Pomodoro</div>
             <div class="setting-desc">Minutes par session de focus</div>
           </div>
-          <span class="setting-value" id="setting-pomo-dur">25 min</span>
+          <div class="setting-stepper">
+            <button
+              class="stepper-btn"
+              onclick="App.adjustSetting('pomoDuration', -1)"
+            >
+              −
+            </button>
+            <span class="setting-value" id="setting-pomo-dur">25 min</span>
+            <button
+              class="stepper-btn"
+              onclick="App.adjustSetting('pomoDuration', 1)"
+            >
+              +
+            </button>
+          </div>
         </div>
         <div class="setting-row">
           <div>
             <div class="setting-label">Pause courte</div>
             <div class="setting-desc">Minutes entre les sessions</div>
           </div>
-          <span class="setting-value" id="setting-break-dur">5 min</span>
+          <div class="setting-stepper">
+            <button
+              class="stepper-btn"
+              onclick="App.adjustSetting('shortBreak', -1)"
+            >
+              −
+            </button>
+            <span class="setting-value" id="setting-break-dur">5 min</span>
+            <button
+              class="stepper-btn"
+              onclick="App.adjustSetting('shortBreak', 1)"
+            >
+              +
+            </button>
+          </div>
         </div>
         <div class="setting-row">
           <div>
             <div class="setting-label">Cycles</div>
             <div class="setting-desc">Nombre de répétitions travail/pause</div>
           </div>
-          <span class="setting-value" id="setting-cycles">1x</span>
+          <div class="setting-stepper">
+            <button
+              class="stepper-btn"
+              onclick="App.adjustSetting('cycles', -1)"
+            >
+              −
+            </button>
+            <span class="setting-value" id="setting-cycles">1x</span>
+            <button
+              class="stepper-btn"
+              onclick="App.adjustSetting('cycles', 1)"
+            >
+              +
+            </button>
+          </div>
+        </div>
+        <!-- Dark mode toggle -->
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">🌙 Mode sombre</div>
+            <div class="setting-desc">Thème nuit pour tes yeux</div>
+          </div>
+          <div
+            class="toggle"
+            id="toggle-dark-mode"
+            onclick="App.toggleDarkMode()"
+          ></div>
+        </div>
+        <!-- Wallpaper picker -->
+        <div
+          class="setting-row"
+          style="flex-direction: column; align-items: flex-start; gap: 12px"
+        >
+          <div>
+            <div class="setting-label">🖼 Fond d'écran</div>
+            <div class="setting-desc">Personnalise l'arrière-plan</div>
+          </div>
+          <div class="wallpaper-picker" id="wallpaper-picker"></div>
+        </div>
+        <!-- Accent color picker -->
+        <div
+          class="setting-row"
+          style="flex-direction: column; align-items: flex-start; gap: 10px"
+        >
+          <div>
+            <div class="setting-label">🎨 Couleur d'accent</div>
+            <div class="setting-desc">Personnalise la couleur principale</div>
+          </div>
+          <div class="accent-picker" id="accent-picker"></div>
         </div>
       </div>
 
@@ -429,6 +607,199 @@
           🔔 Envoyer une notif test
         </button>
         <div class="notif-status" id="notif-status"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+     PAGE: FLASHCARDS
+     ═══════════════════════════════════════════ -->
+    <section id="page-flashcards" class="page-section">
+      <!-- ─── View: Deck List ─── -->
+      <div id="fc-view-decks" class="fc-view active">
+        <div class="section-head" style="margin-bottom: 16px">
+          <span class="section-title">🃏 Mes paquets</span>
+          <button class="btn-pink-sm" onclick="Flashcards.openCreateDeck()">
+            + Paquet
+          </button>
+        </div>
+        <div id="fc-deck-list" class="fc-deck-list"></div>
+      </div>
+
+      <!-- ─── View: Deck Editor ─── -->
+      <div id="fc-view-editor" class="fc-view">
+        <div class="fc-nav-bar">
+          <button class="fc-back" onclick="Flashcards.showView('decks')">
+            ←
+          </button>
+          <span class="fc-nav-title" id="fc-editor-title">Paquet</span>
+          <button class="btn-pink-sm" onclick="Flashcards.startStudyPicker()">
+            📖 Étudier
+          </button>
+        </div>
+        <div class="fc-editor-strip" id="fc-editor-strip"></div>
+        <button
+          class="btn-pink-outline"
+          onclick="Flashcards.openAddCard()"
+          style="width: 100%; margin-bottom: 16px"
+        >
+          + Ajouter une carte
+        </button>
+        <div id="fc-card-list" class="fc-card-list"></div>
+      </div>
+
+      <!-- ─── View: Study Mode Picker ─── -->
+      <div id="fc-view-study-pick" class="fc-view">
+        <div class="fc-nav-bar">
+          <button class="fc-back" onclick="Flashcards.showView('editor')">
+            ←
+          </button>
+          <span class="fc-nav-title">Choisir un mode</span>
+          <div style="width: 38px"></div>
+        </div>
+        <div class="fc-mode-cards">
+          <div class="fc-mode-card" onclick="Flashcards.startStudy('classic')">
+            <div class="fc-mode-icon">🔄</div>
+            <div class="fc-mode-info">
+              <div class="fc-mode-name">Classique</div>
+              <div class="fc-mode-desc">
+                Tourne la carte pour voir la réponse
+              </div>
+            </div>
+          </div>
+          <div class="fc-mode-card" onclick="Flashcards.startStudy('quiz')">
+            <div class="fc-mode-icon">🔘</div>
+            <div class="fc-mode-info">
+              <div class="fc-mode-name">Quiz</div>
+              <div class="fc-mode-desc">
+                Choix multiple — 4 options proposées
+              </div>
+            </div>
+          </div>
+          <div class="fc-mode-card" onclick="Flashcards.startStudy('write')">
+            <div class="fc-mode-icon">✏️</div>
+            <div class="fc-mode-info">
+              <div class="fc-mode-name">Écrire</div>
+              <div class="fc-mode-desc">Tape la réponse toi-même</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── View: Classic Study ─── -->
+      <div id="fc-view-classic" class="fc-view">
+        <div class="fc-nav-bar">
+          <button class="fc-back" onclick="Flashcards.showView('study-pick')">
+            ←
+          </button>
+          <span class="fc-nav-title" id="fc-classic-progress">1 / 1</span>
+          <div style="width: 38px"></div>
+        </div>
+        <div class="fc-flip-wrap" onclick="Flashcards.flipCard()">
+          <div class="fc-flip-inner" id="fc-flip-inner">
+            <div class="fc-flip-front">
+              <div class="fc-card-hint">❓ Question</div>
+              <div class="fc-card-text" id="fc-classic-q"></div>
+              <div class="fc-card-tap">Touche pour retourner 🔄</div>
+            </div>
+            <div class="fc-flip-back">
+              <div class="fc-card-hint">✅ Réponse</div>
+              <div class="fc-card-text" id="fc-classic-a"></div>
+            </div>
+          </div>
+        </div>
+        <div class="fc-card-actions">
+          <button
+            class="fc-action-btn fc-wrong"
+            onclick="Flashcards.classicNext(false)"
+          >
+            ✕ À revoir
+          </button>
+          <button
+            class="fc-action-btn fc-correct"
+            onclick="Flashcards.classicNext(true)"
+          >
+            ✓ Je savais !
+          </button>
+        </div>
+      </div>
+
+      <!-- ─── View: Quiz Study ─── -->
+      <div id="fc-view-quiz" class="fc-view">
+        <div class="fc-nav-bar">
+          <button class="fc-back" onclick="Flashcards.showView('study-pick')">
+            ←
+          </button>
+          <span class="fc-nav-title" id="fc-quiz-progress">1 / 1</span>
+          <div style="width: 38px"></div>
+        </div>
+        <div class="card">
+          <div class="fc-card-hint">❓ Question</div>
+          <div
+            class="fc-card-text"
+            id="fc-quiz-q"
+            style="margin-top: 8px"
+          ></div>
+        </div>
+        <div class="fc-quiz-options" id="fc-quiz-options"></div>
+        <div class="fc-quiz-feedback" id="fc-quiz-feedback"></div>
+      </div>
+
+      <!-- ─── View: Write Study ─── -->
+      <div id="fc-view-write" class="fc-view">
+        <div class="fc-nav-bar">
+          <button class="fc-back" onclick="Flashcards.showView('study-pick')">
+            ←
+          </button>
+          <span class="fc-nav-title" id="fc-write-progress">1 / 1</span>
+          <div style="width: 38px"></div>
+        </div>
+        <div class="card">
+          <div class="fc-card-hint">❓ Question</div>
+          <div
+            class="fc-card-text"
+            id="fc-write-q"
+            style="margin-top: 8px"
+          ></div>
+        </div>
+        <div class="fc-write-area">
+          <input
+            type="text"
+            id="fc-write-input"
+            placeholder="Tape ta réponse..."
+            onkeydown="if (event.key === 'Enter') Flashcards.checkWrite();"
+          />
+          <button
+            class="btn-pink"
+            onclick="Flashcards.checkWrite()"
+            style="width: 100%"
+          >
+            Vérifier ✓
+          </button>
+        </div>
+        <div class="fc-write-feedback" id="fc-write-feedback"></div>
+      </div>
+
+      <!-- ─── View: Result ─── -->
+      <div id="fc-view-result" class="fc-view">
+        <div class="fc-result-wrap">
+          <span class="fc-result-icon">🎉</span>
+          <div class="fc-result-title">Session terminée !</div>
+          <div class="fc-result-score" id="fc-result-score"></div>
+          <button
+            class="btn-pink"
+            onclick="Flashcards.showView('study-pick')"
+            style="width: 100%; margin-top: 24px"
+          >
+            🔁 Rejouer
+          </button>
+          <button
+            class="btn-pink-outline"
+            onclick="Flashcards.showView('editor')"
+            style="width: 100%; margin-top: 10px"
+          >
+            ← Retour au paquet
+          </button>
+        </div>
       </div>
     </section>
 
@@ -497,6 +868,217 @@
     </div>
 
     <!-- ═══════════════════════════════════════════
+     FLASHCARD MODALS
+     ═══════════════════════════════════════════ -->
+
+    <!-- Create / Edit Deck Modal -->
+    <div
+      class="modal-overlay"
+      id="fc-create-modal"
+      onclick="Flashcards.closeModal(event, 'fc-create-modal')"
+    >
+      <div class="modal-box">
+        <div class="modal-title" id="fc-create-modal-title">
+          🃏 Nouveau paquet
+        </div>
+        <div style="margin-top: 16px">
+          <input
+            type="text"
+            id="fc-deck-name"
+            placeholder="Nom du paquet..."
+            maxlength="40"
+            onkeydown="
+              if (event.key === 'Enter') Flashcards.confirmCreateDeck();
+            "
+          />
+        </div>
+        <div class="fc-color-pick" id="fc-color-pick"></div>
+        <div
+          style="
+            font-size: 0.75rem;
+            color: var(--muted);
+            font-weight: 600;
+            margin: 10px 0 4px;
+          "
+        >
+          Emoji
+        </div>
+        <div class="fc-emoji-pick" id="fc-emoji-pick"></div>
+        <div style="display: flex; gap: 8px; margin-top: 18px">
+          <button
+            class="btn-pink-outline"
+            onclick="Flashcards.closeCreateModal()"
+            style="flex: 1"
+          >
+            Annuler
+          </button>
+          <button
+            class="btn-pink"
+            onclick="Flashcards.confirmCreateDeck()"
+            style="flex: 1"
+          >
+            Créer ✓
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add / Edit Card Modal -->
+    <div
+      class="modal-overlay"
+      id="fc-card-modal"
+      onclick="Flashcards.closeModal(event, 'fc-card-modal')"
+    >
+      <div class="modal-box">
+        <div class="modal-title" id="fc-card-modal-title">
+          📝 Nouvelle carte
+        </div>
+        <div
+          style="
+            margin-top: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+          "
+        >
+          <textarea
+            id="fc-card-q"
+            placeholder="❓ Question..."
+            rows="3"
+            style="resize: none"
+          ></textarea>
+          <textarea
+            id="fc-card-a"
+            placeholder="✅ Réponse..."
+            rows="3"
+            style="resize: none"
+          ></textarea>
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: 18px">
+          <button
+            class="btn-pink-outline"
+            onclick="Flashcards.closeCardModal()"
+            style="flex: 1"
+          >
+            Annuler
+          </button>
+          <button
+            class="btn-pink"
+            onclick="Flashcards.confirmCard()"
+            style="flex: 1"
+          >
+            Sauvegarder ✓
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+     PAGE: NOTES
+     ═══════════════════════════════════════════ -->
+    <section id="page-notes" class="page-section">
+      <!-- Notes list view -->
+      <div id="notes-view-list">
+        <div class="section-head" style="margin-bottom: 14px">
+          <span class="section-title">📝 Notes</span>
+          <button class="btn-pink-sm" onclick="Notes.newNote()">+ Note</button>
+        </div>
+        <input
+          type="search"
+          id="notes-search"
+          class="notes-search-input"
+          placeholder="🔍 Rechercher une note..."
+          oninput="Notes.setSearch(this.value)"
+        />
+        <div id="notes-list" class="notes-grid"></div>
+      </div>
+
+      <!-- Note editor view -->
+      <div id="notes-view-editor" style="display: none">
+        <div class="note-editor-topbar">
+          <button class="fc-back" onclick="Notes.saveAndBack()">←</button>
+          <div
+            class="note-editor-emoji-btn"
+            onclick="Notes.openEmojiPicker()"
+            id="note-emoji-display"
+          >
+            📝
+          </div>
+          <button
+            class="btn-pink-sm"
+            style="
+              color: var(--muted);
+              background: transparent;
+              border: 1px solid var(--border);
+            "
+            onclick="Notes.deleteCurrentNote()"
+          >
+            🗑
+          </button>
+        </div>
+        <!-- Emoji picker panel -->
+        <div
+          id="note-emoji-panel"
+          class="note-emoji-panel"
+          style="display: none"
+        ></div>
+        <input
+          type="text"
+          id="note-title"
+          class="note-title-input"
+          placeholder="Titre de la note..."
+        />
+        <!-- Format toolbar -->
+        <div class="note-toolbar">
+          <button
+            class="note-tool-btn"
+            onclick="Notes.format('bold')"
+            title="Gras"
+          >
+            <b>B</b>
+          </button>
+          <button
+            class="note-tool-btn"
+            onclick="Notes.format('italic')"
+            title="Italique"
+          >
+            <i>I</i>
+          </button>
+          <button
+            class="note-tool-btn"
+            onclick="Notes.insertHeading()"
+            title="Titre"
+          >
+            H1
+          </button>
+          <button
+            class="note-tool-btn"
+            onclick="Notes.insertBullet()"
+            title="Liste"
+          >
+            • —
+          </button>
+          <button
+            class="note-tool-btn"
+            onclick="Notes.format('underline')"
+            title="Souligné"
+          >
+            <u>U</u>
+          </button>
+        </div>
+        <div
+          id="note-editor"
+          class="note-editor-area"
+          contenteditable="true"
+          oninput="Notes.onInput()"
+          placeholder="Commence à écrire..."
+        ></div>
+        <!-- Color strip -->
+        <div class="note-color-bar" id="note-color-bar"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
      BOTTOM NAV
      ═══════════════════════════════════════════ -->
     <nav class="bottom-nav">
@@ -511,6 +1093,14 @@
       <button class="nav-btn" data-page="tasks">
         <span class="nav-icon">✅</span>
         <span class="nav-label">Tâches</span>
+      </button>
+      <button class="nav-btn" data-page="flashcards">
+        <span class="nav-icon">🃏</span>
+        <span class="nav-label">Fiches</span>
+      </button>
+      <button class="nav-btn" data-page="notes">
+        <span class="nav-icon">📝</span>
+        <span class="nav-label">Notes</span>
       </button>
       <button class="nav-btn" data-page="profile">
         <span class="nav-icon">👤</span>
@@ -529,6 +1119,8 @@
     <script src="js/calendar.js"></script>
     <script src="js/mood.js"></script>
     <script src="js/stats.js"></script>
+    <script src="js/flashcards.js"></script>
+    <script src="js/notes.js"></script>
     <script src="js/app.js"></script>
   </body>
 </html>

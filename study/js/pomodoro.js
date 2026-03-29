@@ -565,5 +565,14 @@ var Pomodoro = (function () {
     testNotification: testNotification,
     getNotifStatus: getNotifStatus,
     toggleCustomWrap: toggleCustomWrap,
+    applySettings: function (settings) {
+      if (!state.running) {
+        state.preset = settings.pomoDuration || 25;
+        state.breakMinutes = settings.shortBreak || 5;
+        state.totalCycles = settings.cycles || 1;
+        state.totalSeconds = state.preset * 60;
+        state.remaining = state.totalSeconds;
+      }
+    },
   };
 })();

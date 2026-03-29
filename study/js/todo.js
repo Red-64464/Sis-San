@@ -42,6 +42,8 @@ var Todo = (function () {
     input.value = "";
     dateInput.value = "";
     render();
+    // Refresh calendar immediately so the new task appears without reload
+    if (typeof Calendar !== "undefined") Calendar.render();
   }
 
   function toggleDone(id) {

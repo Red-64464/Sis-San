@@ -132,6 +132,10 @@ var App = (function () {
       Calendar.render();
     } else if (page === "profile") {
       Profile.refresh();
+    } else if (page === "flashcards") {
+      Flashcards.init();
+    } else if (page === "notes") {
+      Notes.init();
     }
     // Scroll to top
     window.scrollTo(0, 0);
@@ -173,11 +177,306 @@ var App = (function () {
     if (modal) modal.classList.remove("show");
   }
 
+  /* ── Dark Mode ── */
+  function toggleDarkMode() {
+    var isDark = document.documentElement.getAttribute("data-theme") === "dark";
+    if (isDark) {
+      document.documentElement.removeAttribute("data-theme");
+    } else {
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
+    var settings = Storage.getSettings();
+    settings.darkMode = !isDark;
+    Storage.setSettings(settings);
+    // Sync toggle visual
+    var toggle = document.getElementById("toggle-dark-mode");
+    if (toggle) toggle.classList.toggle("on", !isDark);
+  }
+
+  /* ── Wallpaper ── */
+  var WALLPAPERS = [
+    { id: "none", label: "Aucun", bg: "", thumb: "#f5f5f5" },
+    {
+      id: "rosepink",
+      label: "Rose",
+      bg: "linear-gradient(135deg,#fce4ec 0%,#f8bbd0 50%,#f3e5f5 100%)",
+      thumb: "linear-gradient(135deg,#fce4ec,#f8bbd0)",
+    },
+    {
+      id: "peach",
+      label: "Pêche",
+      bg: "linear-gradient(135deg,#fff0f5 0%,#ffe4e8 40%,#ffd6e0 100%)",
+      thumb: "linear-gradient(135deg,#ffe4e8,#ffd6e0)",
+    },
+    {
+      id: "lavender",
+      label: "Lavande",
+      bg: "linear-gradient(135deg,#f3e5f5 0%,#e8d5f5 50%,#fce4ec 100%)",
+      thumb: "linear-gradient(135deg,#e8d5f5,#fce4ec)",
+    },
+    {
+      id: "mint",
+      label: "Menthe",
+      bg: "linear-gradient(135deg,#e0f7f4 0%,#b2dfdb 60%,#e8f5e9 100%)",
+      thumb: "linear-gradient(135deg,#b2dfdb,#e8f5e9)",
+    },
+    {
+      id: "night",
+      label: "Nuit",
+      bg: "linear-gradient(135deg,#0d0d2b 0%,#1a1a40 100%)",
+      thumb: "linear-gradient(135deg,#0d0d2b,#1a1a40)",
+    },
+  ];
+
+  function renderWallpaperPicker() {
+    var wrap = document.getElementById("wallpaper-picker");
+    if (!wrap) return;
+    var settings = Storage.getSettings();
+    var activeId = settings.wallpaperId || "none";
+    var html = WALLPAPERS.map(function (w) {
+      return (
+        "<button class='wallpaper-swatch" +
+        (w.id === activeId ? " active" : "") +
+        "' style='background:" +
+        w.thumb +
+        "' title='" +
+        w.label +
+        "' onclick=\"App.setWallpaper('" +
+        w.id +
+        "')\"></button>"
+      );
+    }).join("");
+    html +=
+      "<button class='wallpaper-upload-btn' onclick='App.uploadWallpaper()'>🖼 Upload</button>";
+    wrap.innerHTML = html;
+  }
+
+  function setWallpaper(id) {
+    var w = WALLPAPERS.find(function (x) {
+      return x.id === id;
+    });
+    var bg = w ? w.bg : "";
+    _applyWallpaper(bg);
+    var settings = Storage.getSettings();
+    settings.wallpaperId = id;
+    settings.wallpaper = bg;
+    Storage.setSettings(settings);
+    renderWallpaperPicker();
+  }
+
+  function uploadWallpaper() {
+    var input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = function () {
+      var file = input.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        var bg = "url(" + e.target.result + ")";
+        _applyWallpaper(bg);
+        var settings = Storage.getSettings();
+        settings.wallpaperId = "custom";
+        settings.wallpaper = bg;
+        Storage.setSettings(settings);
+        renderWallpaperPicker();
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  }
+
+  function _applyWallpaper(bg) {
+    document.body.style.setProperty("--wallpaper", bg || "none");
+  }
+
+  /* ── Pomodoro Settings ── */
+  var SETTING_LIMITS = {
+    pomoDuration: { min: 1, max: 120, suffix: " min" },
+    shortBreak: { min: 1, max: 60, suffix: " min" },
+    cycles: { min: 1, max: 10, suffix: "x" },
+  };
+  var SETTING_ELEMENTS = {
+    pomoDuration: "setting-pomo-dur",
+    shortBreak: "setting-break-dur",
+    cycles: "setting-cycles",
+  };
+
+  function adjustSetting(key, delta) {
+    var settings = Storage.getSettings();
+    var defaults = { pomoDuration: 25, shortBreak: 5, cycles: 1 };
+    var current = settings[key] || defaults[key] || 1;
+    var limits = SETTING_LIMITS[key];
+    var next = Math.min(limits.max, Math.max(limits.min, current + delta));
+    settings[key] = next;
+    Storage.setSettings(settings);
+    var el = document.getElementById(SETTING_ELEMENTS[key]);
+    if (el) el.textContent = next + limits.suffix;
+    // Reset Pomodoro to pick up new settings
+    Pomodoro.applySettings(settings);
+  }
+
+  /* ── Accent Color ── */
+  var ACCENT_COLORS = [
+    { id: "pink", label: "Rose", c1: "#e8739a", c2: "#d45c87" },
+    { id: "purple", label: "Violet", c1: "#a78bfa", c2: "#8b5cf6" },
+    { id: "blue", label: "Bleu", c1: "#60a5fa", c2: "#3b82f6" },
+    { id: "mint", label: "Menthe", c1: "#34d399", c2: "#10b981" },
+    { id: "orange", label: "Orange", c1: "#fb923c", c2: "#f97316" },
+    { id: "red", label: "Rouge", c1: "#f87171", c2: "#ef4444" },
+  ];
+
+  function renderAccentPicker() {
+    var wrap = document.getElementById("accent-picker");
+    if (!wrap) return;
+    var settings = Storage.getSettings();
+    var activeId = settings.accentId || "pink";
+    wrap.innerHTML = ACCENT_COLORS.map(function (a) {
+      return (
+        "<button class='accent-swatch" +
+        (a.id === activeId ? " active" : "") +
+        "' style='background:" +
+        a.c1 +
+        "' title='" +
+        a.label +
+        "' onclick=\"App.setAccent('" +
+        a.id +
+        "')\"></button>"
+      );
+    }).join("");
+  }
+
+  function setAccent(id) {
+    var ac = ACCENT_COLORS.find(function (a) {
+      return a.id === id;
+    });
+    if (!ac) return;
+    document.documentElement.style.setProperty("--accent", ac.c1);
+    document.documentElement.style.setProperty("--accent2", ac.c2);
+    var settings = Storage.getSettings();
+    settings.accentId = id;
+    settings.accentC1 = ac.c1;
+    settings.accentC2 = ac.c2;
+    Storage.setSettings(settings);
+    renderAccentPicker();
+  }
+
+  /* ── Ambient Sounds ── */
+  var _ambientCtx = null;
+  var _ambientNodes = {}; // id -> { source, gainNode }
+  var _ambientVolume = 0.4;
+  var _ambientActive = null;
+
+  var AMBIENT_URLS = {
+    rain: "https://www.soundjay.com/nature/sounds/rain-01.mp3",
+    cafe: "https://www.soundjay.com/misc/sounds/cafe-ambience-1.mp3",
+    forest: "https://www.soundjay.com/nature/sounds/birds-chirping-1.mp3",
+    fire: "https://www.soundjay.com/nature/sounds/fireplace-1.mp3",
+    waves: "https://www.soundjay.com/nature/sounds/waves-1.mp3",
+    lofi: "https://www.soundjay.com/misc/sounds/lofi-1.mp3",
+  };
+
+  // Procedural ambient using Web Audio (offline fallback)
+  function _makeAmbientNode(ctx, type) {
+    var gainNode = ctx.createGain();
+    gainNode.gain.value = _ambientVolume;
+    gainNode.connect(ctx.destination);
+
+    if (
+      type === "rain" ||
+      type === "waves" ||
+      type === "forest" ||
+      type === "fire"
+    ) {
+      var bufferSize = 4096;
+      var node = ctx.createScriptProcessor(bufferSize, 1, 1);
+      var lastOut = 0;
+      node.onaudioprocess = function (e) {
+        var output = e.outputBuffer.getChannelData(0);
+        for (var i = 0; i < bufferSize; i++) {
+          var white = Math.random() * 2 - 1;
+          if (type === "rain") {
+            output[i] = (lastOut + 0.02 * white) / 1.02;
+          } else if (type === "waves") {
+            output[i] = (lastOut + 0.005 * white) / 1.005;
+          } else if (type === "forest") {
+            output[i] = white * 0.05;
+          } else {
+            output[i] = (lastOut + 0.01 * white) / 1.01;
+          }
+          lastOut = output[i];
+        }
+      };
+      node.connect(gainNode);
+      return { source: node, gainNode: gainNode };
+    } else if (type === "lofi" || type === "cafe") {
+      var osc = ctx.createOscillator();
+      osc.type = type === "lofi" ? "sine" : "triangle";
+      osc.frequency.value = type === "lofi" ? 60 : 80;
+      osc.connect(gainNode);
+      osc.start();
+      return { source: osc, gainNode: gainNode };
+    }
+    return null;
+  }
+
+  function toggleAmbient(btn, type) {
+    if (!_ambientCtx) {
+      _ambientCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    // Deactivate current
+    if (_ambientActive === type) {
+      _stopAmbient(type);
+      btn.classList.remove("active");
+      _ambientActive = null;
+      return;
+    }
+    // Stop previous
+    if (_ambientActive) {
+      _stopAmbient(_ambientActive);
+      document.querySelectorAll(".ambient-btn").forEach(function (b) {
+        b.classList.remove("active");
+      });
+    }
+    _ambientActive = type;
+    btn.classList.add("active");
+    var node = _makeAmbientNode(_ambientCtx, type);
+    if (node) _ambientNodes[type] = node;
+  }
+
+  function _stopAmbient(type) {
+    var n = _ambientNodes[type];
+    if (!n) return;
+    try {
+      if (n.source.stop) n.source.stop();
+      else if (n.source.disconnect) n.source.disconnect();
+      n.gainNode.disconnect();
+    } catch (e) {}
+    delete _ambientNodes[type];
+  }
+
+  function setAmbientVolume(val) {
+    _ambientVolume = val / 100;
+    Object.keys(_ambientNodes).forEach(function (type) {
+      var n = _ambientNodes[type];
+      if (n && n.gainNode) n.gainNode.gain.value = _ambientVolume;
+    });
+  }
+
   return {
     navigate: navigate,
     init: init,
     showMotivation: showMotivation,
     closeMotivation: closeMotivation,
+    toggleDarkMode: toggleDarkMode,
+    setWallpaper: setWallpaper,
+    uploadWallpaper: uploadWallpaper,
+    renderWallpaperPicker: renderWallpaperPicker,
+    adjustSetting: adjustSetting,
+    renderAccentPicker: renderAccentPicker,
+    setAccent: setAccent,
+    toggleAmbient: toggleAmbient,
+    setAmbientVolume: setAmbientVolume,
   };
 })();
 
@@ -364,6 +663,16 @@ var Profile = (function () {
     var cyclesEl = document.getElementById("setting-cycles");
     if (cyclesEl) cyclesEl.textContent = (settings.cycles || 1) + "x";
 
+    // Dark mode toggle
+    var toggle = document.getElementById("toggle-dark-mode");
+    if (toggle) toggle.classList.toggle("on", !!settings.darkMode);
+
+    // Wallpaper picker
+    App.renderWallpaperPicker();
+
+    // Accent color picker
+    App.renderAccentPicker();
+
     // Badges
     Gamification.checkBadges();
     renderBadges();
@@ -407,6 +716,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
   App.init();
   Gamification.checkBadges(); // unlock "Bienvenue !" badge on first visit
+
+  // Apply saved theme (dark/light)
+  var _bootSettings = Storage.getSettings();
+  if (_bootSettings.darkMode) {
+    document.documentElement.setAttribute("data-theme", "dark");
+  }
+  // Apply saved wallpaper
+  if (_bootSettings.wallpaper) {
+    document.body.style.setProperty("--wallpaper", _bootSettings.wallpaper);
+  }
+  // Apply saved accent color
+  if (_bootSettings.accentC1) {
+    document.documentElement.style.setProperty(
+      "--accent",
+      _bootSettings.accentC1,
+    );
+    document.documentElement.style.setProperty(
+      "--accent2",
+      _bootSettings.accentC2 || _bootSettings.accentC1,
+    );
+  }
 
   // Show daily motivation quote (once per session)
   setTimeout(function () {
