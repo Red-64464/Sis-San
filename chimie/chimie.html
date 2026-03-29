@@ -1,0 +1,2046 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sciences — Chimie · Sis-San</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;700;900&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0a0a14;
+        --panel: #12121f;
+        --card: #161628;
+        --border: #1e1e3a;
+        --text: #eeeeff;
+        --muted: #6b6b9a;
+        --accent: #22d3ee;
+        --accent2: #a78bfa;
+        --green: #4ade80;
+        --red: #f87171;
+        --yellow: #fbbf24;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Lexend", sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ─── HEADER ─── */
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 20px;
+        background: var(--panel);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        gap: 12px;
+      }
+
+      .back-btn {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        padding: 7px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: "Lexend", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        white-space: nowrap;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .back-btn:hover {
+        color: var(--text);
+        border-color: var(--accent);
+      }
+
+      .header-center {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .header-dot {
+        width: 16px;
+        height: 16px;
+        background: var(--accent);
+        border-radius: 4px;
+        box-shadow: 0 0 12px rgba(34, 211, 238, 0.55);
+        flex-shrink: 0;
+      }
+      .header-center h1 {
+        font-size: 1rem;
+        font-weight: 800;
+        line-height: 1.2;
+      }
+      .header-center p {
+        font-size: 0.73rem;
+        color: var(--muted);
+      }
+      .header-spacer {
+        width: 88px;
+        flex-shrink: 0;
+      }
+
+      /* ─── TABS ─── */
+      .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 14px 20px;
+        justify-content: center;
+        background: var(--panel);
+        border-bottom: 1px solid var(--border);
+      }
+      .tab {
+        padding: 9px 18px;
+        border-radius: 30px;
+        border: 1.5px solid transparent;
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--muted);
+        font-family: "Lexend", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s;
+        white-space: nowrap;
+      }
+      .tab:hover {
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.07);
+      }
+      .tab.active {
+        background: rgba(34, 211, 238, 0.12);
+        border-color: rgba(34, 211, 238, 0.45);
+        color: var(--accent);
+        box-shadow: 0 0 14px rgba(34, 211, 238, 0.15);
+      }
+
+      /* ─── CONTENT PANELS ─── */
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .wrap {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 32px 20px 64px;
+        width: 100%;
+      }
+
+      /* ─── SECTION TITLE ─── */
+      .section-title {
+        text-align: center;
+        margin-bottom: 36px;
+      }
+      .section-title h2 {
+        font-size: clamp(1.4rem, 4vw, 2rem);
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1.2;
+      }
+      .section-title p {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin-top: 8px;
+      }
+
+      /* ════════════════════════════════════════
+         TAB 1 — LES BASES
+      ════════════════════════════════════════ */
+
+      .concept-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 14px;
+        margin-bottom: 28px;
+      }
+
+      .concept-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 22px 18px;
+        transition:
+          transform 0.25s,
+          border-color 0.25s,
+          box-shadow 0.25s;
+        opacity: 0;
+        transform: translateY(22px);
+        animation: slideUp 0.5s ease forwards;
+      }
+      .concept-card:nth-child(1) {
+        animation-delay: 0.05s;
+      }
+      .concept-card:nth-child(2) {
+        animation-delay: 0.15s;
+      }
+      .concept-card:nth-child(3) {
+        animation-delay: 0.25s;
+      }
+      .concept-card:nth-child(4) {
+        animation-delay: 0.35s;
+      }
+      @keyframes slideUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .concept-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(34, 211, 238, 0.35);
+        box-shadow: 0 12px 32px rgba(34, 211, 238, 0.08);
+      }
+      .cc-icon {
+        font-size: 2rem;
+        margin-bottom: 12px;
+        display: block;
+      }
+      .cc-title {
+        font-size: 1rem;
+        font-weight: 800;
+        margin-bottom: 8px;
+        color: var(--accent);
+      }
+      .cc-desc {
+        font-size: 0.84rem;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+      .cc-visual {
+        margin-top: 12px;
+        background: rgba(34, 211, 238, 0.05);
+        border: 1px solid rgba(34, 211, 238, 0.12);
+        border-radius: 8px;
+        padding: 10px 12px;
+        font-family: "Space Mono", monospace;
+        font-size: 0.76rem;
+        color: rgba(34, 211, 238, 0.75);
+        line-height: 1.9;
+        white-space: pre;
+      }
+
+      /* Hierarchy */
+      .hierarchy-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 28px 24px;
+        margin-bottom: 20px;
+      }
+      .rule-label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 2.5px;
+        text-transform: uppercase;
+        color: var(--muted);
+        text-align: center;
+        margin-bottom: 24px;
+      }
+      .h-steps {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .h-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .h-circle {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        border: 2px solid var(--accent);
+        background: rgba(34, 211, 238, 0.07);
+        box-shadow: 0 0 18px rgba(34, 211, 238, 0.14);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        transition: transform 0.2s;
+      }
+      .h-circle:hover {
+        transform: scale(1.1);
+      }
+      .h-label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        color: var(--text);
+      }
+      .h-arrow {
+        color: var(--muted);
+        font-size: 1.3rem;
+      }
+
+      /* Analogie LEGO */
+      .analogy-card {
+        background: linear-gradient(
+          135deg,
+          rgba(34, 211, 238, 0.06),
+          rgba(167, 139, 250, 0.06)
+        );
+        border: 1px solid rgba(34, 211, 238, 0.18);
+        border-radius: 16px;
+        padding: 22px 22px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      .analogy-card .ac-icon {
+        font-size: 2.4rem;
+        flex-shrink: 0;
+      }
+      .analogy-card h3 {
+        font-size: 1rem;
+        font-weight: 800;
+        margin-bottom: 6px;
+        color: var(--accent);
+      }
+      .analogy-card p {
+        font-size: 0.85rem;
+        color: var(--muted);
+        line-height: 1.75;
+      }
+
+      /* Indices explainer */
+      .indices-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px;
+      }
+      .indices-card h3 {
+        font-size: 1.05rem;
+        font-weight: 800;
+        margin-bottom: 4px;
+      }
+      .indices-card .ic-sub {
+        color: var(--muted);
+        font-size: 0.84rem;
+        margin-bottom: 18px;
+      }
+      .indices-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 12px;
+      }
+      .indice-box {
+        background: rgba(34, 211, 238, 0.05);
+        border: 1px solid rgba(34, 211, 238, 0.15);
+        border-radius: 12px;
+        padding: 14px 16px;
+        transition:
+          border-color 0.2s,
+          transform 0.2s;
+      }
+      .indice-box:hover {
+        border-color: var(--accent);
+        transform: translateY(-3px);
+      }
+      .indice-formula {
+        font-family: "Space Mono", monospace;
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 8px;
+      }
+      .indice-breakdown {
+        font-size: 0.78rem;
+        color: var(--muted);
+        line-height: 1.75;
+      }
+      .indice-breakdown b {
+        color: var(--text);
+      }
+
+      /* ════════════════════════════════════════
+         TAB 2 — ATOMES 3D
+      ════════════════════════════════════════ */
+
+      .el-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 24px;
+      }
+      .el-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        padding: 13px 20px;
+        border-radius: 14px;
+        border: 1.5px solid var(--border);
+        background: var(--card);
+        cursor: pointer;
+        font-family: "Lexend", sans-serif;
+        transition: all 0.22s;
+        min-width: 80px;
+      }
+      .el-btn:hover {
+        border-color: rgba(34, 211, 238, 0.4);
+        transform: translateY(-2px);
+      }
+      .el-btn.active {
+        border-color: var(--accent);
+        background: rgba(34, 211, 238, 0.09);
+        box-shadow: 0 0 20px rgba(34, 211, 238, 0.2);
+      }
+      .el-sym {
+        font-family: "Space Mono", monospace;
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+      .el-name {
+        font-size: 0.7rem;
+        color: var(--muted);
+        font-weight: 500;
+      }
+
+      .atom-layout {
+        display: grid;
+        grid-template-columns: 1fr 280px;
+        gap: 16px;
+        align-items: start;
+      }
+      @media (max-width: 700px) {
+        .atom-layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .canvas-box {
+        background: #07070f;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        position: relative;
+      }
+      .canvas-box::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        border-radius: 16px;
+        box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.6);
+        z-index: 1;
+      }
+      #atom-canvas {
+        display: block;
+        width: 100%;
+        position: relative;
+        z-index: 0;
+      }
+
+      .atom-info {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .ai-sym {
+        font-family: "Space Mono", monospace;
+        font-size: 2.8rem;
+        font-weight: 700;
+        line-height: 1;
+      }
+      .ai-name {
+        font-size: 1.15rem;
+        font-weight: 800;
+      }
+      .ai-desc {
+        font-size: 0.83rem;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+      .ai-stats {
+        display: flex;
+        gap: 8px;
+      }
+      .ai-stat {
+        flex: 1;
+        background: rgba(34, 211, 238, 0.05);
+        border: 1px solid rgba(34, 211, 238, 0.12);
+        border-radius: 10px;
+        padding: 10px 6px;
+        text-align: center;
+      }
+      .ai-stat-val {
+        font-family: "Space Mono", monospace;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--accent);
+      }
+      .ai-stat-lbl {
+        font-size: 0.64rem;
+        color: var(--muted);
+        margin-top: 3px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+      }
+      .ai-shells-title {
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .ai-shell-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .ai-shell-row:last-child {
+        border-bottom: none;
+      }
+      .ai-shell-lbl {
+        font-size: 0.74rem;
+        color: var(--muted);
+        width: 52px;
+        flex-shrink: 0;
+      }
+      .ai-dots {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        flex: 1;
+      }
+      .ai-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .ai-shell-count {
+        font-size: 0.72rem;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      /* ════════════════════════════════════════
+         TAB 3 — MOLÉCULES
+      ════════════════════════════════════════ */
+
+      .mol-btns {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 24px;
+      }
+      .mol-btn {
+        padding: 10px 22px;
+        border-radius: 30px;
+        border: 1.5px solid var(--border);
+        background: var(--card);
+        cursor: pointer;
+        font-family: "Space Mono", monospace;
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: var(--muted);
+        transition: all 0.2s;
+      }
+      .mol-btn:hover {
+        border-color: rgba(34, 211, 238, 0.4);
+        color: var(--text);
+        transform: translateY(-2px);
+      }
+      .mol-btn.active {
+        border-color: var(--accent);
+        background: rgba(34, 211, 238, 0.09);
+        color: var(--accent);
+      }
+
+      .mol-viewer {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 32px 28px;
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 28px;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      @media (max-width: 640px) {
+        .mol-viewer {
+          grid-template-columns: 1fr;
+          justify-items: center;
+        }
+      }
+      #mol-svg {
+        overflow: visible;
+      }
+
+      .mol-detail-name {
+        font-size: 1.15rem;
+        font-weight: 800;
+        margin-bottom: 6px;
+      }
+      .mol-formula-big {
+        font-family: "Space Mono", monospace;
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--accent);
+        line-height: 1;
+        margin-bottom: 14px;
+      }
+      .mol-tagline {
+        font-size: 0.83rem;
+        color: var(--muted);
+        line-height: 1.6;
+        margin-bottom: 16px;
+      }
+      .comp-label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+      #mol-breakdown {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        font-size: 0.86rem;
+        font-weight: 600;
+      }
+      .mol-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 14px;
+      }
+      .ml-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.76rem;
+        color: var(--muted);
+      }
+      .ml-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      /* Indices interactive */
+      .indices-interactive {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px;
+      }
+      .ii-title {
+        font-size: 1rem;
+        font-weight: 800;
+        margin-bottom: 6px;
+      }
+      .ii-sub {
+        font-size: 0.83rem;
+        color: var(--muted);
+        margin-bottom: 18px;
+      }
+      .ii-formula-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .ii-input {
+        font-family: "Space Mono", monospace;
+        font-size: 1.3rem;
+        background: rgba(34, 211, 238, 0.05);
+        border: 1.5px solid rgba(34, 211, 238, 0.3);
+        color: var(--accent);
+        padding: 10px 16px;
+        border-radius: 10px;
+        width: 160px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .ii-input:focus {
+        border-color: var(--accent);
+      }
+      .ii-btn {
+        padding: 10px 22px;
+        border-radius: 10px;
+        border: none;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: white;
+        font-family: "Lexend", sans-serif;
+        font-size: 0.85rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition:
+          filter 0.2s,
+          transform 0.2s;
+      }
+      .ii-btn:hover {
+        filter: brightness(1.1);
+        transform: scale(1.03);
+      }
+      #ii-result {
+        margin-top: 18px;
+        padding: 14px 18px;
+        border-radius: 12px;
+        background: rgba(34, 211, 238, 0.05);
+        border: 1px solid rgba(34, 211, 238, 0.15);
+        font-size: 0.88rem;
+        line-height: 1.8;
+        display: none;
+      }
+
+      /* ════════════════════════════════════════
+         TAB 4 — PDFs
+      ════════════════════════════════════════ */
+
+      .empty-state {
+        text-align: center;
+        padding: 80px 24px;
+        border: 1.5px dashed var(--border);
+        border-radius: 20px;
+        color: var(--muted);
+      }
+      .empty-state .es-icon {
+        font-size: 3.2rem;
+        display: block;
+        margin-bottom: 16px;
+        opacity: 0.5;
+      }
+      .empty-state h3 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        opacity: 0.7;
+      }
+      .empty-state p {
+        font-size: 0.87rem;
+        opacity: 0.5;
+      }
+
+      /* ════════════════════════════════════════
+         TAB 5 — QUIZ
+      ════════════════════════════════════════ */
+
+      .quiz-wrap {
+        max-width: 620px;
+        margin: 0 auto;
+      }
+
+      .progress-wrap {
+        height: 6px;
+        background: var(--border);
+        border-radius: 3px;
+        margin-bottom: 28px;
+        overflow: hidden;
+      }
+      #quiz-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+        border-radius: 3px;
+        transition: width 0.45s ease;
+      }
+
+      .quiz-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 30px 26px;
+      }
+      .q-num {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 14px;
+      }
+      .q-text {
+        font-size: 1.08rem;
+        font-weight: 700;
+        line-height: 1.6;
+        margin-bottom: 22px;
+      }
+      .q-opts {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .q-opt {
+        padding: 14px 18px;
+        border-radius: 12px;
+        border: 1.5px solid var(--border);
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--text);
+        text-align: left;
+        font-family: "Lexend", sans-serif;
+        font-size: 0.88rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .q-opt:hover:not([disabled]) {
+        border-color: var(--accent);
+        background: rgba(34, 211, 238, 0.06);
+      }
+      .q-opt.correct {
+        border-color: #4ade80;
+        background: rgba(74, 222, 128, 0.1);
+        color: #4ade80;
+      }
+      .q-opt.wrong {
+        border-color: #f87171;
+        background: rgba(248, 113, 113, 0.1);
+        color: #f87171;
+      }
+      .q-opt[disabled] {
+        cursor: default;
+      }
+
+      .q-feedback {
+        margin-top: 14px;
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-size: 0.84rem;
+        font-weight: 500;
+        line-height: 1.6;
+        display: none;
+      }
+      .qf-ok {
+        background: rgba(74, 222, 128, 0.1);
+        border: 1px solid rgba(74, 222, 128, 0.3);
+        color: #4ade80;
+      }
+      .qf-err {
+        background: rgba(248, 113, 113, 0.1);
+        border: 1px solid rgba(248, 113, 113, 0.3);
+        color: #f87171;
+      }
+
+      /* Result screen */
+      #quiz-result {
+        display: none;
+        text-align: center;
+        padding: 16px;
+      }
+      .qr-icon {
+        font-size: 3.8rem;
+        display: block;
+        margin-bottom: 14px;
+      }
+      .qr-score {
+        font-size: 2.2rem;
+        font-weight: 900;
+        color: var(--accent);
+        margin-bottom: 8px;
+      }
+      .qr-msg {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin-bottom: 28px;
+      }
+      .btn-restart {
+        padding: 13px 36px;
+        border-radius: 30px;
+        border: none;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #fff;
+        font-family: "Lexend", sans-serif;
+        font-size: 0.92rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition:
+          filter 0.2s,
+          transform 0.2s;
+      }
+      .btn-restart:hover {
+        filter: brightness(1.1);
+        transform: scale(1.04);
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ─── HEADER ─── -->
+    <header>
+      <a href="../theory.html" class="back-btn">← Retour</a>
+      <div class="header-center">
+        <div class="header-dot"></div>
+        <div>
+          <h1>Sciences &mdash; Chimie</h1>
+          <p>4&egrave;me &middot; Les bases absolues</p>
+        </div>
+      </div>
+      <div class="header-spacer"></div>
+    </header>
+
+    <!-- ─── TABS ─── -->
+    <nav class="tabs">
+      <button class="tab active" onclick="switchTab('bases', this)">
+        🧠 Les Bases
+      </button>
+      <button class="tab" onclick="switchTab('atomes', this)">
+        ⚛️ Atomes 3D
+      </button>
+      <button class="tab" onclick="switchTab('molecules', this)">
+        🔬 Mol&eacute;cules
+      </button>
+      <button class="tab" onclick="switchTab('pdfs', this)">📄 PDFs</button>
+      <button class="tab" onclick="switchTab('quiz', this)">🎯 Quiz</button>
+    </nav>
+
+    <!-- ══════════════════════════════════════════
+         TAB 1 — LES BASES
+    ══════════════════════════════════════════ -->
+    <section id="tab-bases" class="tab-content active">
+      <div class="wrap">
+        <div class="section-title">
+          <h2>Du Micro au Macro</h2>
+          <p>
+            Tout ce qui existe est construit &agrave; partir de minuscules
+            briques invisibles
+          </p>
+        </div>
+
+        <div class="concept-grid">
+          <div class="concept-card">
+            <span class="cc-icon">🌍</span>
+            <div class="cc-title">La Matière</div>
+            <p class="cc-desc">
+              Tout ce qui existe autour de toi. Si tu peux le toucher ou si
+              &ccedil;a prend de la place &rarr; c&apos;est de la
+              mati&egrave;re.
+            </p>
+            <div class="cc-visual">
+              💧 eau 🌬 air 📱 téléphone 🧍 toi → tout = matière
+            </div>
+          </div>
+
+          <div class="concept-card">
+            <span class="cc-icon">⚪</span>
+            <div class="cc-title">Les Atomes</div>
+            <p class="cc-desc">
+              Une mini bille invisible &mdash; la brique de base de tout.
+              Imagine le monde fait de petites billes qui s&apos;accrochent.
+            </p>
+            <div class="cc-visual">
+              ⚪ ⚪ ⚪ ⚪ ⚪ chaque ⚪ = atome atomes = LEGO 🧱
+            </div>
+          </div>
+
+          <div class="concept-card">
+            <span class="cc-icon">🔵</span>
+            <div class="cc-title">Les Éléments</div>
+            <p class="cc-desc">
+              Un &eacute;l&eacute;ment = un type d&apos;atome, not&eacute; par
+              une lettre (ou deux). O = toujours oxyg&egrave;ne.
+            </p>
+            <div class="cc-visual">
+              O → Oxygène C → Carbone H → Hydrogène Fe → Fer
+            </div>
+          </div>
+
+          <div class="concept-card">
+            <span class="cc-icon">🧬</span>
+            <div class="cc-title">Les Molécules</div>
+            <p class="cc-desc">
+              Plusieurs atomes attach&eacute;s ensemble. Comme une construction
+              LEGO &mdash; assemble des briques pour cr&eacute;er quelque chose.
+            </p>
+            <div class="cc-visual">
+              H + H + O → H₂O 💧 2H + 1O = eau molécule = construction
+            </div>
+          </div>
+        </div>
+
+        <!-- Hierarchy timeline -->
+        <div class="hierarchy-card">
+          <div class="rule-label">
+            📊 Résumé visuel — du plus grand au plus petit
+          </div>
+          <div class="h-steps">
+            <div class="h-step">
+              <div class="h-circle">🌍</div>
+              <div class="h-label">Matière</div>
+            </div>
+            <span class="h-arrow">→</span>
+            <div class="h-step">
+              <div class="h-circle">⚪</div>
+              <div class="h-label">Atomes</div>
+            </div>
+            <span class="h-arrow">→</span>
+            <div class="h-step">
+              <div class="h-circle">🔵</div>
+              <div class="h-label">Éléments</div>
+            </div>
+            <span class="h-arrow">→</span>
+            <div class="h-step">
+              <div class="h-circle">🧬</div>
+              <div class="h-label">Molécules</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LEGO analogy -->
+        <div class="analogy-card">
+          <span class="ac-icon">🧱</span>
+          <div>
+            <h3>L'analogie LEGO (très importante)</h3>
+            <p>
+              Les <strong>atomes</strong> = des pi&egrave;ces LEGO
+              individuelles.<br />
+              Les <strong>&eacute;l&eacute;ments</strong> = les
+              diff&eacute;rentes couleurs de pi&egrave;ces (rouge, bleu,
+              jaune...).<br />
+              Les <strong>mol&eacute;cules</strong> = une construction LEGO
+              termin&eacute;e (une maison, une voiture...).<br />
+              Tu peux assembler les m&ecirc;mes pi&egrave;ces de milliers de
+              fa&ccedil;ons diff&eacute;rentes → millions de substances
+              diff&eacute;rentes.
+            </p>
+          </div>
+        </div>
+
+        <!-- Indices explainer -->
+        <div class="indices-card">
+          <h3>🔴 Les Indices — TRÈS IMPORTANT</h3>
+          <p class="ic-sub">
+            Le petit chiffre apr&egrave;s un symbole = le nombre d&apos;atomes.
+            Pas de chiffre = 1 atome. Toujours.
+          </p>
+          <div class="indices-grid">
+            <div class="indice-box">
+              <div class="indice-formula">H<sub>2</sub>O</div>
+              <div class="indice-breakdown">
+                <b>2</b> hydrog&egrave;nes<br /><b>1</b> oxyg&egrave;ne
+              </div>
+            </div>
+            <div class="indice-box">
+              <div class="indice-formula">CO<sub>2</sub></div>
+              <div class="indice-breakdown">
+                <b>1</b> carbone<br /><b>2</b> oxyg&egrave;nes
+              </div>
+            </div>
+            <div class="indice-box">
+              <div class="indice-formula">Fe<sub>2</sub>O<sub>3</sub></div>
+              <div class="indice-breakdown">
+                <b>2</b> fers<br /><b>3</b> oxyg&egrave;nes
+              </div>
+            </div>
+            <div class="indice-box">
+              <div class="indice-formula">C</div>
+              <div class="indice-breakdown">
+                <b>1</b> carbone<br />(pas de chiffre = 1)
+              </div>
+            </div>
+            <div class="indice-box">
+              <div class="indice-formula">H<sub>2</sub></div>
+              <div class="indice-breakdown">
+                <b>2</b> hydrog&egrave;nes<br />attach&eacute;s ensemble
+              </div>
+            </div>
+            <div class="indice-box">
+              <div class="indice-formula">O<sub>2</sub></div>
+              <div class="indice-breakdown">
+                <b>2</b> oxyg&egrave;nes<br />(l&apos;air qu&apos;on respire)
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         TAB 2 — ATOMES 3D
+    ══════════════════════════════════════════ -->
+    <section id="tab-atomes" class="tab-content">
+      <div class="wrap">
+        <div class="section-title">
+          <h2>Visualise les Atomes</h2>
+          <p>
+            S&eacute;lectionne un &eacute;l&eacute;ment pour voir sa structure —
+            noyau, couches et &eacute;lectrons en orbite
+          </p>
+        </div>
+
+        <div class="el-grid">
+          <button
+            class="el-btn active"
+            data-el="H"
+            onclick="selectAtom('H', this)"
+          >
+            <span class="el-sym" style="color: #60a5fa">H</span>
+            <span class="el-name">Hydrogène</span>
+          </button>
+          <button class="el-btn" data-el="He" onclick="selectAtom('He', this)">
+            <span class="el-sym" style="color: #a78bfa">He</span>
+            <span class="el-name">Hélium</span>
+          </button>
+          <button class="el-btn" data-el="C" onclick="selectAtom('C', this)">
+            <span class="el-sym" style="color: #9ca3af">C</span>
+            <span class="el-name">Carbone</span>
+          </button>
+          <button class="el-btn" data-el="O" onclick="selectAtom('O', this)">
+            <span class="el-sym" style="color: #f87171">O</span>
+            <span class="el-name">Oxygène</span>
+          </button>
+          <button class="el-btn" data-el="Fe" onclick="selectAtom('Fe', this)">
+            <span class="el-sym" style="color: #fbbf24">Fe</span>
+            <span class="el-name">Fer</span>
+          </button>
+        </div>
+
+        <div class="atom-layout">
+          <div class="canvas-box">
+            <canvas id="atom-canvas" height="380"></canvas>
+          </div>
+          <div class="atom-info" id="atom-info">
+            <div>
+              <div class="ai-sym" id="ai-sym">H</div>
+              <div class="ai-name" id="ai-name">Hydrogène</div>
+            </div>
+            <p class="ai-desc" id="ai-desc"></p>
+            <div class="ai-stats">
+              <div class="ai-stat">
+                <div class="ai-stat-val" id="ai-z">1</div>
+                <div class="ai-stat-lbl">Protons</div>
+              </div>
+              <div class="ai-stat">
+                <div class="ai-stat-val" id="ai-n">0</div>
+                <div class="ai-stat-lbl">Neutrons</div>
+              </div>
+              <div class="ai-stat">
+                <div class="ai-stat-val" id="ai-e">1</div>
+                <div class="ai-stat-lbl">Électrons</div>
+              </div>
+            </div>
+            <div>
+              <div class="ai-shells-title" style="margin-bottom: 10px">
+                Couches électroniques
+              </div>
+              <div id="ai-shells"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         TAB 3 — MOLÉCULES
+    ══════════════════════════════════════════ -->
+    <section id="tab-molecules" class="tab-content">
+      <div class="wrap">
+        <div class="section-title">
+          <h2>Construire des Molécules</h2>
+          <p>
+            Explore la structure des mol&eacute;cules et comprends leurs
+            formules
+          </p>
+        </div>
+
+        <div class="mol-btns">
+          <button class="mol-btn active" onclick="selectMol('H2O', this)">
+            H₂O
+          </button>
+          <button class="mol-btn" onclick="selectMol('CO2', this)">CO₂</button>
+          <button class="mol-btn" onclick="selectMol('H2', this)">H₂</button>
+          <button class="mol-btn" onclick="selectMol('O2', this)">O₂</button>
+          <button class="mol-btn" onclick="selectMol('Fe2O3', this)">
+            Fe₂O₃
+          </button>
+        </div>
+
+        <div class="mol-viewer">
+          <div>
+            <svg
+              id="mol-svg"
+              width="300"
+              height="220"
+              viewBox="0 0 300 220"
+              overflow="visible"
+            ></svg>
+          </div>
+          <div>
+            <div class="mol-detail-name" id="mol-name">Eau</div>
+            <div class="mol-formula-big" id="mol-formula">H<sub>2</sub>O</div>
+            <p class="mol-tagline" id="mol-tagline">
+              La mol&eacute;cule de l&apos;eau &mdash; indispensable &agrave; la
+              vie
+            </p>
+            <div class="comp-label">Composition</div>
+            <div id="mol-breakdown"></div>
+            <div class="mol-legend" id="mol-legend"></div>
+          </div>
+        </div>
+
+        <!-- Indices interactive analyser -->
+        <div class="indices-interactive">
+          <div class="ii-title">🔍 Analyser une formule</div>
+          <p class="ii-sub">
+            Tape une formule chimique (ex: H₂O, CO₂) et d&eacute;code-la
+          </p>
+          <div class="ii-formula-row">
+            <input
+              id="ii-input"
+              class="ii-input"
+              type="text"
+              placeholder="ex: CO2"
+              maxlength="20"
+              oninput="analyzeFormula()"
+            />
+          </div>
+          <div id="ii-result"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         TAB 4 — PDFs
+    ══════════════════════════════════════════ -->
+    <section id="tab-pdfs" class="tab-content">
+      <div class="wrap">
+        <div class="empty-state">
+          <span class="es-icon">📄</span>
+          <h3>Fiches PDF bient&ocirc;t disponibles</h3>
+          <p>
+            Les fiches de cours en PDF arriveront prochainement. Ce chapitre est
+            en cours de construction.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         TAB 5 — QUIZ
+    ══════════════════════════════════════════ -->
+    <section id="tab-quiz" class="tab-content">
+      <div class="wrap">
+        <div class="section-title">
+          <h2>Mini Quiz</h2>
+          <p>V&eacute;rifie que tu as bien compris les bases absolues</p>
+        </div>
+        <div class="quiz-wrap">
+          <div class="progress-wrap">
+            <div id="quiz-bar" style="width: 0%"></div>
+          </div>
+          <div id="quiz-card" class="quiz-card">
+            <div class="q-num" id="q-num"></div>
+            <div class="q-text" id="q-text"></div>
+            <div class="q-opts" id="q-opts"></div>
+            <div class="q-feedback" id="q-feedback"></div>
+          </div>
+          <div id="quiz-result">
+            <span class="qr-icon" id="qr-icon">🎉</span>
+            <div class="qr-score" id="qr-score"></div>
+            <div class="qr-msg" id="qr-msg"></div>
+            <button class="btn-restart" onclick="startQuiz()">
+              🔄 Recommencer
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      /* ═══════════════════════════════════════
+         TAB SWITCHING
+      ═══════════════════════════════════════ */
+      function switchTab(name, btn) {
+        document.querySelectorAll(".tab-content").forEach(function (el) {
+          el.classList.remove("active");
+        });
+        document.querySelectorAll(".tab").forEach(function (t) {
+          t.classList.remove("active");
+        });
+        document.getElementById("tab-" + name).classList.add("active");
+        btn.classList.add("active");
+
+        if (name === "atomes") {
+          if (!atomStarted) {
+            initAtomCanvas();
+            atomStarted = true;
+          }
+        }
+        if (name === "molecules") {
+          renderMolecule("H2O");
+          document.querySelector(".mol-btn").classList.add("active");
+        }
+        if (name === "quiz") {
+          startQuiz();
+        }
+      }
+
+      /* ═══════════════════════════════════════
+         ATOMS 3D — CANVAS ANIMATION
+      ═══════════════════════════════════════ */
+      var atomStarted = false;
+      var atomKey = "H";
+      var atomTime = 0;
+      var atomAnimId = null;
+
+      var ATOMS_DATA = {
+        H: {
+          name: "Hydrogène",
+          symbol: "H",
+          Z: 1,
+          N: 0,
+          shells: [1],
+          color: "#60a5fa",
+          desc: "Le plus simple de tous les atomes — 1 seul électron. Composant principal de l'eau (H₂O) et du corps humain.",
+        },
+        He: {
+          name: "Hélium",
+          symbol: "He",
+          Z: 2,
+          N: 2,
+          shells: [2],
+          color: "#a78bfa",
+          desc: "Gaz noble extrêmement stable. Sa 1ère couche est pleine avec 2 électrons → il ne réagit avec rien.",
+        },
+        C: {
+          name: "Carbone",
+          symbol: "C",
+          Z: 6,
+          N: 6,
+          shells: [2, 4],
+          color: "#9ca3af",
+          desc: "Élément de base de toute vie organique. Il forme le CO₂, les glucides, les protéines — tout ce qui est vivant.",
+        },
+        O: {
+          name: "Oxygène",
+          symbol: "O",
+          Z: 8,
+          N: 8,
+          shells: [2, 6],
+          color: "#f87171",
+          desc: "Indispensable à la respiration et à la combustion. Composant de l'eau (H₂O) et du CO₂.",
+        },
+        Fe: {
+          name: "Fer",
+          symbol: "Fe",
+          Z: 26,
+          N: 30,
+          shells: [2, 8, 14, 2],
+          color: "#fbbf24",
+          desc: "Métal le plus utilisé au monde — 4 couches d'électrons. Forme la rouille (Fe₂O₃) au contact de l'oxygène.",
+        },
+      };
+
+      function initAtomCanvas() {
+        var canvas = document.getElementById("atom-canvas");
+        var container = canvas.parentElement;
+        canvas.width = container.clientWidth;
+        canvas.height = Math.min(container.clientWidth, 380);
+        window.addEventListener("resize", function () {
+          canvas.width = container.clientWidth;
+          canvas.height = Math.min(container.clientWidth, 380);
+        });
+        updateAtomInfo("H");
+        animLoop();
+      }
+
+      function selectAtom(key, btn) {
+        atomKey = key;
+        document.querySelectorAll(".el-btn").forEach(function (b) {
+          b.classList.remove("active");
+        });
+        if (btn) btn.classList.add("active");
+        updateAtomInfo(key);
+      }
+
+      function updateAtomInfo(key) {
+        var el = ATOMS_DATA[key];
+        var totalE = el.shells.reduce(function (a, b) {
+          return a + b;
+        }, 0);
+        document.getElementById("ai-sym").textContent = el.symbol;
+        document.getElementById("ai-sym").style.color = el.color;
+        document.getElementById("ai-name").textContent = el.name;
+        document.getElementById("ai-desc").textContent = el.desc;
+        document.getElementById("ai-z").textContent = el.Z;
+        document.getElementById("ai-n").textContent = el.N;
+        document.getElementById("ai-e").textContent = totalE;
+
+        var shellNames = [
+          "1ère couche",
+          "2ème couche",
+          "3ème couche",
+          "4ème couche",
+        ];
+        document.getElementById("ai-shells").innerHTML = el.shells
+          .map(function (n, i) {
+            var dots = "";
+            for (var d = 0; d < n; d++) {
+              dots +=
+                '<div class="ai-dot" style="background:' +
+                el.color +
+                '"></div>';
+            }
+            return (
+              '<div class="ai-shell-row">' +
+              '<span class="ai-shell-lbl">' +
+              shellNames[i] +
+              "</span>" +
+              '<div class="ai-dots">' +
+              dots +
+              "</div>" +
+              '<span class="ai-shell-count">(' +
+              n +
+              " e⁻)</span>" +
+              "</div>"
+            );
+          })
+          .join("");
+      }
+
+      function colorAlpha(hex, a) {
+        var r = parseInt(hex.slice(1, 3), 16);
+        var g = parseInt(hex.slice(3, 5), 16);
+        var b = parseInt(hex.slice(5, 7), 16);
+        return "rgba(" + r + "," + g + "," + b + "," + a + ")";
+      }
+
+      function animLoop() {
+        atomTime += 0.022;
+        var canvas = document.getElementById("atom-canvas");
+        if (
+          !canvas ||
+          !document.getElementById("tab-atomes").classList.contains("active")
+        ) {
+          atomAnimId = requestAnimationFrame(animLoop);
+          return;
+        }
+        var ctx = canvas.getContext("2d");
+        var W = canvas.width,
+          H = canvas.height;
+        var cx = W / 2,
+          cy = H / 2;
+        var el = ATOMS_DATA[atomKey];
+
+        ctx.clearRect(0, 0, W, H);
+
+        /* Background glow */
+        var bgG = ctx.createRadialGradient(cx, cy, 0, cx, cy, 180);
+        bgG.addColorStop(0, colorAlpha(el.color, 0.07));
+        bgG.addColorStop(1, "transparent");
+        ctx.fillStyle = bgG;
+        ctx.fillRect(0, 0, W, H);
+
+        var scale = Math.min(W, H) / 420;
+        var shellRadii = [58 * scale, 96 * scale, 136 * scale, 172 * scale];
+        var tilts = [0.42, -0.31, 0.52, -0.22];
+        var speeds = [1.0, 0.62, 0.42, 0.28];
+
+        /* Back half of orbits */
+        el.shells.forEach(function (n, si) {
+          var r = shellRadii[si],
+            ry = r * Math.abs(Math.cos(tilts[si]));
+          ctx.beginPath();
+          ctx.ellipse(cx, cy, r, ry, 0, Math.PI, 2 * Math.PI);
+          ctx.strokeStyle = "rgba(140,140,255,0.14)";
+          ctx.lineWidth = 1;
+          ctx.setLineDash([3, 5]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        });
+
+        /* Nucleus glow */
+        var nucR = Math.min(18 + el.Z * 0.28, 26) * scale;
+        var nucG = ctx.createRadialGradient(cx, cy, 0, cx, cy, nucR + 24);
+        nucG.addColorStop(0, colorAlpha(el.color, 0.35));
+        nucG.addColorStop(0.6, colorAlpha(el.color, 0.1));
+        nucG.addColorStop(1, "transparent");
+        ctx.beginPath();
+        ctx.arc(cx, cy, nucR + 24, 0, Math.PI * 2);
+        ctx.fillStyle = nucG;
+        ctx.fill();
+
+        /* Nucleus body */
+        var nucBody = ctx.createRadialGradient(cx - 5, cy - 5, 0, cx, cy, nucR);
+        nucBody.addColorStop(0, "#ffffff");
+        nucBody.addColorStop(0.35, el.color);
+        nucBody.addColorStop(1, colorAlpha(el.color, 0.65));
+        ctx.beginPath();
+        ctx.arc(cx, cy, nucR, 0, Math.PI * 2);
+        ctx.fillStyle = nucBody;
+        ctx.fill();
+
+        /* Symbol on nucleus */
+        ctx.save();
+        ctx.font =
+          "700 " +
+          (el.symbol.length > 1
+            ? Math.round(10 * scale)
+            : Math.round(13 * scale)) +
+          "px Lexend, sans-serif";
+        ctx.fillStyle = "#fff";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(el.symbol, cx, cy);
+        ctx.restore();
+
+        /* Front half orbits + electrons */
+        el.shells.forEach(function (n, si) {
+          var r = shellRadii[si];
+          var tilt = tilts[si];
+          var ry = r * Math.abs(Math.cos(tilt));
+          var speed = speeds[si];
+
+          ctx.beginPath();
+          ctx.ellipse(cx, cy, r, ry, 0, 0, Math.PI);
+          ctx.strokeStyle = "rgba(180,180,255,0.28)";
+          ctx.lineWidth = 1;
+          ctx.setLineDash([3, 5]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          for (var i = 0; i < n; i++) {
+            var theta = (2 * Math.PI * i) / n + atomTime * speed;
+            var ex = cx + r * Math.cos(theta);
+            var ey = cy + ry * Math.sin(theta);
+
+            /* Electron glow */
+            var eG = ctx.createRadialGradient(ex, ey, 0, ex, ey, 13 * scale);
+            eG.addColorStop(0, colorAlpha(el.color, 0.65));
+            eG.addColorStop(1, "transparent");
+            ctx.beginPath();
+            ctx.arc(ex, ey, 13 * scale, 0, Math.PI * 2);
+            ctx.fillStyle = eG;
+            ctx.fill();
+
+            /* Electron dot */
+            ctx.beginPath();
+            ctx.arc(ex, ey, 4.5 * scale, 0, Math.PI * 2);
+            ctx.fillStyle = el.color;
+            ctx.fill();
+          }
+        });
+
+        atomAnimId = requestAnimationFrame(animLoop);
+      }
+
+      /* ═══════════════════════════════════════
+         MOLECULES — SVG RENDERER
+      ═══════════════════════════════════════ */
+      var MOL_DATA = {
+        H2O: {
+          name: "Eau",
+          formulaHTML: "H<sub>2</sub>O",
+          tagline: "La molécule de l'eau — indispensable à la vie",
+          atoms: [
+            { el: "O", x: 150, y: 90, color: "#f87171", r: 26 },
+            { el: "H", x: 75, y: 160, color: "#60a5fa", r: 16 },
+            { el: "H", x: 225, y: 160, color: "#60a5fa", r: 16 },
+          ],
+          bonds: [
+            [0, 1],
+            [0, 2],
+          ],
+          breakdown: [
+            { el: "H", label: "Hydrogène", count: 2, color: "#60a5fa" },
+            { el: "O", label: "Oxygène", count: 1, color: "#f87171" },
+          ],
+        },
+        CO2: {
+          name: "Dioxyde de carbone",
+          formulaHTML: "CO<sub>2</sub>",
+          tagline:
+            "Le gaz carbonique — produit par la respiration et la combustion",
+          atoms: [
+            { el: "O", x: 55, y: 110, color: "#f87171", r: 24 },
+            { el: "C", x: 150, y: 110, color: "#9ca3af", r: 21 },
+            { el: "O", x: 245, y: 110, color: "#f87171", r: 24 },
+          ],
+          bonds: [
+            [0, 1],
+            [1, 2],
+          ],
+          breakdown: [
+            { el: "C", label: "Carbone", count: 1, color: "#9ca3af" },
+            { el: "O", label: "Oxygène", count: 2, color: "#f87171" },
+          ],
+        },
+        H2: {
+          name: "Dihydrogène",
+          formulaHTML: "H<sub>2</sub>",
+          tagline:
+            "Deux atomes d'hydrogène liés — le gaz le plus léger de l'univers",
+          atoms: [
+            { el: "H", x: 105, y: 110, color: "#60a5fa", r: 16 },
+            { el: "H", x: 195, y: 110, color: "#60a5fa", r: 16 },
+          ],
+          bonds: [[0, 1]],
+          breakdown: [
+            { el: "H", label: "Hydrogène", count: 2, color: "#60a5fa" },
+          ],
+        },
+        O2: {
+          name: "Dioxygène",
+          formulaHTML: "O<sub>2</sub>",
+          tagline: "Le gaz que tu respires — 21% de l'atmosphère terrestre",
+          atoms: [
+            { el: "O", x: 95, y: 110, color: "#f87171", r: 24 },
+            { el: "O", x: 205, y: 110, color: "#f87171", r: 24 },
+          ],
+          bonds: [[0, 1]],
+          breakdown: [
+            { el: "O", label: "Oxygène", count: 2, color: "#f87171" },
+          ],
+        },
+        Fe2O3: {
+          name: "Oxyde de fer — Rouille",
+          formulaHTML: "Fe<sub>2</sub>O<sub>3</sub>",
+          tagline:
+            "La rouille — se forme quand le fer s'oxyde au contact de l'air et de l'eau",
+          atoms: [
+            { el: "Fe", x: 75, y: 70, color: "#fbbf24", r: 23 },
+            { el: "O", x: 155, y: 110, color: "#f87171", r: 18 },
+            { el: "Fe", x: 235, y: 70, color: "#fbbf24", r: 23 },
+            { el: "O", x: 95, y: 170, color: "#f87171", r: 18 },
+            { el: "O", x: 215, y: 170, color: "#f87171", r: 18 },
+          ],
+          bonds: [
+            [0, 1],
+            [1, 2],
+            [0, 3],
+            [2, 4],
+            [1, 3],
+            [1, 4],
+          ],
+          breakdown: [
+            { el: "Fe", label: "Fer", count: 2, color: "#fbbf24" },
+            { el: "O", label: "Oxygène", count: 3, color: "#f87171" },
+          ],
+        },
+      };
+
+      function selectMol(key, btn) {
+        document.querySelectorAll(".mol-btn").forEach(function (b) {
+          b.classList.remove("active");
+        });
+        if (btn) btn.classList.add("active");
+        renderMolecule(key);
+      }
+
+      function renderMolecule(key) {
+        var mol = MOL_DATA[key];
+        var W = 300,
+          H = 220;
+        var svg = "";
+
+        /* Bonds */
+        mol.bonds.forEach(function (b) {
+          var a0 = mol.atoms[b[0]],
+            a1 = mol.atoms[b[1]];
+          svg +=
+            '<line x1="' +
+            a0.x +
+            '" y1="' +
+            a0.y +
+            '" x2="' +
+            a1.x +
+            '" y2="' +
+            a1.y +
+            '" stroke="rgba(200,200,255,0.3)" stroke-width="5" stroke-linecap="round"/>';
+        });
+
+        /* Atom glows */
+        mol.atoms.forEach(function (a) {
+          svg +=
+            '<circle cx="' +
+            a.x +
+            '" cy="' +
+            a.y +
+            '" r="' +
+            (a.r + 12) +
+            '" fill="' +
+            a.color +
+            '" opacity="0.12"/>';
+        });
+
+        /* Atom circles + labels */
+        mol.atoms.forEach(function (a) {
+          svg +=
+            '<circle cx="' +
+            a.x +
+            '" cy="' +
+            a.y +
+            '" r="' +
+            a.r +
+            '" fill="' +
+            a.color +
+            '" opacity="0.92" stroke="rgba(255,255,255,0.22)" stroke-width="1.5"/>';
+          var fs = a.el.length > 1 ? 9 : 11;
+          svg +=
+            '<text x="' +
+            a.x +
+            '" y="' +
+            a.y +
+            '" text-anchor="middle" dominant-baseline="central"' +
+            ' fill="white" font-size="' +
+            fs +
+            '" font-family="Lexend, sans-serif" font-weight="700">' +
+            a.el +
+            "</text>";
+        });
+
+        document.getElementById("mol-svg").innerHTML = svg;
+
+        /* Info panel */
+        document.getElementById("mol-name").textContent = mol.name;
+        document.getElementById("mol-formula").innerHTML = mol.formulaHTML;
+        document.getElementById("mol-tagline").textContent = mol.tagline;
+
+        document.getElementById("mol-breakdown").innerHTML = mol.breakdown
+          .map(function (item, i) {
+            return (
+              (i > 0 ? '<span style="color:var(--muted)"> + </span>' : "") +
+              '<span style="font-weight:700;color:' +
+              item.color +
+              '">' +
+              item.count +
+              " " +
+              item.label +
+              (item.count > 1 ? "s" : "") +
+              "</span>"
+            );
+          })
+          .join("");
+
+        document.getElementById("mol-legend").innerHTML = mol.breakdown
+          .map(function (item) {
+            return (
+              '<div class="ml-item">' +
+              '<div class="ml-dot" style="background:' +
+              item.color +
+              '"></div>' +
+              item.el +
+              " = " +
+              item.label +
+              "</div>"
+            );
+          })
+          .join("");
+      }
+
+      /* ═══════════════════════════════════════
+         FORMULA ANALYSER (Tab 3 interactive)
+      ═══════════════════════════════════════ */
+      var ELEMENT_NAMES = {
+        H: "Hydrogène",
+        He: "Hélium",
+        Li: "Lithium",
+        C: "Carbone",
+        N: "Azote",
+        O: "Oxygène",
+        F: "Fluor",
+        Ne: "Néon",
+        Na: "Sodium",
+        Mg: "Magnésium",
+        Al: "Aluminium",
+        Si: "Silicium",
+        P: "Phosphore",
+        S: "Soufre",
+        Cl: "Chlore",
+        Ar: "Argon",
+        K: "Potassium",
+        Ca: "Calcium",
+        Fe: "Fer",
+        Cu: "Cuivre",
+        Zn: "Zinc",
+        Ag: "Argent",
+        Au: "Or",
+        Pb: "Plomb",
+      };
+
+      function analyzeFormula() {
+        var raw = document.getElementById("ii-input").value.trim();
+        var result = document.getElementById("ii-result");
+        if (!raw) {
+          result.style.display = "none";
+          return;
+        }
+
+        /* Parse formula: match element symbols followed by optional digits */
+        var regex = /([A-Z][a-z]?)(\d*)/g;
+        var match;
+        var atoms = {};
+        var total = 0;
+        var valid = false;
+
+        while ((match = regex.exec(raw)) !== null) {
+          if (!match[1]) continue;
+          var sym = match[1];
+          var count = match[2] ? parseInt(match[2]) : 1;
+          if (sym.length === 0) continue;
+          valid = true;
+          atoms[sym] = (atoms[sym] || 0) + count;
+          total += count;
+        }
+
+        if (!valid) {
+          result.style.display = "none";
+          return;
+        }
+
+        var lines = Object.keys(atoms).map(function (sym) {
+          var name = ELEMENT_NAMES[sym] || sym;
+          var n = atoms[sym];
+          return (
+            '<span style="color:var(--accent);font-weight:700">' +
+            sym +
+            "</span>" +
+            " → <b>" +
+            n +
+            "</b> atome" +
+            (n > 1 ? "s" : "") +
+            " de <em>" +
+            name +
+            "</em>"
+          );
+        });
+
+        result.style.display = "block";
+        result.innerHTML =
+          '<div style="color:var(--muted);font-size:0.75rem;margin-bottom:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase">' +
+          "Décomposition de " +
+          raw +
+          "</div>" +
+          lines.join("<br>") +
+          '<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);color:var(--muted)">' +
+          '→ Total : <b style="color:var(--text)">' +
+          total +
+          "</b> atome" +
+          (total > 1 ? "s" : "") +
+          " au total" +
+          "</div>";
+      }
+
+      /* ═══════════════════════════════════════
+         QUIZ
+      ═══════════════════════════════════════ */
+      var QUIZ_Q = [
+        {
+          q: 'Que représente le petit "2" dans H₂O ?',
+          opts: [
+            "Le poids de la molécule",
+            "Le nombre de charges",
+            "Le nombre d'atomes d'hydrogène",
+            "Le numéro atomique",
+          ],
+          ans: 2,
+          expl: 'Dans H₂O, le "2" est un indice : il y a 2 atomes d\'hydrogène. Pas de chiffre après O → 1 seul oxygène.',
+        },
+        {
+          q: "CO₂ → combien d'atomes d'oxygène y a-t-il ?",
+          opts: ["0", "1", "2", "3"],
+          ans: 2,
+          expl: 'CO₂ : C → 1 carbone, O₂ → le "2" indique 2 atomes d\'oxygène.',
+        },
+        {
+          q: "H₂ — qu'est-ce que ça signifie ?",
+          opts: [
+            "1 hydrogène",
+            "2 hydrogènes attachés",
+            "2 héliums",
+            "1 molécule lourde",
+          ],
+          ans: 1,
+          expl: 'H₂ = 2 atomes d\'hydrogène. H = Hydrogène, et le "2" = il y en a deux.',
+        },
+        {
+          q: "O tout seul (sans chiffre) = combien d'atomes ?",
+          opts: ["0", "1", "2", "Ça dépend"],
+          ans: 1,
+          expl: "Règle d'or : sans chiffre → c'est 1. Toujours. O = 1 atome d'oxygène.",
+        },
+        {
+          q: "Quelle est la formule chimique de l'eau ?",
+          opts: ["CO₂", "H₂", "O₂", "H₂O"],
+          ans: 3,
+          expl: "L'eau = H₂O = 2 hydrogènes + 1 oxygène.",
+        },
+        {
+          q: "Dans Fe₂O₃, combien d'atomes de Fer (Fe) ?",
+          opts: ["1", "2", "3", "5"],
+          ans: 1,
+          expl: 'Fe₂O₃ → le "2" après Fe = 2 fers, le "3" après O = 3 oxygènes.',
+        },
+        {
+          q: "Qu'est-ce qu'un atome ?",
+          opts: [
+            "Une planète miniature",
+            "Un gaz particulier",
+            "La plus petite brique de la matière",
+            "Une molécule simple",
+          ],
+          ans: 2,
+          expl: "Un atome = mini bille invisible, la brique de base de TOUTE la matière.",
+        },
+        {
+          q: "Une molécule, c'est quoi ?",
+          opts: [
+            "Un seul atome isolé",
+            "Un gaz particulier",
+            "Plusieurs atomes attachés ensemble",
+            "Un élément du tableau",
+          ],
+          ans: 2,
+          expl: "Molécule = plusieurs atomes attachés. Comme une construction LEGO 🧱.",
+        },
+        {
+          q: "Les atomes, c'est comme des…",
+          opts: ["planètes", "LEGO", "nuages", "livres"],
+          ans: 1,
+          expl: "Analogie parfaite : atomes = LEGO. Tu peux les assembler dans tous les sens pour créer tout ce qui existe.",
+        },
+        {
+          q: "CO₂ = C + O + O. Combien d'atomes au total ?",
+          opts: ["1", "2", "3", "4"],
+          ans: 2,
+          expl: "CO₂ = 1 carbone + 2 oxygènes = 3 atomes au total.",
+        },
+      ];
+
+      var qIdx = 0,
+        qScore = 0;
+
+      function startQuiz() {
+        qIdx = 0;
+        qScore = 0;
+        document.getElementById("quiz-card").style.display = "";
+        document.getElementById("quiz-result").style.display = "none";
+        renderQuestion();
+      }
+
+      function renderQuestion() {
+        var q = QUIZ_Q[qIdx];
+        document.getElementById("quiz-bar").style.width =
+          (qIdx / QUIZ_Q.length) * 100 + "%";
+        document.getElementById("q-num").textContent =
+          "Question " + (qIdx + 1) + " / " + QUIZ_Q.length;
+        document.getElementById("q-text").textContent = q.q;
+
+        document.getElementById("q-opts").innerHTML = q.opts
+          .map(function (opt, i) {
+            return (
+              '<button class="q-opt" onclick="checkAnswer(' +
+              i +
+              ')">' +
+              opt +
+              "</button>"
+            );
+          })
+          .join("");
+
+        var fb = document.getElementById("q-feedback");
+        fb.style.display = "none";
+        fb.className = "q-feedback";
+      }
+
+      function checkAnswer(idx) {
+        var q = QUIZ_Q[qIdx];
+        var isOk = idx === q.ans;
+        if (isOk) qScore++;
+
+        document.querySelectorAll(".q-opt").forEach(function (btn, i) {
+          btn.disabled = true;
+          if (i === idx) btn.classList.add(isOk ? "correct" : "wrong");
+          else if (i === q.ans) btn.classList.add("correct");
+        });
+
+        var fb = document.getElementById("q-feedback");
+        fb.style.display = "block";
+        fb.className = "q-feedback " + (isOk ? "qf-ok" : "qf-err");
+        fb.textContent = (isOk ? "✓ " : "✕ ") + q.expl;
+
+        setTimeout(function () {
+          qIdx++;
+          if (qIdx >= QUIZ_Q.length) showResult();
+          else renderQuestion();
+        }, 2400);
+      }
+
+      function showResult() {
+        document.getElementById("quiz-card").style.display = "none";
+        document.getElementById("quiz-result").style.display = "block";
+        document.getElementById("quiz-bar").style.width = "100%";
+        var pct = Math.round((qScore / QUIZ_Q.length) * 100);
+        document.getElementById("qr-icon").textContent =
+          pct >= 80 ? "🎉" : pct >= 50 ? "💪" : "📖";
+        document.getElementById("qr-score").textContent =
+          qScore + " / " + QUIZ_Q.length + " (" + pct + "%)";
+        document.getElementById("qr-msg").textContent =
+          pct >= 80
+            ? "Excellent ! Tu maîtrises les bases de la chimie !"
+            : pct >= 50
+              ? "Pas mal ! Relis les bases et réessaie."
+              : 'Continue tes révisions — relis "Les Bases" et recommence !';
+      }
+
+      /* ═══════════════════════════════════════
+         INIT ON LOAD
+      ═══════════════════════════════════════ */
+      document.addEventListener("DOMContentLoaded", function () {
+        updateAtomInfo("H");
+        renderMolecule("H2O");
+        startQuiz();
+      });
+    </script>
+  </body>
+</html>
